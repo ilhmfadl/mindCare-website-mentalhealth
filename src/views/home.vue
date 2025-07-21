@@ -85,12 +85,34 @@
         </div>
       </div>
     </section>
+
+    <!-- DEBUG SECTION -->
+    <section class="debug-section">
+        <div class="home-container">
+            <h3 style="text-align: center; margin-bottom: 20px;">Developer Shortcuts</h3>
+            <div class="debug-buttons">
+                <button @click="goToResult('ResultIsDepresi', 30)" class="debug-button">View Depresi Result (Score 30)</button>
+                <button @click="goToResult('ResultIsAnxiety', 20)" class="debug-button">View Anxiety Result (Score 20)</button>
+                <button @click="goToResult('ResultIsSkizofrenia', 25)" class="debug-button">View Skizofrenia Result (Score 25)</button>
+                <button @click="goToResult('ResultIsBipolar', 22)" class="debug-button">View Bipolar Result (Score 22)</button>
+                <button @click="goToResult('ResultIsGangguanMakan', 18)" class="debug-button">View G. Makan Result (Score 18)</button>
+                <button @click="goToResult('ResultIsOCD', 28)" class="debug-button">View OCD Result (Score 28)</button>
+                <button @click="goToResult('ResultIsPTSD', 26)" class="debug-button">View PTSD Result (Score 26)</button>
+                <button @click="goToResult('ResultIsGangguanKepribadian', 15)" class="debug-button">View G. Kepribadian Result (Score 15)</button>
+            </div>
+        </div>
+    </section>
   </div>
 </template>
 
 <script>
 export default {
   name: "MindCareLanding",
+  methods: {
+    goToResult(routeName, score) {
+      this.$router.push({ name: routeName, params: { score: score } });
+    }
+  }
 };
 </script>
 
@@ -309,6 +331,29 @@ export default {
   color: white;
 }
 .btn-start:hover { background-color: #ea580c; }
+
+.debug-section {
+    padding: 40px 0;
+    background-color: #f0f0f0;
+}
+.debug-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+.debug-button {
+    padding: 10px 20px;
+    border: 1px solid #ccc;
+    background-color: #fff;
+    cursor: pointer;
+    border-radius: 8px;
+    transition: all 0.2s;
+}
+.debug-button:hover {
+    background-color: #e9e9e9;
+    border-color: #aaa;
+}
 
 
 /* RESPONSIVE ADJUSTMENTS */

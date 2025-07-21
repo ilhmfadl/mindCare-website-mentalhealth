@@ -1,24 +1,41 @@
 <template>
   <header class="main-header">
     <div class="header-container home-container">
-      <div class="logo">
-        <img src="/src/assets/LogoMindCare.png" alt="Logo" class="logo-img" />
+      <div class="header-left">
+        <div class="logo">
+          <img src="/src/assets/LogoMindCare.png" alt="Logo" class="logo-img" />
+        </div>
       </div>
       <nav class="main-nav">
         <router-link to="/">Home</router-link>
         <router-link to="/tes-diri">Tes Diri</router-link>
+        <router-link
+          v-if="testState.testCompleted"
+          :to="{ name: testState.resultType, params: { score: testState.score } }"
+        >
+          Hasil Tes
+        </router-link>
         <router-link to="/edukasi">Pojok Edukasi</router-link>
         <router-link to="/forum">Forum Diskusi</router-link>
         <router-link to="/profile">Profile</router-link>
       </nav>
-      <button class="contact-button">Contact Us</button>
+      <div class="header-right">
+        <button class="contact-button">Contact Us</button>
+      </div>
     </div>
   </header>
 </template>
 
 <script>
+import { testState } from '../store/testState';
+
 export default {
-  name: 'Header'
+  name: 'Header',
+  setup() {
+    return {
+      testState
+    };
+  }
 }
 </script>
 
@@ -49,7 +66,7 @@ export default {
 }
 .header-container {
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
   width: 100%;
   gap: 32px;
@@ -80,13 +97,24 @@ export default {
   }
 }
 
+.header-left, .header-right {
+  flex: 1;
+}
+
+.header-right {
+  display: flex;
+  justify-content: flex-end;
+}
+
 .logo-img {
   height: 40px; /* Adjust as needed */
   width: auto;
 }
 
 .main-nav {
+  flex-grow: 1; /* Allows the nav to take up available space */
   display: flex;
+  justify-content: center; /* Centers the links within the nav element */
   gap: 2.5rem;
 }
 
@@ -107,6 +135,43 @@ export default {
   color: #6A4C9B;
   font-weight: 600;
   border-bottom-color: #6A4C9B;
+}
+
+.dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.dropdown-toggle {
+  cursor: pointer;
+}
+
+.dropdown-menu {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: white;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  border-radius: 8px;
+  padding: 10px 0;
+  min-width: 180px;
+  z-index: 1001;
+  display: flex;
+  flex-direction: column;
+}
+
+.dropdown-menu a {
+  color: #333;
+  padding: 10px 20px;
+  text-decoration: none;
+  display: block;
+  text-align: left;
+  border-bottom: none;
+}
+
+.dropdown-menu a:hover {
+  background-color: #f5f5f5;
 }
 
 .contact-button {
