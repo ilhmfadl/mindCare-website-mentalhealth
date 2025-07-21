@@ -12,6 +12,15 @@ import ResultIsGangguanMakan from '../views/result/resultIsGangguanMakan.vue';
 import ResultIsOCD from '../views/result/resultIsOCD.vue';
 import ResultIsPTSD from '../views/result/resultIsPTSD.vue';
 import ResultIsGangguanKepribadian from '../views/result/resultIsgangguankepribadian.vue';
+import PojokEdukasi from '../views/pojokEdukasi.vue';
+import Depresi from '../views/edukasi/Depresi.vue';
+import Anxiety from '../views/edukasi/anxiety.vue';
+import Skizofrenia from '../views/edukasi/skizofrenia.vue';
+import Bipolar from '../views/edukasi/bipolar.vue';
+import Personality from '../views/edukasi/personality.vue';
+import OCD from '../views/edukasi/ocd.vue';
+import Eating from '../views/edukasi/eating.vue';
+import PTSD from '../views/edukasi/ptsd.vue';
 
 // Placeholders for other pages
 const Edukasi = { template: '<div><h1>Pojok Edukasi</h1></div>' };
@@ -73,7 +82,15 @@ const routes = [
     component: ResultIsGangguanKepribadian,
     props: true
   },
-  { path: '/edukasi', name: 'Edukasi', component: Edukasi },
+  { path: '/edukasi', name: 'Edukasi', component: PojokEdukasi },
+  { path: '/edukasi/depresi', name: 'EdukasiDepresi', component: Depresi },
+  { path: '/edukasi/anxiety', name: 'EdukasiAnxiety', component: Anxiety },
+  { path: '/edukasi/skizofrenia', name: 'EdukasiSkizofrenia', component: Skizofrenia },
+  { path: '/edukasi/bipolar', name: 'EdukasiBipolar', component: Bipolar },
+  { path: '/edukasi/personality', name: 'EdukasiPersonality', component: Personality },
+  { path: '/edukasi/ocd', name: 'EdukasiOCD', component: OCD },
+  { path: '/edukasi/eating', name: 'EdukasiEating', component: Eating },
+  { path: '/edukasi/ptsd', name: 'EdukasiPTSD', component: PTSD },
   { path: '/forum', name: 'Forum', component: Forum },
   { path: '/profile', name: 'Profile', component: Profile },
   { path: '/ubah-kata-sandi', name: 'ChangePassword', component: ChangePassword },
@@ -81,7 +98,10 @@ const routes = [
 
 const router = createRouter({
     history: createWebHistory(),
-    routes
+    routes,
+    scrollBehavior(to, from, savedPosition) {
+      return { top: 0 };
+    }
 });
 
 export default router;

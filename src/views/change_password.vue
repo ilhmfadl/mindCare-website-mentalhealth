@@ -1,4 +1,11 @@
 <template>
+  <ConfirmationModal
+    :visible="showSaveConfirm"
+    title="Konfirmasi Ubah Kata Sandi"
+    message="Apakah Anda yakin ingin mengubah kata sandi?"
+    @confirm="confirmSave"
+    @cancel="showSaveConfirm = false"
+  />
   <div class="change-password-bg">
     <div class="change-password-container">
       <h2>Ubah Kata Sandi</h2>
@@ -27,15 +34,18 @@
 </template>
 
 <script>
+import ConfirmationModal from '../components/ConfirmationModal.vue';
 export default {
   name: 'ChangePassword',
+  components: { ConfirmationModal },
   data() {
     return {
       oldPassword: '',
       newPassword: '',
       confirmPassword: '',
       error: '',
-      success: false
+      success: false,
+      showSaveConfirm: false
     }
   },
   methods: {
@@ -54,11 +64,14 @@ export default {
         this.error = 'Konfirmasi kata sandi tidak cocok.';
         return;
       }
-      // Simulasi sukses
+      this.showSaveConfirm = true;
+    },
+    confirmSave() {
       this.success = true;
       this.oldPassword = '';
       this.newPassword = '';
       this.confirmPassword = '';
+      this.showSaveConfirm = false;
       setTimeout(() => {
         this.$router.push({ name: 'Profile' });
       }, 1500);

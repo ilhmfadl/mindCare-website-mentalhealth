@@ -81,7 +81,7 @@
           <p class="test-description">
             MindCare hadir untuk membantu anda memahami kondisi kesehatan mental Anda secara cepat dan mudah. Dengan mengisi kuisioner yang telah kami sediakan, Anda akan mendapatkan gambaran umum mengenai kesejahteraan psikologis Anda. Proses ini bersifat pribadi, aman, dan tidak membutuhkan waktu lama. Mulailah dengan hasil memeriksa kesehatan mental yang lebih baik bersama MindCare.
           </p>
-          <button class="btn-start" type="button">MULAI</button>
+          <button class="btn-start" type="button" @click="goToTesDiri">MULAI</button>
         </div>
       </div>
     </section>
@@ -111,6 +111,9 @@ export default {
   methods: {
     goToResult(routeName, score) {
       this.$router.push({ name: routeName, params: { score: score } });
+    },
+    goToTesDiri() {
+      this.$router.push({ name: 'TesDiri' });
     }
   }
 };
