@@ -16,7 +16,7 @@
     </section>
 
     <!-- Question Section (Paginated) -->
-    <section class="question-section" v-if="!showResults">
+    <section v-if="!showResults" class="question-section">
       <div class="progress-indicator">
         Halaman {{ currentPage + 1 }} dari {{ totalPages }}
       </div>
@@ -40,24 +40,20 @@
     </section>
 
     <!-- Results Section -->
-    <section class="results-section" v-if="showResults">
-      <h2>Hasil Tes Anda</h2>
-      <p class="score">Total Skor Anda: <strong>{{ totalScore }}</strong></p>
-      <p class="interpretation">{{ resultInterpretation }}</p>
-      <div class="actions-area">
-        <button @click="resetTest" class="back-button">Kembali</button>
-      </div>
-    </section>
+    <ResultIsDepresi v-if="showResults" :score="totalScore" />
   </div>
 </template>
 
 <script>
 import QuestionItem from '../components/QuestionItem.vue';
+import ResultIsDepresi from './result/resultIsDepresi.vue';
+import { testState } from '../store/testState';
 
 export default {
   name: 'TesDiri',
   components: {
-    QuestionItem
+    QuestionItem,
+    ResultIsDepresi
   },
   data() {
     return {
@@ -121,13 +117,29 @@ export default {
     submitTest() {
       if (!this.allQuestionsAnswered) return;
       this.totalScore = this.answers.reduce((total, answer) => total + answer, 0);
-      this.showResults = true;
+
+      // Determine result type based on score or other logic
+      // For now, let's assume it's always Depresi for this example
+      const resultType = 'ResultIsDepresi'; 
+
+      // Update the shared state
+      testState.testCompleted = true;
+      testState.score = this.totalScore;
+      testState.resultType = resultType;
+
+      // Navigate to the result page
+      this.$router.push({ name: resultType, params: { score: this.totalScore } });
     },
     resetTest() {
       this.answers = Array(this.questions.length).fill(null);
       this.totalScore = 0;
       this.showResults = false;
       this.currentPage = 0;
+      
+      // Also reset the shared state
+      testState.testCompleted = false;
+      testState.score = 0;
+      testState.resultType = null;
     }
   }
 }
@@ -139,8 +151,8 @@ export default {
   min-height: 100vh;
 }
 .hero {
-  background: #A285D2; /* A slightly more solid purple */
-  padding: 48px 0 32px 0;
+  background: linear-gradient(45deg, #725c96 30%, #c09df7 100%);
+  padding: 100px 0 32px 0;
   color: #fff;
   position: relative;
 }
@@ -156,7 +168,7 @@ export default {
   z-index: 1;
 }
 .hero-content {
-  max-width: 900px;
+  max-width: 1200px;
   margin: 0 auto;
   padding: 0 24px;
   position: relative;
@@ -165,7 +177,7 @@ export default {
 .hero-content h1 {
   font-size: 2.5rem;
   font-weight: 700;
-  margin-bottom: 12px;
+  margin-bottom: 50px;
 }
 .hero-content .desc {
   font-size: 1.1rem;
