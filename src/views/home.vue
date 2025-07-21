@@ -39,12 +39,7 @@
         </h2>
         <div class="cards">
           <article class="card orange-gradient" aria-labelledby="schizophrenia-title">
-            <svg class="card-icon" viewBox="0 0 64 64" fill="none" aria-hidden="true" focusable="false">
-              <circle cx="32" cy="32" r="30" stroke="#fff" stroke-opacity="0.5" stroke-width="2"/>
-              <path d="M22 22c4-6 12-6 16 0" stroke="#fff" stroke-width="2" stroke-linecap="round"/>
-              <path d="M22 42h20" stroke="#fff" stroke-width="2" stroke-linecap="round"/>
-              <path d="M30 12v40" stroke="#fff" stroke-width="2" stroke-linecap="round"/>
-            </svg>
+            <img src="/src/assets/logocard1.png" alt="Logo Skizofrenia" class="card-logo-img" />
             <h3 id="schizophrenia-title">Skizofrenia</h3>
             <p>
               Gangguan mental serius yang menyebabkan kesulitan membedakan antara kenyataan dan halusinasi/delusi (pikiran tidak nyata).
@@ -52,12 +47,7 @@
           </article>
 
           <article class="card purple-gradient featured-card" aria-labelledby="depression-title">
-            <svg class="card-icon" viewBox="0 0 64 64" fill="none" aria-hidden="true" focusable="false">
-              <circle cx="32" cy="32" r="30" stroke="#fff" stroke-opacity="0.6" stroke-width="2"/>
-              <path d="M32 10a12 12 0 1 1 0 24 12 12 0 0 1 0-24z" stroke="#fff" stroke-width="2"/>
-              <path d="M32 22v18" stroke="#fff" stroke-width="2" stroke-linecap="round"/>
-              <path d="M38 22a6 6 0 0 1-12 0" stroke="#fff" stroke-width="2" stroke-linecap="round"/>
-            </svg>
+            <img src="/src/assets/logocard2.png" alt="Logo Depresi" class="card-logo-img" />
             <h3 id="depression-title">Depresi</h3>
             <p>
               Gangguan suasana hati yang membuat seseorang merasa sedih, putus asa, kehilangan semangat, dan sulit menikmati hal-hal yang biasa disukai.
@@ -65,12 +55,7 @@
           </article>
 
           <article class="card red-gradient" aria-labelledby="anxiety-title">
-            <svg class="card-icon" viewBox="0 0 64 64" fill="none" aria-hidden="true" focusable="false">
-              <circle cx="32" cy="32" r="30" stroke="#fff" stroke-opacity="0.5" stroke-width="2"/>
-              <path d="M24 26a10 10 0 0 1 16 0" stroke="#fff" stroke-width="2" stroke-linecap="round"/>
-              <path d="M32 36v10" stroke="#fff" stroke-width="2" stroke-linecap="round"/>
-              <path d="M22 44h20" stroke="#fff" stroke-width="2" stroke-linecap="round"/>
-            </svg>
+            <img src="/src/assets/logocard3.png" alt="Logo Anxiety" class="card-logo-img" />
             <h3 id="anxiety-title">Anxiety</h3>
             <p>
               Kondisi saat seseorang merasa khawatir atau takut berlebihan, bahkan tanpa alasan yang jelas.
@@ -100,12 +85,34 @@
         </div>
       </div>
     </section>
+
+    <!-- DEBUG SECTION -->
+    <section class="debug-section">
+        <div class="home-container">
+            <h3 style="text-align: center; margin-bottom: 20px;">Developer Shortcuts</h3>
+            <div class="debug-buttons">
+                <button @click="goToResult('ResultIsDepresi', 30)" class="debug-button">View Depresi Result (Score 30)</button>
+                <button @click="goToResult('ResultIsAnxiety', 20)" class="debug-button">View Anxiety Result (Score 20)</button>
+                <button @click="goToResult('ResultIsSkizofrenia', 25)" class="debug-button">View Skizofrenia Result (Score 25)</button>
+                <button @click="goToResult('ResultIsBipolar', 22)" class="debug-button">View Bipolar Result (Score 22)</button>
+                <button @click="goToResult('ResultIsGangguanMakan', 18)" class="debug-button">View G. Makan Result (Score 18)</button>
+                <button @click="goToResult('ResultIsOCD', 28)" class="debug-button">View OCD Result (Score 28)</button>
+                <button @click="goToResult('ResultIsPTSD', 26)" class="debug-button">View PTSD Result (Score 26)</button>
+                <button @click="goToResult('ResultIsGangguanKepribadian', 15)" class="debug-button">View G. Kepribadian Result (Score 15)</button>
+            </div>
+        </div>
+    </section>
   </div>
 </template>
 
 <script>
 export default {
   name: "MindCareLanding",
+  methods: {
+    goToResult(routeName, score) {
+      this.$router.push({ name: routeName, params: { score: score } });
+    }
+  }
 };
 </script>
 
@@ -268,6 +275,18 @@ export default {
 .purple-gradient { background: linear-gradient(135deg, #a78bfa, #8b5cf6); }
 .red-gradient { background: linear-gradient(135deg, #f87171, #ef4444); }
 
+.card-logo-img {
+  width: 100px;
+  height: 100px;
+  object-fit: contain;
+  margin-bottom: 8px;
+  border-radius: 12px;
+  background: transparent;
+  box-shadow: none;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
 
 /* TEST-YOURSELF SECTION */
 .test-content-wrapper {
@@ -312,6 +331,29 @@ export default {
   color: white;
 }
 .btn-start:hover { background-color: #ea580c; }
+
+.debug-section {
+    padding: 40px 0;
+    background-color: #f0f0f0;
+}
+.debug-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+.debug-button {
+    padding: 10px 20px;
+    border: 1px solid #ccc;
+    background-color: #fff;
+    cursor: pointer;
+    border-radius: 8px;
+    transition: all 0.2s;
+}
+.debug-button:hover {
+    background-color: #e9e9e9;
+    border-color: #aaa;
+}
 
 
 /* RESPONSIVE ADJUSTMENTS */

@@ -51,17 +51,15 @@
       <div class="footer-section">
         <h4>Maps</h4>
         <div class="maps-placeholder">
-          <!-- Checkerboard SVG -->
-          <svg width="80" height="60" viewBox="0 0 80 60">
-            <rect x="0" y="0" width="20" height="20" fill="black"/>
-            <rect x="20" y="20" width="20" height="20" fill="black"/>
-            <rect x="40" y="0" width="20" height="20" fill="black"/>
-            <rect x="60" y="20" width="20" height="20" fill="black"/>
-            <rect x="0" y="40" width="20" height="20" fill="black"/>
-            <rect x="20" y="0" width="20" height="20" fill="black"/>
-            <rect x="40" y="40" width="20" height="20" fill="black"/>
-            <rect x="60" y="0" width="20" height="20" fill="black"/>
-          </svg>
+          <iframe
+            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d255347.4931110609!2d101.3211187425133!3d0.5116560965391942!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x31d5ac43c441b8c1%3A0x92f63f73a5a8a655!2sPekanbaru%2C%20Pekanbaru%20City%2C%20Riau!5e0!3m2!1sen!2sid!4v1628516584282!5m2!1sen!2sid"
+            width="100%"
+            height="150"
+            style="border:0;"
+            allowfullscreen=""
+            loading="lazy"
+            referrerpolicy="no-referrer-when-downgrade">
+          </iframe>
         </div>
       </div>
     </div>
@@ -149,6 +147,9 @@ h4 {
   background: #f0f0f0;
   border-radius: 8px;
   overflow: hidden;
+  width: 100%;
+  max-width: 220px;
+  height: 150px;
 }
 .footer-divider {
   margin: 30px auto; /* Centered */
