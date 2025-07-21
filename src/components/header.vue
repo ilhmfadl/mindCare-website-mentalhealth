@@ -1,6 +1,6 @@
 <template>
   <header class="main-header">
-    <div class="header-container">
+    <div class="header-container home-container">
       <div class="logo">
         <img src="/src/assets/LogoMindCare.png" alt="Logo" class="logo-img" />
       </div>
@@ -31,19 +31,53 @@ export default {
   z-index: 1000;
   
   background-color: #faf7f3; /* Solid background */
-  padding: 1rem 3rem;
+  padding: 1rem 0;
   color: #333; /* Text color for light background */
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
   display: flex;
   justify-content: center;
 }
 
+/* home-container agar sejajar dengan konten utama */
+.home-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding-left: 40px;
+  padding-right: 40px;
+  width: 100%;
+  box-sizing: border-box;
+}
 .header-container {
   display: flex;
   justify-content: space-between;
   align-items: center;
   width: 100%;
-  max-width: 1200px;
+  gap: 32px;
+}
+@media (max-width: 900px) {
+  .header-container {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+    padding: 0 1rem;
+  }
+  .main-header {
+    padding: 0.5rem 0.5rem;
+  }
+  .main-nav {
+    justify-content: center;
+    gap: 1.2rem;
+    flex-wrap: wrap;
+  }
+  .contact-button {
+    width: 100%;
+    margin-top: 8px;
+  }
+  .logo {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 4px;
+  }
 }
 
 .logo-img {

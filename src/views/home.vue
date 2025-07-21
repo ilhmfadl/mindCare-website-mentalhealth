@@ -39,12 +39,7 @@
         </h2>
         <div class="cards">
           <article class="card orange-gradient" aria-labelledby="schizophrenia-title">
-            <svg class="card-icon" viewBox="0 0 64 64" fill="none" aria-hidden="true" focusable="false">
-              <circle cx="32" cy="32" r="30" stroke="#fff" stroke-opacity="0.5" stroke-width="2"/>
-              <path d="M22 22c4-6 12-6 16 0" stroke="#fff" stroke-width="2" stroke-linecap="round"/>
-              <path d="M22 42h20" stroke="#fff" stroke-width="2" stroke-linecap="round"/>
-              <path d="M30 12v40" stroke="#fff" stroke-width="2" stroke-linecap="round"/>
-            </svg>
+            <img src="/src/assets/logocard1.png" alt="Logo Skizofrenia" class="card-logo-img" />
             <h3 id="schizophrenia-title">Skizofrenia</h3>
             <p>
               Gangguan mental serius yang menyebabkan kesulitan membedakan antara kenyataan dan halusinasi/delusi (pikiran tidak nyata).
@@ -52,12 +47,7 @@
           </article>
 
           <article class="card purple-gradient featured-card" aria-labelledby="depression-title">
-            <svg class="card-icon" viewBox="0 0 64 64" fill="none" aria-hidden="true" focusable="false">
-              <circle cx="32" cy="32" r="30" stroke="#fff" stroke-opacity="0.6" stroke-width="2"/>
-              <path d="M32 10a12 12 0 1 1 0 24 12 12 0 0 1 0-24z" stroke="#fff" stroke-width="2"/>
-              <path d="M32 22v18" stroke="#fff" stroke-width="2" stroke-linecap="round"/>
-              <path d="M38 22a6 6 0 0 1-12 0" stroke="#fff" stroke-width="2" stroke-linecap="round"/>
-            </svg>
+            <img src="/src/assets/logocard2.png" alt="Logo Depresi" class="card-logo-img" />
             <h3 id="depression-title">Depresi</h3>
             <p>
               Gangguan suasana hati yang membuat seseorang merasa sedih, putus asa, kehilangan semangat, dan sulit menikmati hal-hal yang biasa disukai.
@@ -65,12 +55,7 @@
           </article>
 
           <article class="card red-gradient" aria-labelledby="anxiety-title">
-            <svg class="card-icon" viewBox="0 0 64 64" fill="none" aria-hidden="true" focusable="false">
-              <circle cx="32" cy="32" r="30" stroke="#fff" stroke-opacity="0.5" stroke-width="2"/>
-              <path d="M24 26a10 10 0 0 1 16 0" stroke="#fff" stroke-width="2" stroke-linecap="round"/>
-              <path d="M32 36v10" stroke="#fff" stroke-width="2" stroke-linecap="round"/>
-              <path d="M22 44h20" stroke="#fff" stroke-width="2" stroke-linecap="round"/>
-            </svg>
+            <img src="/src/assets/logocard3.png" alt="Logo Anxiety" class="card-logo-img" />
             <h3 id="anxiety-title">Anxiety</h3>
             <p>
               Kondisi saat seseorang merasa khawatir atau takut berlebihan, bahkan tanpa alasan yang jelas.
@@ -268,6 +253,18 @@ export default {
 .purple-gradient { background: linear-gradient(135deg, #a78bfa, #8b5cf6); }
 .red-gradient { background: linear-gradient(135deg, #f87171, #ef4444); }
 
+.card-logo-img {
+  width: 100px;
+  height: 100px;
+  object-fit: contain;
+  margin-bottom: 8px;
+  border-radius: 12px;
+  background: transparent;
+  box-shadow: none;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
 
 /* TEST-YOURSELF SECTION */
 .test-content-wrapper {
