@@ -1,113 +1,92 @@
 <template>
-  <header class="header">
-    <div class="logo">
-      <img src="/src/assets/LogoMindCare.png" alt="Logo" class="logo-img" />
+  <header class="main-header">
+    <div class="header-container">
+      <div class="logo">
+        <img src="/src/assets/LogoMindCare.png" alt="Logo" class="logo-img" />
+      </div>
+      <nav class="main-nav">
+        <router-link to="/">Home</router-link>
+        <router-link to="/tes-diri">Tes Diri</router-link>
+        <router-link to="/edukasi">Pojok Edukasi</router-link>
+        <router-link to="/forum">Forum Diskusi</router-link>
+        <router-link to="/profile">Profile</router-link>
+      </nav>
+      <button class="contact-button">Contact Us</button>
     </div>
-    <nav class="nav">
-      <ul>
-        <li><router-link to="/">Home</router-link></li>
-        <li><router-link to="/tes-diri">Tes Diri</router-link></li>
-        <li><router-link to="/pojok-edukasi">Pojok Edukasi</router-link></li>
-        <li><router-link to="/forum-diskusi">Forum Diskusi</router-link></li>
-        <li><router-link to="/profile">Profile</router-link></li>
-      </ul>
-    </nav>
-    <button class="btn-contact" type="button">Contact Us</button>
   </header>
 </template>
 
+<script>
+export default {
+  name: 'Header'
+}
+</script>
+
 <style scoped>
-.header {
+.main-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 1000;
+  
+  background-color: #faf7f3; /* Solid background */
+  padding: 1rem 3rem;
+  color: #333; /* Text color for light background */
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+  display: flex;
+  justify-content: center;
+}
+
+.header-container {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 2rem 3vw;
-  border-bottom: 1px solid #E5E7EB;
-  flex-wrap: wrap;
   width: 100%;
-  box-sizing: border-box;
-  background: transparent;
-  min-width: 0;
-}
-
-.logo {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  min-width: 0;
+  max-width: 1200px;
 }
 
 .logo-img {
-  width: 10rem;
-  object-fit: contain;
+  height: 40px; /* Adjust as needed */
+  width: auto;
 }
 
-.logo-icon {
-  width: 2rem;
-  height: 2rem;
-  stroke: #4B5563;
-  stroke-width: 1.5;
-}
-
-.logo-text {
-  font-weight: 700;
-  font-size: 1.25rem;
-  color: #111827;
-  user-select: text;
-  white-space: nowrap;
-}
-
-.nav ul {
-  list-style: none;
+.main-nav {
   display: flex;
-  gap: 2rem;
-  padding: 0;
-  margin: 0;
-  flex-wrap: wrap;
+  gap: 2.5rem;
 }
 
-.nav ul li a {
-  color: #374151;
+.main-nav a {
+  color: #555;
   text-decoration: none;
   font-weight: 500;
-  font-size: 1rem;
-  transition: color 0.3s ease;
-  white-space: nowrap;
+  padding-bottom: 5px;
+  transition: color 0.3s, border-color 0.3s;
+  border-bottom: 2px solid transparent;
 }
 
-.nav ul li a:hover {
-  color: #EC744A;
+.main-nav a:hover {
+  color: #6A4C9B;
 }
 
-.nav ul li .router-link-active {
-  font-weight: bold;
-  color: #EC744A;
-}
-
-.btn-contact {
-  padding: 0.6rem 1.5rem;
-  background-color: #EC744A;
-  color: white;
+.main-nav a.router-link-exact-active {
+  color: #6A4C9B;
   font-weight: 600;
-  border-radius: 9999px;
-  border: none;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-  white-space: nowrap;
-  user-select: none;
-  font-size: 1rem;
+  border-bottom-color: #6A4C9B;
 }
 
-@media (max-width: 480px) {
-  .header {
-    flex-direction: column;
-    gap: 1rem;
-    padding: 1rem 2vw;
-  }
-  .nav ul {
-    gap: 1rem;
-    flex-wrap: wrap;
-    justify-content: center;
-  }
+.contact-button {
+  background-color: #6A4C9B;
+  color: white;
+  border: none;
+  padding: 0.7rem 1.5rem;
+  border-radius: 25px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.contact-button:hover {
+  background-color: #563d7c;
 }
 </style>
