@@ -153,7 +153,7 @@ export default {
 .hero {
   background: linear-gradient(45deg, #725c96 30%, #c09df7 100%);
   padding: 100px 0 32px 0;
-  color: #fff;
+  color: #ffffff;
   position: relative;
 }
 .hero::before {
@@ -216,7 +216,7 @@ export default {
 .question-section, .results-section {
   background: #faf7f3;
   margin-top: -32px;
-  padding: 48px 0 60px 0;
+  padding: 50px 0 60px 0;
   position: relative;
   z-index: 3;
 }

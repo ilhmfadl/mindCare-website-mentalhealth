@@ -39,7 +39,7 @@ export default {
 
 <style scoped>
 .question-block {
-  max-width: 900px;
+  max-width: 940px;
   margin: 0 auto 32px auto;
   padding: 0 24px;
 }
@@ -51,7 +51,7 @@ export default {
 }
 .answer-row {
   display: flex;
-  gap: 150px; /* Was 32px, reduced for a more compact look */
+  gap: 168px; /* Was 32px, reduced for a more compact look */
   justify-content: flex-start;
   margin-bottom: 16px;
 }

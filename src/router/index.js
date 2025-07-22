@@ -12,10 +12,10 @@ import ResultIsGangguanMakan from '../views/result/resultIsGangguanMakan.vue';
 import ResultIsOCD from '../views/result/resultIsOCD.vue';
 import ResultIsPTSD from '../views/result/resultIsPTSD.vue';
 import ResultIsGangguanKepribadian from '../views/result/resultIsgangguankepribadian.vue';
+import Forum from '../views/forum.vue';
 
 // Placeholders for other pages
 const Edukasi = { template: '<div><h1>Pojok Edukasi</h1></div>' };
-const Forum = { template: '<div><h1>Forum Diskusi</h1></div>' };
 
 
 const routes = [
