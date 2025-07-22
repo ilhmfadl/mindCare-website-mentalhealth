@@ -95,6 +95,10 @@
       <aside class="forum-sidebar">
         <div class="sidebar-categories">
           <h3>Kategori</h3>
+          <select class="dropdown-categories" v-model="selectedCategory">
+            <option value="Semua">Semua</option>
+            <option v-for="cat in categories" :key="cat" :value="cat">{{ cat }}</option>
+          </select>
           <ul>
             <li :class="{ active: selectedCategory === 'Semua' }" @click="selectedCategory = 'Semua'">Semua</li>
             <li v-for="cat in categories" :key="cat" :class="{ active: selectedCategory === cat }" @click="selectedCategory = cat">{{ cat }}</li>
@@ -333,9 +337,7 @@ export default {
   transform: translateX(-50%);
   clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
 }
-.kategori-section--top .kategori-content {
-  /* transform: none !important; */
-}
+
 .kategori-section--bottom {
   transform: translateX(-50%) !important;
   clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
@@ -363,9 +365,7 @@ export default {
   transform: scale(1.03);
   background: rgba(255,255,255,0.95);
 }
-.kategori-section--right .kategori-content {
-  /* transform: none; */
-}
+
 .kategori-bg-title {
   position: static;
   font-size: 2rem;
@@ -476,14 +476,54 @@ export default {
 .kategori-section:nth-child(7) .kategori-content { border-color: #f87171; }
 .kategori-section:nth-child(8) .kategori-content { border-color: #81c784; }
 @media (max-width: 900px) {
-  .edukasi-container { padding: 24px 0 32px 0; }
-  .kategori-section { padding: 32px 0 24px 0; min-height: 320px; }
-  .kategori-bg-title { font-size: 2.5rem; }
-  .kategori-img-wrapper { width: 140px; height: 140px; margin-top: 24px; }
-  .kategori-img-overlap { width: 100%; height: 100%; }
-  .kategori-nama { font-size: 1.2rem; }
-  .kategori-desc { font-size: 1rem; }
+  .edukasi-container {
+    padding: 16px 0 24px 0;
+    max-width: 100%;
+  }
+  .edukasi-title {
+    font-size: 1.3rem;
+    margin-top: 60px;
+    margin-bottom: 8px;
+  }
+  .kategori-section {
+    padding: 18px 0 12px 0;
+    min-height: 220px;
+  }
+  .kategori-content {
+    padding: 16px 8px 12px 8px;
+    border-radius: 16px;
+    min-height: 120px;
+    font-size: 0.95rem;
+  }
+  .kategori-bg-title {
+    font-size: 1.1rem;
+    margin-top: 16px;
+    margin-bottom: 6px;
+  }
+  .kategori-img-wrapper {
+    width: 90px;
+    height: 90px;
+    margin: 10px auto 8px auto;
+  }
+  .kategori-desc {
+    font-size: 0.95rem;
+    max-width: 98vw;
+  }
+  .edukasi-map-section {
+    padding: 12px 4px 12px 4px;
+    border-radius: 12px;
+    margin: 24px 4px 0 4px;
+    max-width: 100vw;
+  }
+  .map-title {
+    font-size: 1.05rem;
+    margin-bottom: 10px;
+  }
+  .map-container {
+    border-radius: 8px;
+  }
 }
+
 /* Border color mapping by bgClass */
 .bg-depresi .kategori-content { border-color: #cfd5f7; }
 .bg-anxiety .kategori-content { border-color: #f7f3c7; }
@@ -741,6 +781,28 @@ export default {
   }
   .forum-featured-links {
     margin-top: 12px;
+  }
+  .sidebar-categories ul {
+    display: none !important;
+  }
+  .dropdown-categories {
+    display: block !important;
+    width: 100%;
+    padding: 7px 10px;
+    border-radius: 8px;
+    border: 1px solid #e5e7eb;
+    font-size: 0.95rem;
+    margin-bottom: 8px;
+    background: #faf7f3;
+    color: #6a4c9b;
+  }
+}
+@media (min-width: 701px) {
+  .dropdown-categories {
+    display: none !important;
+  }
+  .sidebar-categories ul {
+    display: block !important;
   }
 }
 </style>

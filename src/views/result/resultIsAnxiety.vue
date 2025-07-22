@@ -383,6 +383,7 @@ export default {
     flex-direction: column;
     text-align: center;
   }
+  
   .result-illustration { display: none; }
   .details-illustration { margin-top: 40px; }
 }

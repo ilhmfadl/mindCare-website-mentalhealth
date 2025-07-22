@@ -361,4 +361,66 @@ input[disabled] {
     align-items: stretch;
   }
 }
+@media (max-width: 700px) {
+  .profile-bg {
+    padding-top: 0;
+  }
+  .profile-container {
+    max-width: 100vw !important;
+    padding: 10px 1vw 8px 1vw !important;
+    margin: 60px auto 18px auto;
+    border-radius: 12px;
+  }
+  .profile-header {
+    gap: 6px;
+    margin-bottom: 12px;
+  }
+  .profile-header h2 {
+    font-size: 1.05rem;
+  }
+  .profile-avatar {
+    width: 44px;
+    height: 44px;
+    border-width: 2px;
+    margin-bottom: 1px;
+  }
+  .profile-form {
+    gap: 10px;
+    margin-top: 4px;
+  }
+  .form-group {
+    gap: 3px;
+  }
+  label {
+    font-size: 0.85rem;
+    margin-bottom: 1px;
+  }
+  input[type="text"],
+  input[type="email"] {
+    padding: 7px 8px;
+    border-radius: 5px;
+    font-size: 0.85rem;
+  }
+  .btn-group-profile {
+    gap: 6px;
+    margin-top: 8px;
+  }
+  .edit-btn, .save-btn, .cancel-btn, .logout-btn {
+    font-size: 0.85rem;
+    padding: 7px 12px;
+    border-radius: 5px;
+  }
+  .password-section {
+    margin-top: 14px;
+    gap: 6px;
+  }
+  .change-password-btn {
+    font-size: 0.85rem;
+    padding: 7px 12px;
+    border-radius: 5px;
+  }
+  .avatar-overlay {
+    font-size: 0.8rem;
+  }
+}
 </style>

@@ -338,20 +338,88 @@ export default {
 
 /* RESPONSIVE ADJUSTMENTS */
 @media (max-width: 900px) {
-  .hero-content-wrapper {
-    flex-direction: column-reverse;
+  .home-container {
+    padding-left: 4px;
+    padding-right: 4px;
+    max-width: 100vw;
+  }
+  .hero-section, .problems-section, .test-yourself-section {
+    padding-top: 18px;
+    padding-bottom: 18px;
+  }
+  .hero-content-wrapper, .test-content-wrapper {
+    flex-direction: column;
+    gap: 10px;
     text-align: center;
   }
-  .hero-left {
+  .hero-left h1 {
+    font-size: 1.08rem;
+    margin-bottom: 4px;
+    margin-top: 100px;
+  }
+  .section-title {
+    font-size: 0.92rem;
+    margin-bottom: 10px;
+  }
+  .hero-text, .hero-desc, .test-question, .test-description {
+    font-size: 0.88rem;
+  }
+  .btn-group {
+    flex-direction: column;
+    gap: 4px;
+    margin-top: 0.5rem;
+    margin-right: 9px;
+  }
+  .btn-register, .btn-login, .btn-start {
+    padding: 7px 12px;
+    font-size: 0.89rem;
+  }
+  .cards {
+    flex-direction: column;
+    gap: 8px;
     align-items: center;
   }
-  .hero-desc {
-    max-width: 100%;
+  .card {
+    max-width: 99vw;
+    padding: 10px 4px;
+    font-size: 0.87rem;
   }
-
-  .test-content-wrapper {
-    flex-direction: column;
-    text-align: center;
+  .card-logo-img {
+    width: 38px;
+    height: 38px;
+    margin-bottom: 2px;
+  }
+  .test-logo-img {
+    max-width: 60vw;
+    height: auto;
+  }
+  .problems-section {
+    padding-top: 10px;
+    padding-bottom: 10px;
+  }
+  .section-title {
+    font-size: 0.8rem;
+    margin-bottom: 6px;
+  }
+  .cards {
+    gap: 4px;
+  }
+  .card {
+    max-width: 99vw;
+    padding: 6px 2px;
+    font-size: 0.8rem;
+    border-radius: 12px;
+  }
+  .card-logo-img {
+    width: 28px;
+    height: 28px;
+    margin-bottom: 1px;
+  }
+  .card {
+    transform: scale(0.92);
+    font-size: 0.75rem;
+    padding: 4px 1px;
+    border-radius: 8px;
   }
   .test-illustration { order: 1; }
   .test-content { order: 2; align-items: center; }

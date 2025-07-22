@@ -12,12 +12,15 @@
       <!-- Sidebar -->
       <aside class="forum-sidebar">
         <div class="sidebar-profile">
-          <div class="sidebar-avatar">
+          <div class="sidebar-avatar" @click="$router.push('/profile')">
             <svg width="60" height="60" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8" r="4" fill="#D1D5DB"/><ellipse cx="12" cy="17" rx="7" ry="5" fill="#D1D5DB"/></svg>
           </div>
         </div>
         <div class="sidebar-categories">
           <h3>Kategori</h3>
+          <select class="dropdown-categories" v-model="selectedCategory">
+            <option v-for="category in categories" :key="category" :value="category">{{ category }}</option>
+          </select>
           <ul>
             <li v-for="category in categories" :key="category" :class="{ active: selectedCategory === category }" @click="selectCategory(category)">{{ category }}</li>
           </ul>
@@ -406,6 +409,7 @@ const filteredQuestions = computed(() => {
   align-items: center;
   justify-content: center;
   box-shadow: 0 2px 8px rgba(160, 130, 255, 0.10);
+  cursor: pointer;
 }
 .sidebar-categories h3 {
   font-size: 1.1rem;
@@ -655,24 +659,184 @@ const filteredQuestions = computed(() => {
   }
 }
 @media (max-width: 700px) {
+  .forum-hero {
+    padding: 40px 0 18px 0;
+  }
   .forum-hero-content {
-    padding-left: 16px;
+    padding-left: 6px;
+    padding-top: 40px;
+  }
+  .forum-hero-content h1 {
+    font-size: 1.1rem;
+    margin-bottom: 4px;
+    margin-left: 20px;
+  }
+  .forum-hero-content p {
+    font-size: 0.85rem;
+    margin-left: 20px;
   }
   .forum-main-content {
-    padding: 0 4px 24px 4px;
+    flex-direction: column;
+    padding: 0 2px 12px 2px;
+    gap: 0;
   }
   .forum-sidebar, .forum-featured-links {
-    padding: 16px 8px;
+    padding: 20px 2px;
+    margin-top: 60px;
+    margin-bottom: 0px;
+    min-width: 0;
+    width: 100%;
+    font-size: 0.85rem;
   }
-  .forum-question-card {
-    padding: 14px 8px 12px 8px;
+  .sidebar-avatar {
+    width: 32px;
+    height: 32px;
+  }
+  .sidebar-categories h3 {
+    font-size: 0.9rem;
+    margin-bottom: 4px;
+  }
+  .sidebar-categories li {
+    font-size: 0.85rem;
+    padding: 4px 8px;
+    margin-bottom: 2px;
+  }
+  .forum-content {
+    margin-top: 12px;
+    font-size: 0.85rem;
   }
   .forum-search-row {
     flex-direction: column;
+    gap: 6px;
+    margin-bottom: 10px;
+  }
+  .forum-search-box {
+    padding-right: 0;
+  }
+  .forum-search-box input {
+    padding: 8px 28px 8px 8px;
+    font-size: 0.85rem;
+    border-radius: 8px;
+  }
+  .ask-btn {
+    padding: 7px 12px;
+    font-size: 0.85rem;
+    border-radius: 8px;
+  }
+  .forum-questions-list {
     gap: 10px;
   }
-  .forum-featured-links {
-    margin-top: 12px;
+  .forum-question-card {
+    padding: 8px 2px 6px 2px;
+    border-radius: 8px;
+    font-size: 0.85rem;
+  }
+  .question-header {
+    gap: 6px;
+  }
+  .question-avatar {
+    width: 22px;
+    height: 22px;
+  }
+  .question-user {
+    font-size: 0.85rem;
+  }
+  .question-time {
+    font-size: 0.7rem;
+  }
+  .question-title {
+    font-size: 0.92rem;
+    margin-bottom: 1px;
+  }
+  .question-desc {
+    font-size: 0.8rem;
+    margin-bottom: 1px;
+  }
+  .question-footer {
+    gap: 6px;
+    margin-top: 2px;
+  }
+  .question-tag {
+    font-size: 0.75rem;
+    padding: 2px 6px;
+    border-radius: 5px;
+  }
+  .question-comments {
+    font-size: 0.75rem;
+    gap: 2px;
+  }
+  .forum-featured-links h4 {
+    font-size: 0.9rem;
+    margin-bottom: 4px;
+  }
+  .forum-featured-links a {
+    font-size: 0.85rem;
+  }
+  .forum-detail-panel {
+    max-width: 100vw;
+    padding: 8px 2px 6px 2px;
+    border-radius: 0;
+    font-size: 0.85rem;
+  }
+  .detail-avatar {
+    width: 28px;
+    height: 28px;
+  }
+  .detail-user {
+    font-size: 0.85rem;
+  }
+  .detail-time {
+    font-size: 0.7rem;
+  }
+  .detail-title {
+    font-size: 0.92rem;
+    margin-bottom: 2px;
+  }
+  .detail-desc {
+    font-size: 0.8rem;
+    margin-bottom: 4px;
+  }
+  .detail-tag span {
+    font-size: 0.75rem;
+    padding: 2px 6px;
+    border-radius: 5px;
+    margin-bottom: 6px;
+  }
+  .detail-responses-box textarea {
+    font-size: 0.85rem;
+    padding: 6px 1px;
+    border-radius: 6px;
+  }
+  .detail-responses-actions {
+    gap: 4px;
+  }
+  .cancel-btn, .response-btn {
+    padding: 4px 10px;
+    font-size: 0.85rem;
+    border-radius: 6px;
+  }
+  .detail-answers {
+    gap: 8px;
+    margin-top: 8px;
+  }
+  .detail-answer {
+    border-radius: 6px;
+    padding: 6px 8px;
+    font-size: 0.85rem;
+  }
+  .answer-header {
+    font-size: 0.8rem;
+    gap: 4px;
+  }
+  .answer-time {
+    font-size: 0.7rem;
+  }
+  .answer-body {
+    font-size: 0.8rem;
+  }
+  .forum-detail-overlay ~ .forum-main-content,
+  .forum-main-content.panel-shift {
+    margin-left: 8vw;
   }
 }
 
@@ -861,8 +1025,9 @@ const filteredQuestions = computed(() => {
 @media (max-width: 700px) {
   .forum-detail-panel {
     max-width: 100vw;
-    padding: 18px 6px 12px 6px;
+    padding: 8px 2px 6px 2px;
     border-radius: 0;
+    font-size: 0.85rem;
   }
 }
 
@@ -946,5 +1111,83 @@ const filteredQuestions = computed(() => {
   display: flex;
   gap: 10px;
   justify-content: flex-end;
+}
+@media (max-width: 700px) {
+  .sidebar-categories ul {
+    display: none !important;
+  }
+  .dropdown-categories {
+    display: block !important;
+  }
+  .forum-ask-panel {
+    max-width: 88vw;
+    margin-left: 12vw;
+    box-shadow: 0 2px 12px rgba(80,60,120,0.13);
+  }
+  .close-ask {
+    top: 8px;
+    right: 8px;
+    font-size: 1.3rem;
+  }
+  .ask-form-group {
+    margin-bottom: 8px;
+  }
+  .ask-form-group label {
+    font-size: 0.85rem;
+    margin-bottom: 2px;
+  }
+  .ask-form-group input, .ask-form-group textarea, .ask-form-group select {
+    padding: 6px 8px;
+    border-radius: 6px;
+    font-size: 0.85rem;
+  }
+  .ask-form-group textarea {
+    min-height: 40px;
+  }
+  .ask-form-actions {
+    gap: 4px;
+    margin-top: 4px;
+  }
+  .cancel-btn, .response-btn {
+    padding: 4px 10px;
+    font-size: 0.85rem;
+    border-radius: 6px;
+  }
+}
+@media (min-width: 701px) {
+  .dropdown-categories {
+    display: none !important;
+  }
+  .sidebar-categories ul {
+    display: block !important;
+  }
+}
+@media (min-width: 701px) {
+  .forum-search-row {
+    position: sticky;
+    top: 70px;
+    z-index: 100;
+    background: #faf7f3;
+    box-shadow: 0 2px 8px rgba(160, 130, 255, 0.07);
+    border-radius: 14px;
+    padding-top: 8px;
+    padding-bottom: 8px;
+  }
+  .forum-sidebar {
+    position: sticky;
+    top: 70px;
+    z-index: 90;
+    background: #f8f3fd;
+    box-shadow: 0 2px 8px rgba(19, 18, 24, 0.178);
+    border-radius: 18px;
+  }
+  .forum-featured-links {
+    position: sticky;
+    top: 70px;
+    z-index: 90;
+    background: #f7f5f9;
+    box-shadow: 0 2px 8px rgba(160, 130, 255, 0.07);
+    border-radius: 18px;
+  }
 }
 </style>

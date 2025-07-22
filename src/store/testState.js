@@ -1,7 +1,14 @@
-import { reactive } from 'vue';
+import { reactive, watch } from 'vue';
 
-export const testState = reactive({
+const saved = localStorage.getItem('testState');
+const initial = saved ? JSON.parse(saved) : {
   testCompleted: false,
   score: 0,
-  resultType: null, // e.g., 'ResultIsDepresi', 'ResultIsAnxiety'
-}); 
+  resultType: null,
+};
+
+export const testState = reactive(initial);
+
+watch(testState, (val) => {
+  localStorage.setItem('testState', JSON.stringify(val));
+}, { deep: true }); 

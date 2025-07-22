@@ -122,4 +122,32 @@ export default {
 .answer-3 input[type="radio"]:checked + span { background-color: #f8bc3a; }
 .answer-4 input[type="radio"]:checked + span { background-color: #98db9c; }
 .answer-5 input[type="radio"]:checked + span { background-color: #4DB6AC; }
+
+@media (max-width: 900px) {
+  .question-block {
+    padding: 0 2px;
+    margin-bottom: 16px;
+  }
+  .question-block h2 {
+    font-size: 0.92rem;
+    margin-bottom: 8px;
+  }
+  .answer-row {
+    gap: 53px;
+    margin-bottom: 8px;
+    margin-left: 10px;
+    padding: 2px 0;
+  }
+  .answer {
+    font-size: 0.8rem;
+    margin-bottom: 6px;
+  }
+  .answer span {
+    width: 28px;
+    height: 28px;
+    line-height: 28px;
+    font-size: 0.8rem;
+    margin-bottom: 2px;
+  }
+}
 </style> 

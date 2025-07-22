@@ -185,19 +185,53 @@ h4 {
   object-fit: contain;
 }
 @media (max-width: 900px) {
+  .footer {
+    padding: 16px 0 8px 0;
+  }
   .footer-main {
-    flex-direction: column;
-    align-items: center; /* Center items on mobile */
-    text-align: center;
-    gap: 20px;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    justify-content: center;
+    text-align: left;
+    gap: 8px;
+    padding: 0 2px;
   }
   .footer-section {
-    margin: 0 0 20px 0;
-    width: 100%;
-    max-width: 300px; /* Limit width on mobile */
+    margin: 0 2px 0 2px;
+    min-width: 120px;
+    max-width: 160px;
+    flex: 1 1 120px;
+    font-size: 0.85rem;
+    background: none;
+    border-radius: 0;
+    padding: 6px 2px 6px 2px;
+    box-shadow: none;
   }
-  .contact-item {
-    justify-content: center;
+  .logo-img {
+    width: 3.5rem;
+    max-width: 100%;
+    margin-bottom: 4px;
+  }
+  .footer-bottom {
+    padding-bottom: 6px;
+    font-size: 0.85rem;
+  }
+  .socials i {
+    font-size: 1rem;
+    margin: 0 4px;
+  }
+  .maps-placeholder {
+    max-width: 100vw;
+    height: 70px;
+    border-radius: 6px;
+  }
+  .desc, .footer-section p, .contact-item {
+    font-size: 0.85rem;
+  }
+  h4 {
+    font-size: 0.95rem;
+    margin-bottom: 6px;
   }
 }
 </style>

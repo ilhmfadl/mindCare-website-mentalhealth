@@ -1,6 +1,10 @@
 <template>
   <div class="tes-diri-container">
-    <section class="hero">
+    <div v-if="loading" class="loading-overlay">
+      <div class="loading-spinner"></div>
+      <div class="loading-text">Memproses hasil tes...</div>
+    </div>
+    <section class="hero" v-if="!showResults">
       <div class="hero-content">
         <h1>Kenali Kondisi Mentalmu Sekarang</h1>
         <p class="desc">Kuesioner ini dirancang untuk membantu Anda memahami kondisi kesehatan mental Anda saat ini. Setiap pertanyaan memiliki skala 1-5 dengan penjelasan:</p>
@@ -74,6 +78,7 @@ export default {
       totalScore: 0,
       currentPage: 0,
       questionsPerPage: 5,
+      loading: false,
     }
   },
   computed: {
@@ -117,19 +122,22 @@ export default {
     submitTest() {
       if (!this.allQuestionsAnswered) return;
       this.totalScore = this.answers.reduce((total, answer) => total + answer, 0);
-      this.showResults = true;
-      // Jika ingin auto-navigate, bisa tambahkan navigasi di sini, tapi sesuai template, ResultIsDepresi muncul di halaman yang sama.
+      // Update global state for persistent result
+      testState.testCompleted = true;
+      testState.score = this.totalScore;
+      testState.resultType = 'ResultIsDepresi'; // Ganti sesuai logic result
+      this.loading = true;
+      setTimeout(() => {
+        this.loading = false;
+        this.$router.push({ name: testState.resultType, params: { score: testState.score } });
+      }, 1500);
     },
     resetTest() {
       this.answers = Array(this.questions.length).fill(null);
       this.totalScore = 0;
       this.showResults = false;
       this.currentPage = 0;
-      
-      // Also reset the shared state
-      testState.testCompleted = false;
-      testState.score = 0;
-      testState.resultType = null;
+      // Jangan reset testState agar hasil tetap persist
     }
   }
 }
@@ -311,5 +319,122 @@ export default {
   color: white;
   transform: translateY(-3px);
   box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+.loading-overlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(255,255,255,0.85);
+  z-index: 2000;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.loading-spinner {
+  width: 48px;
+  height: 48px;
+  border: 5px solid #e0e0e0;
+  border-top: 5px solid #6A4C9B;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 18px;
+}
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+.loading-text {
+  font-size: 1.1rem;
+  color: #6A4C9B;
+  font-weight: 600;
+}
+
+@media (max-width: 900px) {
+  .tes-diri-container {
+    padding: 0 4px;
+    font-size: 0.92rem;
+  }
+  .hero {
+    min-height: 20px;
+    padding-top: 80px;
+    padding-bottom: 40px;
+  }
+  .hero-content {
+    font-size: 0.85rem;
+    padding: 0 2px;
+  }
+  .hero-content h1 {
+    font-size: 1rem;
+    margin-bottom: 6px;
+  }
+  .hero-content .desc {
+    font-size: 0.9rem;
+    margin-bottom: 6px;
+  }
+  .skala-row {
+    gap: 19px;
+    margin-left: 10px;
+    margin-right: 10px;
+    margin: 4px 10px;
+  }
+  .skala {
+    font-size: 0.65rem;
+    padding: 2px 0;
+    border-radius: 4px;
+    margin-bottom: 20px;
+    margin-top: 20px;
+
+  }
+  .skala span {
+    font-size: 0.65rem;
+  }
+  .note {
+    font-size: 0.7rem;
+    margin-top: 2px;
+  }
+  .question-section {
+    padding: 10px 0 14px 0;
+  }
+  .progress-indicator {
+    font-size: 0.92rem;
+    margin-bottom: 10px;
+  }
+  .submission-area {
+    padding: 0 2px;
+    margin: 10px auto 0;
+  }
+  .submit-button {
+    padding: 0.6rem 1.2rem;
+    font-size: 0.92rem;
+    border-radius: 18px;
+  }
+  .results-section h2 {
+    font-size: 1.1rem;
+  }
+  .results-section .score {
+    font-size: 0.95rem;
+  }
+  .results-section .interpretation {
+    font-size: 0.92rem;
+    max-width: 98vw;
+  }
+  .back-button {
+    padding: 0.5rem 1.2rem;
+    font-size: 0.92rem;
+    border-radius: 18px;
+  }
+  .question-section label,
+  .question-section .question-text,
+  .question-section .answer-option {
+    font-size: 0.85rem !important;
+    padding: 2px 0 !important;
+    margin-bottom: 2px !important;
+  }
+  .question-section input[type="radio"],
+  .question-section input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+  }
 }
 </style> 
