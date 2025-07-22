@@ -91,55 +91,6 @@ const routes = [
   { path: '/edukasi/ocd', name: 'EdukasiOCD', component: OCD },
   { path: '/edukasi/eating', name: 'EdukasiEating', component: Eating },
   { path: '/edukasi/ptsd', name: 'EdukasiPTSD', component: PTSD },
-  {
-    path: '/hasil/depresi',
-    name: 'ResultIsDepresi',
-    component: ResultIsDepresi,
-    props: true
-  },
-  {
-    path: '/hasil/anxiety',
-    name: 'ResultIsAnxiety',
-    component: ResultIsAnxiety,
-    props: true
-  },
-  {
-    path: '/hasil/skizofrenia',
-    name: 'ResultIsSkizofrenia',
-    component: ResultIsSkizofrenia,
-    props: true
-  },
-  {
-    path: '/hasil/bipolar',
-    name: 'ResultIsBipolar',
-    component: ResultIsBipolar,
-    props: true
-  },
-  {
-    path: '/hasil/gangguan-makan',
-    name: 'ResultIsGangguanMakan',
-    component: ResultIsGangguanMakan,
-    props: true
-  },
-  {
-    path: '/hasil/ocd',
-    name: 'ResultIsOCD',
-    component: ResultIsOCD,
-    props: true
-  },
-  {
-    path: '/hasil/ptsd',
-    name: 'ResultIsPTSD',
-    component: ResultIsPTSD,
-    props: true
-  },
-  {
-    path: '/hasil/gangguan-kepribadian',
-    name: 'ResultIsGangguanKepribadian',
-    component: ResultIsGangguanKepribadian,
-    props: true
-  },
-  { path: '/edukasi', name: 'Edukasi', component: Edukasi },
   { path: '/forum', name: 'Forum', component: Forum },
   { path: '/profile', name: 'Profile', component: Profile },
   { path: '/ubah-kata-sandi', name: 'ChangePassword', component: ChangePassword },

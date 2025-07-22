@@ -67,32 +67,7 @@ export default {
   justify-content: center;
   align-items: center;
   width: 100%;
-  gap: 32px;
-}
-@media (max-width: 900px) {
-  .header-container {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 12px;
-    padding: 0 1rem;
-  }
-  .main-header {
-    padding: 0.5rem 0.5rem;
-  }
-  .main-nav {
-    justify-content: center;
-    gap: 1.2rem;
-    flex-wrap: wrap;
-  }
-  .contact-button {
-    width: 100%;
-    margin-top: 8px;
-  }
-  .logo {
-    display: flex;
-    justify-content: center;
-    margin-bottom: 4px;
-  }
+  max-width: 1200px;
 }
 
 .logo-img {

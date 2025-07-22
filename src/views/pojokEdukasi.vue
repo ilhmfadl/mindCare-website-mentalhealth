@@ -4,7 +4,12 @@
       <h1 class="edukasi-title">Jenis Gangguan Mental</h1>
     </div>
     <!-- Kategori-section keluar dari .edukasi-container agar full-bleed -->
-    <div v-for="(item, idx) in topics" :key="item.title" :class="['kategori-section', item.bgClass]">
+    <div v-for="(item, idx) in topics" :key="item.title" :class="['kategori-section', item.bgClass, { 
+      'kategori-section--top': idx === 0, 
+      'kategori-section--right': idx % 2 === 1, 
+      'kategori-section--bottom': idx === topics.length - 1,
+      'kategori-section--title-up': ['PTSD','OCD','Anxiety','Schizophrenia'].includes(item.title)
+    }]">
       <router-link v-if="idx === 0" :to="'/edukasi/Depresi'" style="display:block;text-decoration:none;">
         <div class="kategori-content" style="cursor:pointer;">
           <div class="kategori-bg-title">{{ item.title }}</div>
@@ -159,9 +164,11 @@ export default {
 <style scoped>
 .edukasi-bg {
   min-height: 100vh;
-  background: #faf7f3;
+  background-color: #f5f5f5;
   padding: 0;
   position: relative;
+  /* Subtle pattern overlay */
+  background-image: url('data:image/svg+xml;utf8,<svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="40" height="40" fill="%23f7e3f7" fill-opacity="0.12"/><circle cx="20" cy="20" r="2" fill="%23e3f7f7" fill-opacity="0.18"/></svg>');
 }
 .edukasi-container {
   max-width: 1200px;
@@ -169,16 +176,20 @@ export default {
   padding: 40px 0 60px 0;
 }
 .edukasi-container.edukasi-title-container {
-  padding: 32px 0 20px 0;
+  padding: 32px 0 80px 0;
 }
 .edukasi-title {
-  margin-top: 60px;
+  margin-top: 120px;
   text-align: center;
   font-size: 2.2rem;
   font-weight: 800;
-  margin-bottom: 24px;
-  color: #222;
+  margin-bottom: 2px;
+  color: #4e4e4e;
   letter-spacing: 1px;
+  background: none;
+  -webkit-background-clip: unset;
+  -webkit-text-fill-color: unset;
+  background-clip: unset;
 }
 .kategori-svg-top, .kategori-svg-bottom {
   width: 100%;
@@ -206,31 +217,75 @@ export default {
   overflow: hidden;
   width: 100vw;
   left: 50%;
-  transform: translateX(-50%) skewY(-4deg);
+  transform: translateX(-50%);
   margin-bottom: 0;
 }
+.kategori-section::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background: linear-gradient(120deg, rgba(255,255,255,0.12) 0%, rgba(236,116,74,0.10) 100%);
+  opacity: 0.7;
+}
+.kategori-section--right {
+  transform: translateX(-50%);
+}
+.kategori-section--top {
+  transform: translateX(-50%);
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+}
+.kategori-section--top .kategori-content {
+  /* transform: none !important; */
+}
+.kategori-section--bottom {
+  transform: translateX(-50%) !important;
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+}
+.kategori-section--bottom .kategori-content {
+  transform: none;
+}
 .kategori-content {
-  transform: skewY(4deg);
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  min-height: 260px;
+  background: rgba(255,255,255,0.85); /* default fallback */
+  border-radius: 32px;
+  box-shadow: 0 2px 16px 0 rgba(44,62,80,0.07);
+  padding: 32px 24px 24px 24px;
+  transition: box-shadow 0.3s, transform 0.3s;
+  border: none;
+}
+.kategori-content:hover {
+  box-shadow: 0 8px 32px 0 rgba(44,62,80,0.18), 0 1.5px 8px 0 rgba(44,62,80,0.10);
+  transform: scale(1.03);
+  background: rgba(255,255,255,0.95);
+}
+.kategori-section--right .kategori-content {
+  /* transform: none; */
 }
 .kategori-bg-title {
-  position: absolute;
-  top: 40px;
-  left: 50%;
-  transform: translateX(-50%);
-  font-size: 84px;
-  font-weight: 900;
-  color: #1a1a1a;
-  opacity: 0.18;
-  white-space: nowrap;
-  z-index: 1;
-  pointer-events: none;
-  user-select: none;
-  width: 100vw;
+  position: static;
+  font-size: 2rem;
+  font-weight: 800;
+  color: #555;
+  opacity: 0.95;
+  background: none;
+  -webkit-background-clip: unset;
+  -webkit-text-fill-color: unset;
+  background-clip: unset;
+  text-shadow: none;
+  margin-top: 32px;
+  margin-bottom: 10px;
   text-align: center;
-  letter-spacing: 2px;
-  -webkit-text-stroke: 2px #fff;
-  text-stroke: 2px #fff;
-  text-shadow: 0 2px 12px rgba(0,0,0,0.10), 0 1px 0 #fff;
+  letter-spacing: 1px;
+  user-select: none;
+  pointer-events: none;
 }
 .kategori-content {
   position: relative;
@@ -247,7 +302,7 @@ export default {
   display: flex;
   align-items: flex-end;
   justify-content: center;
-  margin: 75px auto 18px auto;
+  margin: 20px auto 12px auto;
   position: relative;
   z-index: 2;
 }
@@ -258,6 +313,13 @@ export default {
   position: relative;
   z-index: 2;
   margin-top: 0;
+  transition: transform 0.3s cubic-bezier(.4,2,.6,1), box-shadow 0.3s cubic-bezier(.4,2,.6,1), border-radius 0.3s cubic-bezier(.4,2,.6,1), outline 0.3s cubic-bezier(.4,2,.6,1);
+}
+.kategori-content:hover .kategori-img-overlap {
+  transform: scale(1.08) rotate(-2deg);
+  box-shadow: 0 8px 32px 0 rgba(44,62,80,0.18), 0 1.5px 8px 0 rgba(44,62,80,0.10);
+  border-radius: 50%;
+  outline: 6px solid rgba(44,62,80,0.10);
 }
 .kategori-nama {
   font-size: 2rem;
@@ -308,6 +370,14 @@ export default {
   line-height: 0;
   pointer-events: none;
 }
+.kategori-section:nth-child(1) .kategori-content { border-color: #ec744a; }
+.kategori-section:nth-child(2) .kategori-content { border-color: #a78bfa; }
+.kategori-section:nth-child(3) .kategori-content { border-color: #4db6ac; }
+.kategori-section:nth-child(4) .kategori-content { border-color: #fbbf24; }
+.kategori-section:nth-child(5) .kategori-content { border-color: #ef4444; }
+.kategori-section:nth-child(6) .kategori-content { border-color: #8b5cf6; }
+.kategori-section:nth-child(7) .kategori-content { border-color: #f87171; }
+.kategori-section:nth-child(8) .kategori-content { border-color: #81c784; }
 @media (max-width: 900px) {
   .edukasi-container { padding: 24px 0 32px 0; }
   .kategori-section { padding: 32px 0 24px 0; min-height: 320px; }
@@ -317,4 +387,24 @@ export default {
   .kategori-nama { font-size: 1.2rem; }
   .kategori-desc { font-size: 1rem; }
 }
+/* Border color mapping by bgClass */
+.bg-depresi .kategori-content { border-color: #cfd5f7; }
+.bg-anxiety .kategori-content { border-color: #f7f3c7; }
+.bg-skizofrenia .kategori-content { border-color: #c9e4f7; }
+.bg-bipolar .kategori-content { border-color: #f7d5e6; }
+.bg-ocd .kategori-content { border-color: #c3f7e0; }
+.bg-ptsd .kategori-content { border-color: #f7d5e6; }
+.bg-eating .kategori-content { border-color: #f7ecd5; }
+.bg-fobia .kategori-content { border-color: #e7d5f7; }
+
+/* Background color mapping by bgClass */
+.bg-depresi .kategori-content { background: rgba(207,213,247,0.85); }
+.bg-anxiety .kategori-content { background: rgba(247,243,199,0.85); }
+.bg-skizofrenia .kategori-content { background: rgba(201,228,247,0.85); }
+.bg-bipolar .kategori-content { background: rgba(247,213,230,0.85); }
+.bg-ocd .kategori-content { background: rgba(195,247,224,0.85); }
+.bg-ptsd .kategori-content { background: rgba(247,213,230,0.85); }
+.bg-eating .kategori-content { background: rgba(247,236,213,0.85); }
+.bg-fobia .kategori-content { background: rgba(231,213,247,0.85); }
+
 </style>
