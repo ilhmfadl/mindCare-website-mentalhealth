@@ -117,18 +117,8 @@ export default {
     submitTest() {
       if (!this.allQuestionsAnswered) return;
       this.totalScore = this.answers.reduce((total, answer) => total + answer, 0);
-
-      // Determine result type based on score or other logic
-      // For now, let's assume it's always Depresi for this example
-      const resultType = 'ResultIsDepresi'; 
-
-      // Update the shared state
-      testState.testCompleted = true;
-      testState.score = this.totalScore;
-      testState.resultType = resultType;
-
-      // Navigate to the result page
-      this.$router.push({ name: resultType, params: { score: this.totalScore } });
+      this.showResults = true;
+      // Jika ingin auto-navigate, bisa tambahkan navigasi di sini, tapi sesuai template, ResultIsDepresi muncul di halaman yang sama.
     },
     resetTest() {
       this.answers = Array(this.questions.length).fill(null);
@@ -153,7 +143,7 @@ export default {
 .hero {
   background: linear-gradient(45deg, #725c96 30%, #c09df7 100%);
   padding: 100px 0 32px 0;
-  color: #ffffff;
+  color: #fff;
   position: relative;
 }
 .hero::before {

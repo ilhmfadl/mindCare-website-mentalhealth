@@ -1,4 +1,18 @@
 <template>
+  <ConfirmationModal
+    :visible="showLogoutConfirm"
+    title="Konfirmasi Logout"
+    message="Apakah Anda yakin ingin logout?"
+    @confirm="confirmLogout"
+    @cancel="showLogoutConfirm = false"
+  />
+  <ConfirmationModal
+    :visible="showSaveConfirm"
+    title="Konfirmasi Simpan Profil"
+    message="Apakah Anda yakin ingin menyimpan perubahan profil?"
+    @confirm="confirmSave"
+    @cancel="showSaveConfirm = false"
+  />
   <div class="profile-bg">
     <div class="profile-container">
       <div class="profile-header">
@@ -34,7 +48,7 @@
           <button v-if="!isEditing" type="button" class="edit-btn" @click="onEdit">Edit</button>
           <button v-if="isEditing" type="submit" class="save-btn">Save</button>
           <button v-if="isEditing" type="button" class="cancel-btn" @click="onCancel">Cancel</button>
-          <button v-if="!isEditing" type="button" class="logout-btn" @click="onLogout">Logout</button>
+          <button v-if="!isEditing" type="button" class="logout-btn" @click="showLogoutConfirm = true">Logout</button>
         </div>
       </form>
       <div class="password-section">
@@ -45,11 +59,16 @@
 </template>
 
 <script>
+import ConfirmationModal from '../components/ConfirmationModal.vue';
+
 export default {
   name: 'ProfileView',
+  components: { ConfirmationModal },
   data() {
     return {
       isEditing: false,
+      showLogoutConfirm: false,
+      showSaveConfirm: false,
       original: {
         fullName: 'WINDAH BATUBARA',
         email: 'windah@gmail.com',
@@ -77,6 +96,9 @@ export default {
       this.isEditing = false;
     },
     onSave() {
+      this.showSaveConfirm = true;
+    },
+    confirmSave() {
       this.original = { ...this.form };
       if (this.form.avatarPreview) {
         this.original.avatar = this.form.avatarPreview;
@@ -84,11 +106,14 @@ export default {
         this.form.avatarPreview = null;
       }
       this.isEditing = false;
-      alert('Profile berhasil disimpan!');
+      this.showSaveConfirm = false;
     },
     onLogout() {
-      alert('Logout berhasil! (Demo)');
       // Tambahkan logika logout sesungguhnya di sini
+      this.showLogoutConfirm = false;
+    },
+    confirmLogout() {
+      this.onLogout();
     },
     goToChangePassword() {
       this.$router.push({ name: 'ChangePassword' });
