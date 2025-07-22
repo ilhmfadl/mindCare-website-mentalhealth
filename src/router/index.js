@@ -27,6 +27,15 @@ import Forum from '../views/forum.vue';
 import Register from '../views/register.vue';
 import Login from '../views/login.vue';
 
+// Import admin views
+import AdminDashboard from '../adminViews/Dashboard.vue';
+import UsersManagement from '../adminViews/UsersManagement.vue';
+import QuestionerManagement from '../adminViews/QuestionerManagement.vue';
+import JournalManagement from '../adminViews/JournalManagement.vue';
+import ForumManagement from '../adminViews/ForumManagement.vue';
+// import QuestionerAdd from '../adminViews/QuestionerAdd.vue';
+// import QuestionerDetail from '../adminViews/QuestionerDetail.vue';
+
 // Placeholders for other pages
 const Edukasi = { template: '<div><h1>Pojok Edukasi</h1></div>' };
 
@@ -101,6 +110,11 @@ const routes = [
   // Tambah route register dan login
   { path: '/register', name: 'Register', component: Register },
   { path: '/login', name: 'Login', component: Login },
+  { path: '/admin/dashboard', name: 'AdminDashboard', component: AdminDashboard },
+  { path: '/admin/users', name: 'UsersManagement', component: UsersManagement },
+  { path: '/admin/questioner', name: 'QuestionerManagement', component: QuestionerManagement },
+  { path: '/admin/journal', name: 'JournalManagement', component: JournalManagement },
+  { path: '/admin/forum', name: 'ForumManagement', component: ForumManagement },
 ];
 
 const router = createRouter({
