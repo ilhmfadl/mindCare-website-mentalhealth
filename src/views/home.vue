@@ -12,8 +12,8 @@
             merawat kesehatan mentalmu.
           </p>
           <div class="btn-group">
-            <button class="btn-register" type="button">DAFTAR</button>
-            <button class="btn-login" type="button">MASUK</button>
+            <button class="btn-register" type="button" @click="goToRegister">DAFTAR</button>
+            <button class="btn-login" type="button" @click="goToLogin">MASUK</button>
           </div>
           <p class="hero-desc">
             Apakah kamu sedang merasa stres, cemas, lelah secara mental, atau
@@ -94,6 +94,12 @@ export default {
   methods: {
     goToTesDiri() {
       this.$router.push({ name: 'TesDiri' });
+    },
+    goToRegister() {
+      this.$router.push({ name: 'Register' });
+    },
+    goToLogin() {
+      this.$router.push({ name: 'Login' });
     }
   }
 };
@@ -179,31 +185,45 @@ export default {
 }
 .btn-group {
   display: flex;
-  gap: 16px;
+  gap: 20px;
   margin-top: 2rem;
+  justify-content: flex-start;
 }
 .btn-register, .btn-login, .btn-start {
-  padding: 12px 32px;
+  padding: 14px 36px;
   border-radius: 50px;
-  font-weight: 600;
+  font-weight: 700;
   cursor: pointer;
   border: none;
-  font-size: 1rem;
-  transition: all 0.3s ease;
+  font-size: 1.08rem;
+  transition: all 0.25s cubic-bezier(.4,0,.2,1);
+  box-shadow: 0 2px 12px rgba(236,116,74,0.08), 0 1.5px 6px rgba(0,0,0,0.06);
+  outline: none;
+  letter-spacing: 0.5px;
 }
 .btn-register {
-  background-color: #f97316;
-  color: white;
+  background: linear-gradient(90deg, #f97316 0%, #EC744A 100%);
+  color: #fff;
+  border: none;
+  box-shadow: 0 4px 16px rgba(249,115,22,0.13);
 }
-.btn-register:hover { background-color: #ea580c; }
+.btn-register:hover {
+  background: linear-gradient(90deg, #ea580c 0%, #d97706 100%);
+  transform: translateY(-2px) scale(1.04);
+  box-shadow: 0 8px 24px rgba(249,115,22,0.18);
+}
 .btn-login {
-  background-color: transparent;
+  background: #fff;
   border: 2px solid #f97316;
   color: #f97316;
+  box-shadow: 0 2px 12px rgba(249,115,22,0.07);
 }
 .btn-login:hover {
-  background-color: #f97316;
-  color: white;
+  background: #f97316;
+  color: #fff;
+  border-color: #ea580c;
+  transform: translateY(-2px) scale(1.04);
+  box-shadow: 0 8px 24px rgba(249,115,22,0.18);
 }
 
 /* PROBLEMS SECTION */
@@ -336,6 +356,18 @@ export default {
   .test-illustration { order: 1; }
   .test-content { order: 2; align-items: center; }
   .test-yourself-section .section-title { text-align: center; }
+  .btn-group {
+    flex-direction: column;
+    gap: 14px;
+    align-items: center;
+    justify-content: center;
+  }
+  .btn-register, .btn-login {
+    width: 100%;
+    min-width: 180px;
+    padding: 14px 0;
+    font-size: 1.08rem;
+  }
 }
 
 @media (max-width: 768px) {

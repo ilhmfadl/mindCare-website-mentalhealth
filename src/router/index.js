@@ -23,6 +23,10 @@ import Eating from '../views/edukasi/eating.vue';
 import PTSD from '../views/edukasi/ptsd.vue';
 import Forum from '../views/forum.vue';
 
+// Tambah import register dan login
+import Register from '../views/register.vue';
+import Login from '../views/login.vue';
+
 // Placeholders for other pages
 const Edukasi = { template: '<div><h1>Pojok Edukasi</h1></div>' };
 
@@ -94,13 +98,20 @@ const routes = [
   { path: '/forum', name: 'Forum', component: Forum },
   { path: '/profile', name: 'Profile', component: Profile },
   { path: '/ubah-kata-sandi', name: 'ChangePassword', component: ChangePassword },
+  // Tambah route register dan login
+  { path: '/register', name: 'Register', component: Register },
+  { path: '/login', name: 'Login', component: Login },
 ];
 
 const router = createRouter({
     history: createWebHistory(),
     routes,
     scrollBehavior(to, from, savedPosition) {
-      return { top: 0 };
+      if (savedPosition) {
+        return savedPosition;
+      } else {
+        return { top: 0 };
+      }
     }
 });
 

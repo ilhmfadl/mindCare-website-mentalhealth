@@ -90,6 +90,50 @@
         <div class="kategori-desc">{{ item.desc }}</div>
       </div>
     </div>
+    <div class="journal-page-layout">
+      <!-- Sidebar -->
+      <aside class="forum-sidebar">
+        <div class="sidebar-categories">
+          <h3>Kategori</h3>
+          <ul>
+            <li :class="{ active: selectedCategory === 'Semua' }" @click="selectedCategory = 'Semua'">Semua</li>
+            <li v-for="cat in categories" :key="cat" :class="{ active: selectedCategory === cat }" @click="selectedCategory = cat">{{ cat }}</li>
+          </ul>
+        </div>
+      </aside>
+      <!-- Main Content -->
+      <main class="forum-content">
+        <div class="forum-search-row">
+          <div class="forum-search-box">
+            <input type="text" placeholder="Masukkan jurnal yang ingin anda cari" v-model="journalSearch" />
+            <span class="search-icon">
+              <svg width="20" height="20" fill="none" stroke="#888" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            </span>
+          </div>
+        </div>
+        <div class="forum-questions-list">
+          <div v-for="journal in filteredJournals" :key="journal.title" class="forum-question-card">
+            <div class="question-body">
+              <div class="question-title">{{ journal.title }}</div>
+              <div class="question-desc">{{ journal.summary }}</div>
+              <button class="baca-selengkapnya-btn" type="button">Baca Selengkapnya</button>
+            </div>
+            <div class="question-footer">
+              <span class="question-tag">{{ journal.category }}</span>
+            </div>
+          </div>
+          <div v-if="filteredJournals.length === 0" class="journal-empty">Tidak ada jurnal ditemukan.</div>
+        </div>
+      </main>
+      <!-- Featured Links -->
+      <aside class="forum-featured-links">
+        <h4>Featured links</h4>
+        <ul>
+          <li><a href="#">Cari info yang lebih akurat melalui jurnal!</a></li>
+          <li><a href="#">Tanyakan kepada orang yang memiliki kendala yang sama dengan anda!</a></li>
+        </ul>
+      </aside>
+    </div>
   </div>
 </template>
 
@@ -155,7 +199,60 @@ export default {
           bgClass: 'bg-fobia',
           colorClass: 'color-fobia',
         },
+      ],
+      journalSearch: '',
+      selectedCategory: 'Semua',
+      categories: [
+        'Depresi',
+        'Anxiety',
+        'Skizofrenia',
+        'Bipolar',
+        'Personality Disorders',
+        'Obsesif-Kompulsif (OCD)',
+        'Eating Disorders',
+        'PTSD',
+      ],
+      journals: [
+        { title: 'Jurnal Tentang PTSD', summary: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Consequat aliquet maecenas ut sit nulla(link) read more', category: 'PTSD' },
+        { title: 'Judul Jurnal', summary: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Bibendum vitae etiam lectus amet (link) read more', category: 'OCD' },
+        { title: 'Judul Jurnal', summary: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Consequat aliquet maecenas ut sit nulla  (link) read more', category: 'Anxiety' },
+        { title: 'Judul Jurnal', summary: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Consequat aliquet maecenas ut sit nulla (link) read more', category: 'Depresi' },
+        { title: 'Judul Jurnal', summary: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Consequat aliquet maecenas ut sit nulla (link) read more', category: 'Personality Disorders' },
+        { title: 'Judul Jurnal', summary: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Consequat aliquet maecenas ut sit nulla (link) read more', category: 'Eating Disorders' },
+        { title: 'Judul Jurnal', summary: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Consequat aliquet maecenas ut sit nulla (link) read more', category: 'Bipolar' },
+        { title: 'Judul Jurnal', summary: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Consequat aliquet maecenas ut sit nulla (link) read more', category: 'Skizofrenia' },
       ]
+    }
+  },
+  computed: {
+    filteredJournals() {
+      let filtered = this.journals;
+      if (this.selectedCategory !== 'Semua') {
+        filtered = filtered.filter(j => j.category === this.selectedCategory);
+      }
+      if (this.journalSearch) {
+        const search = this.journalSearch.toLowerCase();
+        filtered = filtered.filter(journal =>
+          journal.title.toLowerCase().includes(search) ||
+          journal.summary.toLowerCase().includes(search)
+        );
+      }
+      return filtered;
+    }
+  },
+  mounted() {
+    const saved = sessionStorage.getItem('pojokEdukasiScroll');
+    if (saved) {
+      window.scrollTo(0, parseInt(saved, 10));
+    }
+    window.addEventListener('scroll', this.saveScroll);
+  },
+  beforeDestroy() {
+    window.removeEventListener('scroll', this.saveScroll);
+  },
+  methods: {
+    saveScroll() {
+      sessionStorage.setItem('pojokEdukasiScroll', window.scrollY);
     }
   }
 }
@@ -407,4 +504,243 @@ export default {
 .bg-eating .kategori-content { background: rgba(247,236,213,0.85); }
 .bg-fobia .kategori-content { background: rgba(231,213,247,0.85); }
 
+.journal-page-layout {
+  display: flex;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 40px 40px 40px;
+  gap: 32px;
+  position: relative;
+  z-index: 2;
+}
+.forum-sidebar {
+  flex: 0 0 220px;
+  background: #f8f3fd;
+  border-radius: 18px;
+  padding: 32px 18px 24px 18px;
+  box-shadow: 0 2px 8px rgba(19, 18, 24, 0.178);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 180px;
+  margin-top: 40px;
+  height: fit-content;
+}
+.sidebar-profile {
+  margin-bottom: 18px;
+}
+.sidebar-avatar {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: #e5e7eb;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 8px rgba(160, 130, 255, 0.10);
+}
+.sidebar-categories h3 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 10px;
+  color: #6a4c9b;
+}
+.sidebar-categories ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.sidebar-categories li {
+  padding: 8px 14px;
+  border-radius: 8px;
+  margin-bottom: 6px;
+  font-size: 1rem;
+  color: #6a4c9b;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+.sidebar-categories li.active, .sidebar-categories li:hover {
+  background: #e5e0f7;
+  color: #8b5cf6;
+}
+.forum-content {
+  flex: 1 1 0%;
+  min-width: 0;
+  margin-top: 40px;
+}
+.forum-search-row {
+  display: flex;
+  align-items: relative;
+  gap: 10px;
+  margin-bottom: 28px;
+}
+.forum-search-box {
+  flex: 1;
+  position: relative;
+  padding-right: 70px;
+}
+.forum-search-box input {
+  width: 100%;
+  padding: 18px 56px 18px 24px;
+  border-radius: 18px;
+  border: 2px solid #b6a7d6;
+  background: #fff;
+  font-size: 1.13rem;
+  color: #6a4c9b;
+  outline: none;
+  box-shadow: 0 2px 8px rgba(160, 130, 255, 0.08);
+  font-weight: 500;
+  transition: border 0.2s, box-shadow 0.2s;
+}
+.forum-search-box input:focus {
+  border: 2px solid #8b5cf6;
+  box-shadow: 0 4px 16px rgba(160, 130, 255, 0.13);
+}
+.search-icon {
+  position: absolute;
+  right: 22px;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+  font-size: 1.7rem;
+  color: #8b5cf6;
+  display: flex;
+  align-items: center;
+}
+.forum-questions-list {
+  display: flex;
+  flex-direction: column;
+  gap: 26px;
+}
+.forum-question-card {
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 2px 12px rgba(160, 130, 255, 0.09);
+  padding: 26px 28px 20px 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  transition: box-shadow 0.2s, transform 0.2s;
+  border: 1px solid #f3f0f7;
+}
+.forum-question-card:hover {
+  box-shadow: 0 8px 24px rgba(160, 130, 255, 0.16);
+  transform: translateY(-2px) scale(1.01);
+}
+.question-title {
+  font-weight: 700;
+  font-size: 1.13rem;
+  margin-bottom: 2px;
+  color: #222;
+}
+.question-desc {
+  font-size: 1rem;
+  color: #6b7280;
+  margin-bottom: 2px;
+}
+.question-footer {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-top: 4px;
+}
+.question-tag {
+  background: #e5e0f7;
+  color: #8b5cf6;
+  font-size: 0.89rem;
+  padding: 4px 14px;
+  border-radius: 8px;
+  font-weight: 600;
+}
+.journal-empty {
+  text-align: center;
+  color: #b0a9d6;
+  font-size: 1.01rem;
+  margin-top: 18px;
+}
+.forum-featured-links {
+  flex: 0 0 220px;
+  background: #f7f5f9;
+  border-radius: 18px;
+  padding: 28px 18px;
+  box-shadow: 0 2px 8px rgba(160, 130, 255, 0.07);
+  margin-top: 40px;
+  min-width: 180px;
+  height: fit-content;
+  align-self: flex-start;
+}
+.forum-featured-links h4 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #6a4c9b;
+  margin-bottom: 10px;
+}
+.forum-featured-links ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.forum-featured-links li {
+  margin-bottom: 10px;
+}
+.forum-featured-links a {
+  color: #3b82f6;
+  text-decoration: none;
+  font-size: 1.01rem;
+  transition: color 0.2s;
+}
+.forum-featured-links a:hover {
+  color: #1d4ed8;
+}
+.baca-selengkapnya-btn {
+  background: none;
+  color: #8b5cf6;
+  border: none;
+  font-weight: 600;
+  font-size: 1.01rem;
+  cursor: pointer;
+  padding: 0;
+  margin-bottom: 8px;
+  text-decoration: underline;
+  transition: color 0.2s;
+}
+.baca-selengkapnya-btn:hover {
+  color: #222;
+}
+@media (max-width: 1100px) {
+  .journal-page-layout {
+    flex-direction: column;
+    padding: 0 16px 40px 16px;
+    gap: 0;
+  }
+  .forum-sidebar, .forum-featured-links {
+    margin-bottom: 24px;
+    margin-top: 0;
+    flex: unset;
+    min-width: 0;
+    width: 100%;
+    align-self: unset;
+  }
+  .forum-featured-links {
+    margin-top: 24px;
+  }
+}
+@media (max-width: 700px) {
+  .journal-page-layout {
+    padding: 0 4px 24px 4px;
+  }
+  .forum-sidebar, .forum-featured-links {
+    padding: 16px 8px;
+  }
+  .forum-question-card {
+    padding: 14px 8px 12px 8px;
+  }
+  .forum-search-row {
+    flex-direction: column;
+    gap: 10px;
+  }
+  .forum-featured-links {
+    margin-top: 12px;
+  }
+}
 </style>

@@ -63,7 +63,7 @@ export default {
         { title: 'Cara Mengatasi Flashback pada PTSD', summary: 'Tips dan teknik untuk mengelola kilas balik dan mimpi buruk.', author: 'Dr. Dimas' },
         { title: 'Dukungan Keluarga untuk Penyintas PTSD', summary: 'Peran keluarga sangat penting dalam proses pemulihan PTSD.', author: 'Dr. Rara' },
         { title: 'Terapi Efektif untuk PTSD', summary: 'Pilihan terapi dan pengobatan yang terbukti membantu penderita PTSD.', author: 'Dr. Sinta' },
-      ]
+      ],
     }
   },
 }
