@@ -115,6 +115,7 @@ const routes = [
   { path: '/admin/questioner', name: 'QuestionerManagement', component: QuestionerManagement },
   { path: '/admin/journal', name: 'JournalManagement', component: JournalManagement },
   { path: '/admin/forum', name: 'ForumManagement', component: ForumManagement },
+  { path: '/admin/forum-user', name: 'AdminForumUser', component: Forum },
 ];
 
 const router = createRouter({

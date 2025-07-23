@@ -7,7 +7,7 @@
           <div class="journal-table-container">
             <div class="journal-header">
               <div class="table-title">Daftar Jurnal</div>
-              <button class="btn-add" type="button" @click="mode = 'add'">
+              <button class="btn-add" type="button" @click="resetAddForm">
                 <span class="btn-add-icon">✚</span> Tambah Jurnal
               </button>
             </div>
@@ -248,6 +248,13 @@ export default {
       } else {
         this.mode = 'list';
       }
+    },
+    resetAddForm() {
+      this.detailCategory = '';
+      this.category = '';
+      this.source = '';
+      this.quote = '';
+      this.mode = 'add';
     }
   }
 };

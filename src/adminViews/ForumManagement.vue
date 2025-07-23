@@ -1,8 +1,7 @@
 <template>
-  <div>
+  <div class="admin-page-bg">
     <AdminHeader />
     <main>
-      <h1>Kelola Forum Diskusi</h1>
       <ForumTable />
     </main>
   </div>
