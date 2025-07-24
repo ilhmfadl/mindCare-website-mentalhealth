@@ -1,16 +1,34 @@
 <template>
-  <div class="question-block">
-    <h2>{{ questionText }}</h2>
-    <div class="answer-row">
-      <label v-for="n in 5" :key="n" :class="['answer', 'answer-' + n]">
+  <div class="question-block questionnaire-row">
+    <div class="question-left">
+      <span class="question-text">{{ questionText }}</span>
+    </div>
+    <div class="answer-right">
+      <label class="answer answer-ya">
         <input 
           type="radio" 
           :name="'q' + questionIndex" 
-          :value="n" 
-          :checked="modelValue === n"
-          @change="$emit('update:modelValue', n)" 
+          value="1" 
+          :checked="modelValue === 1"
+          @change="$emit('update:modelValue', 1)" 
         />
-        <span>{{ n }}</span>
+        <span>
+          <svg v-if="modelValue === 1" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="11" fill="#4DB6AC"/><path d="M7 13l3 3 7-7"/></svg>
+          <svg v-else width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#4DB6AC" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="11" fill="#fff"/><path d="M7 13l3 3 7-7"/></svg>
+        </span>
+      </label>
+      <label class="answer answer-tidak">
+        <input 
+          type="radio" 
+          :name="'q' + questionIndex" 
+          value="0" 
+          :checked="modelValue === 0"
+          @change="$emit('update:modelValue', 0)" 
+        />
+        <span>
+          <svg v-if="modelValue === 0" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="11" fill="#e21313"/><path d="M8 8l8 8M16 8l-8 8"/></svg>
+          <svg v-else width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#e21313" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="11" fill="#fff"/><path d="M8 8l8 8M16 8l-8 8"/></svg>
+        </span>
       </label>
     </div>
   </div>
@@ -38,116 +56,95 @@ export default {
 </script>
 
 <style scoped>
-.question-block {
-  max-width: 940px;
-  margin: 0 auto 32px auto;
-  padding: 0 24px;
-}
-.question-block h2 {
-  font-size: 1.3rem;
-  font-weight: 500;
-  margin-bottom: 18px;
-  color: #333;
-}
-.answer-row {
+.questionnaire-row {
   display: flex;
-  gap: 168px; /* Was 32px, reduced for a more compact look */
-  justify-content: flex-start;
-  margin-bottom: 16px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 100px;
+  max-width: 1000px;
+  margin: 0 auto 50px auto;
+  padding: 0 12px 18px 12px;
+  border-bottom: 1.5px solid #e0e0e0;
+}
+.questionnaire-row:last-child {
+  border-bottom: none;
+}
+.question-left {
+  flex: 1 1 60%;
+  text-align: left;
+}
+.question-text {
+  font-size: 1.1rem;
+  color: #333;
+  font-weight: 500;
+}
+.answer-right {
+  display: flex;
+  gap: 80px;
+  align-items: center;
 }
 .answer {
   display: flex;
-  flex-direction: column;
   align-items: center;
-  font-size: 1.1rem;
+  font-size: 1rem;
   cursor: pointer;
+  user-select: none;
 }
 .answer input[type="radio"] {
   display: none;
 }
 .answer span {
-  display: inline-block;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   width: 44px;
   height: 44px;
-  line-height: 44px;
+  padding: 0;
   border-radius: 50%;
-  border: 2px solid; /* Set border style, color will be inherited */
-  text-align: center;
-  font-size: 1.3rem;
-  font-weight: 600;
-  margin-bottom: 4px;
-  transition: background-color 0.2s, transform 0.2s;
+  border: 2px solid #949494;
+  background: #fff;
+  color: #ffffff;
+  transition: background 0.2s, color 0.2s, border 0.2s, box-shadow 0.2s;
 }
-
-/* Base scaling from edges to center */
-.answer-1 span,
-.answer-5 span {
-  transform: scale(1.15);
+.answer-ya input[type="radio"]:checked + span {
+  background: #4db65f;
+  color: #fff;
+  border-color: #4db670;
+  box-shadow: 0 2px 8px rgba(77,182,172,0.13);
 }
-.answer-2 span,
-.answer-4 span {
-  transform: scale(1.0);
+.answer-tidak input[type="radio"]:checked + span {
+  background: #e21313;
+  color: #fff;
+  border-color: #e21313;
+  box-shadow: 0 2px 8px rgba(226,19,19,0.13);
 }
-.answer-3 span {
-  transform: scale(0.85);
+.answer span:hover {
+  background: #f3f0fa;
+  color: #6a4c9b;
 }
-
-/* Hover effect for each answer circle, scaling up from their base size */
-.answer-1:hover span,
-.answer-5:hover span {
-  transform: scale(1.25);
-}
-.answer-2:hover span,
-.answer-4:hover span {
-  transform: scale(1.1);
-}
-.answer-3:hover span {
-  transform: scale(1.0);
-}
-
-/* Matching colors from the legend in tes_diri.vue */
-.answer-1 span { color: #e21313; border-color: #e21313; }
-.answer-2 span { color: #f76c10; border-color: #f76c10; }
-.answer-3 span { color: #f8bc3a; border-color: #f8bc3a; } /* Dark text for yellow */
-.answer-4 span { color: #98db9c; border-color: #98db9c; }
-.answer-5 span { color: #4DB6AC; border-color: #4DB6AC; }
-
-/* --- FIX: Specific rules for checked state --- */
-.answer input[type="radio"]:checked + span {
-  color: #fff !important; /* Ensure number is always white when selected */
-}
-
-.answer-1 input[type="radio"]:checked + span { background-color: #e21313; }
-.answer-2 input[type="radio"]:checked + span { background-color: #f76c10; }
-.answer-3 input[type="radio"]:checked + span { background-color: #f8bc3a; }
-.answer-4 input[type="radio"]:checked + span { background-color: #98db9c; }
-.answer-5 input[type="radio"]:checked + span { background-color: #4DB6AC; }
-
 @media (max-width: 900px) {
-  .question-block {
+  .questionnaire-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
     padding: 0 2px;
-    margin-bottom: 16px;
+    margin-bottom: 14px;
   }
-  .question-block h2 {
+  .question-left {
+    width: 100%;
+    margin-bottom: 2px;
+  }
+  .question-text {
     font-size: 0.92rem;
-    margin-bottom: 8px;
   }
-  .answer-row {
-    gap: 53px;
-    margin-bottom: 8px;
-    margin-left: 10px;
-    padding: 2px 0;
-  }
-  .answer {
-    font-size: 0.8rem;
-    margin-bottom: 6px;
+  .answer-right {
+    gap: 8px;
   }
   .answer span {
     width: 28px;
     height: 28px;
-    line-height: 28px;
-    font-size: 0.8rem;
-    margin-bottom: 2px;
+    min-width: 28px;
+    padding: 0;
   }
 }
 </style> 

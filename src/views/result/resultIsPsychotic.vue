@@ -1,6 +1,6 @@
 <template>
   <div class="result-page">
-    <section class="result-hero ocd-bg">
+    <section class="result-hero neurosis-bg">
       <div class="result-container">
         <div class="result-content">
           <div class="title-block">
@@ -22,7 +22,7 @@
           </div>
         </div>
         <div class="result-illustration">
-          <img src="/src/assets/OCD.png" alt="Mental health illustration for OCD" />
+          <img src="/src/assets/anxiety.png" alt="Psychotic illustration" />
         </div>
       </div>
     </section>
@@ -33,6 +33,47 @@
           <h3>Apa yang sedang kamu alami?</h3>
           <h4>{{ diagnosis.name }}</h4>
           <p>{{ diagnosis.description }}</p>
+          <div class="psychotic-info-container">
+            <h2 class="info-title">Penjelasan</h2>
+            <div class="info-block">
+              <h4>Pengertian</h4>
+              <p>Psikotik merupakan salah satu gangguan jiwa yang mengarah pada kumpulan gejala yang memengaruhi pikiran, perasaan dan perilaku dimana selama episode psikotik mereka akan sulit untuk membedakan antara yang nyata dan tidak nyata. Penderita gangguan psikotik menggambarkan pengalaman mendengar suara yang selaras dengan keyakinan yang mereka pegang tentang diri mereka sendiri. Orang yang mengalami gangguan psikotik biasanya akan mengalami delusi (keyakinan yang salah misalnya merasa orang lain yang tidak dikenalnya mengirimkan pesan yang khusus, merasa ingin disakiti oleh orang lain), halusinasi (mendengar suara suara aneh yang tidak didengar oleh orang lain yang menyuruhnya melakukan sesuatu).</p>
+            </div>
+            <div class="info-block">
+              <h4>Penyebab</h4>
+              <p>Penyebab seseorang mengalami gangguan psikotik tidak dapat dijelaskan secara pasti hal tersebut disebabkan karena psikosis tampaknya merupakan hasil dari kombinasi kompleks dari risiko genetik, perbedaan perkembangan otak dan paparan stres atau trauma. Psikotik juga mungkin disebabkan oleh gejala penyakit mental, seperti skizofrenia, gangguan bipolar, atau depresi berat.</p>
+            </div>
+            <div class="info-block">
+              <h4>Tanda dan Gejala</h4>
+              <ul>
+                <li>Kecurigaan, ide-ide paranoid, atau kegelisahan dengan orang lain</li>
+                <li>Kesulitan berpikir jernih dan logis</li>
+                <li>Menarik diri secara sosial dan menghabiskan lebih banyak waktu sendirian</li>
+                <li>Gagasan yang tidak biasa atau terlalu intens, perasaan aneh dan terkadang tidak berperasaan</li>
+                <li>Penurunan perawatan diri atau kebersihan pribadi</li>
+                <li>Gangguan tidur, termasuk sulit tidur dan berkurangnya waktu tidur</li>
+                <li>Kesulitan membedakan fantasi dan kenyataan</li>
+                <li>Kesulitan berkomunikasi dengan orang lain</li>
+                <li>Penurunan nilai atau kinerja pekerjaan secara tiba-tiba</li>
+              </ul>
+              <p>Bersamaan dengan gejala-gejala diatas, seseorang dengan psikotik juga dapat mengalami perubahan perilaku yang lebih umum yang meliputi:</p>
+              <ul>
+                <li>Gangguan emosional</li>
+                <li>Kecemasan</li>
+                <li>Kurang motivasi</li>
+                <li>Tidak dapat beraktivitas normal</li>
+              </ul>
+            </div>
+            <div class="info-block">
+              <h4>Cara Mengatasi/Mengobati</h4>
+              <ul>
+                <li>Pemberian obat Antipsikotik</li>
+                <li>Terapi Psikososial</li>
+                <li>Konseling dan Dukungan Keluarga</li>
+                <li>Rawat Inap (jika perlu)</li>
+              </ul>
+            </div>
+          </div>
         </div>
         <div class="details-illustration">
           <img src="/src/assets/Hasiltest.png" alt="Doctor illustration" />
@@ -73,7 +114,7 @@ import ConfirmationModal from '../../components/ConfirmationModal.vue';
 import { testState } from '../../store/testState';
 
 export default {
-  name: 'ResultIsOCD',
+  name: 'ResultIsPsychotic',
   props: {
     score: {
       type: [Number, String],
@@ -83,43 +124,54 @@ export default {
   computed: {
     diagnosis() {
       const s = Number(this.score);
-      // NOTE: Score ranges for OCD might differ.
-      // This is placeholder logic.
       if (s <= 14) {
         return {
-          name: "Tidak Ada Indikasi OCD",
+          name: "Tidak Ada Gejala Psikotik",
           percentage: 20,
-          recommendation: "Perilaku Anda terorganisir dengan baik tanpa adanya obsesi atau kompulsi yang mengganggu. Pertahankan fleksibilitas.",
-          description: "Adalah normal untuk menyukai keteraturan atau memiliki rutinitas. Ini tidak sama dengan OCD, yang melibatkan pikiran dan tindakan yang tidak diinginkan dan sulit dikendalikan.",
+          recommendation: "Kondisi mental Anda stabil. Terus pertahankan gaya hidup sehat dan kelola stres dengan baik.",
+          description: "Anda tidak menunjukkan gejala psikotik. Tetap jaga kesehatan mental dan hindari faktor risiko seperti stres berat atau penggunaan zat terlarang.",
           articles: [
-            { title: "Kebiasaan Baik vs. Kompulsi", summary: "Memahami perbedaannya...", author: "Dr. Maya" },
-            { title: "Manfaat Fleksibilitas Kognitif", summary: "Beradaptasi dengan perubahan...", author: "Dr. Nino" },
-            { title: "Mengelola Pikiran Mengganggu", summary: "Teknik untuk pikiran yang tidak diinginkan...", author: "Dr. Olivia" },
+            { title: "Menjaga Kesehatan Mental Sehari-hari", summary: "Tips sederhana untuk menjaga kestabilan emosi dan pikiran.", author: "Dr. Anisa" },
+            { title: "Pentingnya Dukungan Sosial", summary: "Bagaimana lingkungan mendukung kesehatan mental.", author: "Dr. Budi" },
+            { title: "Manfaat Relaksasi", summary: "Teknik relaksasi untuk mencegah stres berlebih.", author: "Dr. Cantika" },
           ]
         };
       }
       if (s <= 24) {
         return {
-          name: "Kecenderungan Obsesif-Kompulsif",
+          name: "Gejala Psikotik Ringan",
           percentage: 50,
-          recommendation: "Anda menunjukkan beberapa pikiran obsesif atau perilaku kompulsif. Mempelajari teknik relaksasi dan mindfulness bisa membantu.",
-          description: "Anda mungkin mengalami pikiran mengganggu yang berulang (obsesi) atau merasa perlu melakukan tindakan tertentu (kompulsi) untuk mengurangi kecemasan. Ini bisa mengganggu jika tidak dikelola.",
+          recommendation: "Anda mengalami gejala psikotik ringan. Segera konsultasikan dengan profesional jika gejala memburuk.",
+          description: "Psikosis ringan dapat berupa kebingungan, kesulitan membedakan kenyataan, atau perubahan perilaku yang tidak biasa. Gejala ini perlu dipantau dan dikelola dengan baik.",
           articles: [
-            { title: "Pengantar Terapi ERP", summary: "Exposure and Response Prevention...", author: "Dr. Nino" },
-            { title: "Mindfulness untuk Pikiran Obsesif", summary: "Mengamati pikiran tanpa terhanyut...", author: "Dr. Maya" },
-            { title: "Menantang Pikiran Tidak Rasional", summary: "Teknik dari Terapi Kognitif Perilaku...", author: "Dr. Olivia" },
+            { title: "Mengenal Psikosis", summary: "Apa itu psikosis dan bagaimana gejalanya?", author: "Dr. Budi" },
+            { title: "Tanda Awal Gangguan Psikotik", summary: "Kenali gejala sejak dini.", author: "Dr. Anisa" },
+            { title: "Pentingnya Dukungan Keluarga", summary: "Peran keluarga dalam pemulihan.", author: "Dr. Cantika" },
+          ]
+        };
+      }
+      if (s <= 36) {
+        return {
+          name: "Gejala Psikotik Sedang",
+          percentage: 75,
+          recommendation: "Segera konsultasikan dengan psikolog atau psikiater. Hindari isolasi dan tetap terhubung dengan orang terdekat.",
+          description: "Psikosis sedang ditandai dengan halusinasi ringan, delusi, atau perubahan perilaku yang mulai mengganggu aktivitas harian. Bantuan profesional sangat dianjurkan.",
+          articles: [
+            { title: "Terapi untuk Psikosis", summary: "Pilihan terapi yang efektif untuk psikosis.", author: "Dr. Anisa" },
+            { title: "Mengelola Halusinasi", summary: "Strategi menghadapi pengalaman tidak nyata.", author: "Dr. Budi" },
+            { title: "Obat-obatan Antipsikotik", summary: "Bagaimana obat membantu pemulihan.", author: "Dr. Cantika" },
           ]
         };
       }
       return {
-        name: "Indikasi Kuat OCD",
-        percentage: 85,
-        recommendation: "Gejala Anda sangat konsisten dengan OCD. Terapi, terutama Exposure and Response Prevention (ERP), sangat efektif dan disarankan untuk konsultasi.",
-        description: "Obsessive-Compulsive Disorder (OCD) adalah gangguan yang ditandai oleh obsesi (pikiran yang tidak diinginkan dan intrusif) dan kompulsi (perilaku berulang) yang signifikan mengganggu kehidupan sehari-hari.",
+        name: "Gejala Psikotik Berat",
+        percentage: 95,
+        recommendation: "Gejala yang Anda alami cukup berat. Segera konsultasikan dengan psikiater untuk penanganan lebih lanjut dan hindari bahaya bagi diri sendiri maupun orang lain.",
+        description: "Psikosis berat meliputi halusinasi intens, delusi berat, dan perilaku yang sangat tidak sesuai dengan kenyataan. Penanganan medis segera sangat penting.",
         articles: [
-            { title: "Memahami OCD: Lebih dari Sekadar Rapi", summary: "Membongkar mitos tentang OCD...", author: "Dr. Maya" },
-            { title: "Peran Obat dalam Penanganan OCD", summary: "Opsi farmakoterapi yang ada...", author: "Dr. Nino" },
-            { title: "Mendukung Seseorang dengan OCD", summary: "Cara membantu orang terkasih...", author: "Dr. Olivia" },
+            { title: "Penanganan Darurat Psikosis", summary: "Langkah-langkah penting saat krisis psikotik.", author: "Dr. Budi" },
+            { title: "Peran Keluarga dalam Pemulihan", summary: "Bagaimana keluarga dapat membantu proses pemulihan.", author: "Dr. Anisa" },
+            { title: "Mengenal Rehabilitasi Psikososial", summary: "Dukungan jangka panjang untuk pasien psikotik.", author: "Dr. Cantika" },
         ]
       };
     }
@@ -134,11 +186,9 @@ export default {
   },
   methods: {
     handleConfirm() {
-      // Reset the shared state
       testState.testCompleted = false;
       testState.score = 0;
       testState.resultType = null;
-      
       this.$router.push({ name: 'TesDiri' });
       this.showConfirmationModal = false;
     },
@@ -153,16 +203,12 @@ export default {
 </script>
 
 <style scoped>
-/* Styles can be customized for OCD */
 .result-page {
   background-color: #fdfcfa;
   font-family: 'Inter', sans-serif;
 }
-/* New gradient for OCD */
-.ocd-bg {
-  background: linear-gradient(120deg, #1abc9c 0%, #16a085 100%); /* Teal gradient */
-}
-/* ... rest of the styles are identical ... */
+/* New gradient for Anxiety */
+
 
 /* Hero Section */
 .result-hero {
@@ -243,7 +289,7 @@ export default {
   overflow: hidden;
 }
 .progress-bar {
-  background: #2ecc71; /* Emerald color for OCD */
+  background: #34D399; /* Green/Teal color for Anxiety */
   height: 100%;
   border-radius: 50px;
   transition: width 0.8s ease-in-out;
@@ -267,6 +313,7 @@ export default {
   max-width: 1100px;
   margin: 0 auto;
   display: flex;
+  flex-direction: row;
   align-items: flex-start;
   gap: 60px;
 }
@@ -274,8 +321,11 @@ export default {
 .details-illustration {
   flex: 1;
   max-width: 300px;
+  margin-top: 80px;
+  display: flex;
+  justify-content: center;
 }
-.details-illustration img { width: 100%; }
+.details-illustration img { width: 100%; max-width: 300px; }
 .details-text h3 {
   font-size: 1.8rem;
   color: #333;
@@ -378,12 +428,62 @@ export default {
   border-radius: 50%;
 }
 
+/* Terapkan style info-block dan info-container dari neurosis-info-container agar konsisten */
+.psychotic-info-container {
+  margin-top: 32px;
+  background: #fff;
+  border-radius: 18px;
+  box-shadow: 0 4px 24px rgba(106,76,155,0.08);
+  padding: 28px 24px;
+}
+.info-title {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #4facfe;
+  margin-bottom: 24px;
+  text-align: center;
+}
+.info-block {
+  margin-bottom: 24px;
+}
+.info-block h4 {
+  color: #00b4d8;
+  font-size: 1.1rem;
+  margin-bottom: 10px;
+  font-weight: 700;
+}
+.info-block p, .info-block ul {
+  color: #333;
+  font-size: 1.05rem;
+  line-height: 1.7;
+  margin-bottom: 8px;
+}
+.info-block ul {
+  padding-left: 22px;
+  margin-bottom: 8px;
+}
+.info-block li {
+  margin-bottom: 4px;
+  color: #333;
+  font-size: 1.05rem;
+  line-height: 1.7;
+}
+
 @media (max-width: 768px) {
   .result-container, .details-container {
     flex-direction: column;
     text-align: center;
   }
   .result-illustration { display: none; }
-  .details-illustration { margin-top: 40px; }
+  .details-illustration { margin-top: 40px; display: none; }
+  .details-text, .info-block p, .info-block li {
+    text-align: justify;
+  }
 }
-</style>
+@media (max-width: 900px) {
+  /* Removed psikotik-info-container styles */
+  .info-title {
+    font-size: 1.2rem;
+  }
+}
+</style> 

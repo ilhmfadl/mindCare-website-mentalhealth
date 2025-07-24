@@ -22,7 +22,7 @@
           </div>
         </div>
         <div class="result-illustration">
-          <img src="/src/assets/Depresi.png" alt="Mental health illustration" />
+          <img src="/src/assets/Depresi.png" alt="Neurosis illustration" />
         </div>
       </div>
     </section>
@@ -33,6 +33,60 @@
           <h3>Apa yang sedang kamu alami?</h3>
           <h4>{{ diagnosis.name }}</h4>
           <p>{{ diagnosis.description }}</p>
+          <div class="neurosis-info-container">
+            <h2 class="info-title">Penjelasan</h2>
+            <div class="info-block">
+              <h4>Pengertian</h4>
+              <p>Psikoneurosis atau disebut juga dengan neurosis adalah istilah umum yang merujuk pada ketidakseimbangan mental yang menyebabkan stres,  neurosis tidak mempengaruhi pemikiran rasional. Konsep neurosis berhubungan dengan bidang psikoanalisis, suatu aliran pemikiran dalam psikologi atau psikiatri. Neurosis adalah gangguan mental ringan yang ditandai dengan ketidakstabilan emosi, kecemasan yang berlebihan, dan respon tidak wajar terhadap stres, namun tidak disertai dengan gangguan realita (tidak mengalami delusi atau halusinasi). Orang yang mengalami neurosis masih bisa menjalani aktivitas sehari-hari, meskipun sering kali merasa tertekan atau terganggu secara emosional.</p>
+            </div>
+            <div class="info-block">
+              <h4>Penyebab Neurosis</h4>
+              <p>Neurosis bisa disebabkan oleh kombinasi faktor biologis, psikologis, dan sosial. Berikut beberapa penyebab umumnya:</p>
+              <ul>
+                <li>Tekanan Psikososial</li>
+                <li>Trauma Psikologis</li>
+                <li>Faktor Kepribadian seperti Kepribadian yang terlalu perfeksionis, mudah cemas, sensitif, atau cenderung menarik diri.</li>
+                <li>Ketidakseimbangan Kimia Otak seperti Gangguan pada neurotransmitter seperti serotonin dan dopamin.</li>
+                <li>Faktor Genetik dan Lingkungan</li>
+              </ul>
+            </div>
+            <div class="info-block">
+              <h4>Tanda dan Gejala Neurosis</h4>
+              <ul>
+                <li>Kecemasan berlebihan atau tidak wajar</li>
+                <li>Rasa takut yang tidak masuk akal (fobia)</li>
+                <li>Pikiran berulang (obsesi)</li>
+                <li>Perasaan bersalah terus menerus</li>
+                <li>Suasana hati berubah-ubah</li>
+                <li>Sulit mengambil keputusan</li>
+                <li>Perasaan rendah diri</li>
+                <li>Sakit kepala</li>
+                <li>Nyeri dada</li>
+                <li>Gangguan pencernaan (mual, maag)</li>
+                <li>Keringat berlebihan</li>
+                <li>Detak jantung cepat</li>
+                <li>Gangguan tidur</li>
+              </ul>
+            </div>
+            <div class="info-block">
+              <h4>Cara Mengatasi Neurosis</h4>
+              <ul>
+                <li>Terapi perilaku kognitif (CBT): Membantu pasien mengidentifikasi dan mengubah pola pikir negatif.</li>
+                <li>Psikoterapi dinamis: Menggali konflik bawah sadar yang belum terselesaikan.</li>
+                <li>Terapi relaksasi dan mindfulness</li>
+                <li>Pemberian Obat Antidepresan</li>
+                <li>Pemberian obat Anxiolytic</li>
+                <li>Konseling keluarga</li>
+                <li>Edukasi pasien dan keluarga tentang kondisi mental</li>
+                <li>Dukungan dari kelompok sebaya atau komunitas</li>
+                <li>Olahraga teratur</li>
+                <li>Pola makan sehat</li>
+                <li>Tidur cukup</li>
+                <li>Menghindari alkohol, rokok, dan kafein berlebih</li>
+                <li>Mengelola stres (melalui hobi, meditasi, atau aktivitas positif)</li>
+              </ul>
+            </div>
+          </div>
         </div>
         <div class="details-illustration">
           <img src="/src/assets/Hasiltest.png" alt="Doctor illustration" />
@@ -52,7 +106,6 @@
             <h4>{{ article.title }}</h4>
             <p>{{ article.summary }}</p>
             <div class="author" v-if="article.author">
-              <!-- <img src="/src/assets/author-avatar.png" alt="Author" /> -->
               <span>{{ article.author }}</span>
             </div>
           </div>
@@ -74,7 +127,7 @@ import ConfirmationModal from '../../components/ConfirmationModal.vue';
 import { testState } from '../../store/testState';
 
 export default {
-  name: 'ResultPage',
+  name: 'ResultIsNeurosis',
   props: {
     score: {
       type: [Number, String],
@@ -86,52 +139,52 @@ export default {
       const s = Number(this.score);
       if (s <= 14) {
         return {
-          name: "Kesehatan Mental Stabil",
+          name: "Tidak Ada Gejala Neurosis",
           percentage: 20,
-          recommendation: "Kondisi Anda sangat baik. Terus pertahankan gaya hidup sehat dan kelola stres dengan baik.",
-          description: "Kesehatan mental yang stabil berarti Anda mampu mengelola emosi, pikiran, dan perilaku sehari-hari dengan baik. Anda memiliki ketahanan yang baik terhadap stres dan mampu menjaga hubungan yang sehat.",
+          recommendation: "Kondisi mental Anda stabil. Terus pertahankan gaya hidup sehat dan kelola stres dengan baik.",
+          description: "Anda tidak menunjukkan gejala neurosis. Tetap jaga kesehatan mental dengan pola hidup sehat dan komunikasi yang baik.",
           articles: [
-            { title: "Tips Menjaga Kestabilan Emosi", summary: "Kumpulan cara sederhana...", author: "Dr. Anisa" },
-            { title: "Pentingnya Mindfulness", summary: "Latih fokus dan ketenangan...", author: "Dr. Budi" },
-            { title: "Manfaat Tidur Cukup", summary: "Jangan sepelekan istirahat...", author: "Dr. Cantika" },
+            { title: "Menjaga Kesehatan Mental Sehari-hari", summary: "Tips sederhana untuk menjaga kestabilan emosi dan pikiran.", author: "Dr. Anisa" },
+            { title: "Pentingnya Dukungan Sosial", summary: "Bagaimana lingkungan mendukung kesehatan mental.", author: "Dr. Budi" },
+            { title: "Manfaat Relaksasi", summary: "Teknik relaksasi untuk mencegah stres berlebih.", author: "Dr. Cantika" },
           ]
         };
       }
       if (s <= 24) {
         return {
-          name: "Stres Ringan",
+          name: "Gejala Neurosis Ringan",
           percentage: 50,
-          recommendation: "Anda mengalami gejala stres ringan. Cobalah untuk beristirahat, lakukan hobi yang Anda sukai, dan berbicara dengan orang terdekat.",
-          description: "Stres ringan adalah bagian normal dari kehidupan, namun jika dibiarkan dapat menumpuk. Gejalanya bisa berupa mudah marah, lelah, atau sulit tidur. Penting untuk menemukan cara relaksasi yang efektif.",
+          recommendation: "Anda mengalami gejala neurosis ringan. Cobalah teknik relaksasi, olahraga, dan berbicara dengan orang terdekat.",
+          description: "Neurosis ringan dapat berupa kecemasan, kekhawatiran berlebih, atau kesulitan tidur. Gejala ini biasanya tidak mengganggu aktivitas sehari-hari secara signifikan.",
           articles: [
-            { title: "Teknik Relaksasi Pernapasan", summary: "Cara cepat atasi stres...", author: "Dr. Budi" },
-            { title: "Mengelola Stres di Pekerjaan", summary: "Strategi untuk tetap tenang...", author: "Dr. Anisa" },
-            { title: "Journaling untuk Kesehatan Mental", summary: "Tuangkan perasaan Anda...", author: "Dr. Cantika" },
+            { title: "Mengenal Neurosis", summary: "Apa itu neurosis dan bagaimana gejalanya?", author: "Dr. Budi" },
+            { title: "Teknik Mengelola Kecemasan", summary: "Cara-cara sederhana mengurangi kecemasan.", author: "Dr. Anisa" },
+            { title: "Pentingnya Tidur Berkualitas", summary: "Tidur cukup untuk kesehatan mental.", author: "Dr. Cantika" },
           ]
         };
       }
       if (s <= 36) {
         return {
-          name: "Depresi Sedang",
+          name: "Gejala Neurosis Sedang",
           percentage: 75,
-          recommendation: "Cobalah berbicara dengan tenaga profesional dan hindari menyendiri terlalu lama. Lakukan kegiatan yang Anda sukai.",
-          description: "Depresi sedang ditandai dengan perasaan sedih yang terus-menerus, kehilangan minat pada banyak hal, dan perubahan energi yang signifikan. Kondisi ini dapat mengganggu aktivitas sehari-hari dan memerlukan perhatian profesional.",
+          recommendation: "Cobalah berbicara dengan tenaga profesional dan hindari menyendiri terlalu lama. Lakukan kegiatan yang menyenangkan.",
+          description: "Neurosis sedang ditandai dengan kecemasan yang lebih sering, mudah marah, atau gangguan tidur yang mulai mengganggu aktivitas harian.",
           articles: [
-            { title: "Mengenal Terapi Kognitif Perilaku", summary: "Salah satu terapi efektif...", author: "Dr. Anisa" },
-            { title: "Pentingnya Dukungan Sosial", summary: "Jangan hadapi sendirian...", author: "Dr. Budi" },
-            { title: "Hubungan Pola Makan dan Depresi", summary: "Nutrisi untuk otak Anda...", author: "Dr. Cantika" },
+            { title: "Kapan Harus Konsultasi?", summary: "Tanda-tanda Anda perlu bantuan profesional.", author: "Dr. Anisa" },
+            { title: "Mengelola Stres di Tempat Kerja", summary: "Strategi menghadapi tekanan pekerjaan.", author: "Dr. Budi" },
+            { title: "Olahraga dan Kesehatan Mental", summary: "Manfaat aktivitas fisik untuk pikiran.", author: "Dr. Cantika" },
           ]
         };
       }
       return {
-        name: "Depresi Berat",
+        name: "Gejala Neurosis Berat",
         percentage: 95,
-        recommendation: "Gejala yang Anda alami signifikan. Harap segera mencari bantuan dari psikolog atau psikiater untuk evaluasi dan penanganan lebih lanjut.",
-        description: "Depresi berat melibatkan gejala yang parah dan persisten, sangat mengganggu fungsi sehari-hari. Pikiran untuk menyakiti diri sendiri bisa muncul. Bantuan profesional segera sangat penting dan krusial.",
+        recommendation: "Gejala yang Anda alami cukup berat. Segera konsultasikan dengan psikolog atau psikiater untuk penanganan lebih lanjut.",
+        description: "Neurosis berat meliputi kecemasan berlebih, fobia, obsesi, atau kompulsi yang sangat mengganggu kehidupan sehari-hari. Bantuan profesional sangat dianjurkan.",
         articles: [
-            { title: "Kapan Harus ke Psikiater?", summary: "Mengenali tanda-tanda darurat...", author: "Dr. Budi" },
-            { title: "Memahami Peran Obat-obatan", summary: "Bagaimana antidepresan bekerja...", author: "Dr. Anisa" },
-            { title: "Membangun Rencana Keamanan Diri", summary: "Langkah-langkah penting...", author: "Dr. Cantika" },
+            { title: "Terapi untuk Neurosis", summary: "Pilihan terapi yang efektif untuk neurosis berat.", author: "Dr. Budi" },
+            { title: "Dukungan Keluarga dan Teman", summary: "Peran lingkungan dalam pemulihan.", author: "Dr. Anisa" },
+            { title: "Mengenal Obat-obatan Psikotropika", summary: "Kapan obat dibutuhkan dan bagaimana kerjanya.", author: "Dr. Cantika" },
         ]
       };
     }
@@ -146,11 +199,9 @@ export default {
   },
   methods: {
     handleConfirm() {
-      // Reset the shared state
       testState.testCompleted = false;
       testState.score = 0;
       testState.resultType = null;
-      
       this.$router.push({ name: 'TesDiri' });
       this.showConfirmationModal = false;
     },
@@ -385,12 +436,56 @@ export default {
   border-radius: 50%;
 }
 
+/* Tambahkan style agar info-block dan neurosis-info-container tampil menarik dan konsisten */
+.neurosis-info-container {
+  margin-top: 32px;
+  background: #fff;
+  border-radius: 18px;
+  box-shadow: 0 4px 24px rgba(106,76,155,0.08);
+  padding: 28px 24px;
+}
+.info-title {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #a18cd1;
+  margin-bottom: 24px;
+  text-align: center;
+}
+.info-block {
+  margin-bottom: 24px;
+}
+.info-block h4 {
+  color: #6A4C9B;
+  font-size: 1.1rem;
+  margin-bottom: 10px;
+  font-weight: 700;
+}
+.info-block p, .info-block ul {
+  color: #333;
+  font-size: 1.05rem;
+  line-height: 1.7;
+  margin-bottom: 8px;
+}
+.info-block ul {
+  padding-left: 22px;
+  margin-bottom: 8px;
+}
+.info-block li {
+  margin-bottom: 4px;
+  color: #333;
+  font-size: 1.05rem;
+  line-height: 1.7;
+}
+
 @media (max-width: 768px) {
   .result-container, .details-container {
     flex-direction: column;
     text-align: center;
   }
   .result-illustration { display: none; }
-  .details-illustration { margin-top: 40px; }
+  .details-illustration { margin-top: 40px; display: none; }
+  .details-text, .info-block p, .info-block li {
+    text-align: justify;
+  }
 }
 </style> 

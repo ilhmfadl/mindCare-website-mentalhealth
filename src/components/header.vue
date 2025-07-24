@@ -2,7 +2,9 @@
   <header class="main-header">
     <div class="header-container">
       <div class="logo">
-        <img src="/src/assets/LogoMindCare.png" alt="Logo" class="logo-img" />
+        <router-link to="/">
+          <img src="/src/assets/LogoMindCare.png" alt="Logo" class="logo-img" />
+        </router-link>
       </div>
       <nav class="main-nav">
         <router-link to="/">Home</router-link>

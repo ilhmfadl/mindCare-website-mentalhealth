@@ -1,5 +1,10 @@
 <template>
   <div class="home-page-container">
+    <div style="display: flex; gap: 12px; margin: 24px 0;">
+      <button @click="$router.push({ name: 'ResultIsNeurosis', params: { score: 10 } })">Lihat Neurosis</button>
+      <button @click="$router.push({ name: 'ResultIsPsychotic', params: { score: 10 } })">Lihat Psychotic</button>
+      <button @click="$router.push({ name: 'ResultIsPTSD', params: { score: 10 } })">Lihat PTSD</button>
+    </div>
     <section class="hero-section">
       <div class="home-container hero-content-wrapper">
         <div class="hero-left">
@@ -38,27 +43,27 @@
           Apa saja masalah mental yang sering <br /> terjadi pada manusia?
         </h2>
         <div class="cards">
-          <article class="card orange-gradient" aria-labelledby="schizophrenia-title">
-            <img src="/src/assets/logocard1.png" alt="Logo Skizofrenia" class="card-logo-img" />
-            <h3 id="schizophrenia-title">Skizofrenia</h3>
+          <article class="card orange-gradient" aria-labelledby="neurosis-title">
+            <img src="/src/assets/logocard1.png" alt="Logo Neurosis" class="card-logo-img" />
+            <h3 id="neurosis-title">Gejala Neurosis</h3>
             <p>
-              Gangguan mental serius yang menyebabkan kesulitan membedakan antara kenyataan dan halusinasi/delusi (pikiran tidak nyata).
+              Gangguan mental ringan seperti kecemasan, fobia, atau depresi ringan yang memengaruhi pikiran dan perilaku, namun tidak sampai kehilangan kontak dengan realita.
             </p>
           </article>
 
-          <article class="card purple-gradient featured-card" aria-labelledby="depression-title">
-            <img src="/src/assets/logocard2.png" alt="Logo Depresi" class="card-logo-img" />
-            <h3 id="depression-title">Depresi</h3>
+          <article class="card purple-gradient featured-card" aria-labelledby="psikotik-title">
+            <img src="/src/assets/logocard2.png" alt="Logo Psikotik" class="card-logo-img" />
+            <h3 id="psikotik-title">Gejala Psikotik</h3>
             <p>
-              Gangguan suasana hati yang membuat seseorang merasa sedih, putus asa, kehilangan semangat, dan sulit menikmati hal-hal yang biasa disukai.
+              Gangguan mental berat seperti halusinasi, delusi, atau skizofrenia yang menyebabkan seseorang kehilangan kontak dengan realita.
             </p>
           </article>
 
-          <article class="card red-gradient" aria-labelledby="anxiety-title">
-            <img src="/src/assets/logocard3.png" alt="Logo Anxiety" class="card-logo-img" />
-            <h3 id="anxiety-title">Anxiety</h3>
+          <article class="card red-gradient" aria-labelledby="ptsd-title">
+            <img src="/src/assets/logocard3.png" alt="Logo PTSD" class="card-logo-img" />
+            <h3 id="ptsd-title">PTSD</h3>
             <p>
-              Kondisi saat seseorang merasa khawatir atau takut berlebihan, bahkan tanpa alasan yang jelas.
+              Gangguan stres pascatrauma yang muncul setelah mengalami peristiwa traumatis, ditandai dengan kilas balik, mimpi buruk, dan kecemasan berat.
             </p>
           </article>
         </div>
@@ -74,6 +79,20 @@
             class="test-logo-img"
             onerror="this.style.display='none'"
           />
+          <div class="test-categories-row">
+            <div class="test-category">
+              <img src="/src/assets/logocard1.png" alt="Neurosis" class="test-category-img" />
+              <div class="test-category-label">Neurosis</div>
+            </div>
+            <div class="test-category">
+              <img src="/src/assets/logocard2.png" alt="Psikotik" class="test-category-img" />
+              <div class="test-category-label">Psikotik</div>
+            </div>
+            <div class="test-category">
+              <img src="/src/assets/logocard3.png" alt="PTSD" class="test-category-img" />
+              <div class="test-category-label">PTSD</div>
+            </div>
+          </div>
         </div>
         <div class="test-content">
           <p class="test-question">Ingin mengetahui kondisi mental anda saat ini?</p>
@@ -327,14 +346,20 @@ export default {
   line-height: 1.6;
   color: #4b5563;
   margin-top: 1.5rem;
+  text-align: justify;
+  padding-right: 20px;
 }
 .btn-start {
   margin-top: 2rem;
   background-color: #EC744A;
   color: white;
+  /* default: tidak center di desktop */
 }
 .btn-start:hover { background-color: #ea580c; }
 
+.test-categories-row {
+  display: none;
+}
 
 /* RESPONSIVE ADJUSTMENTS */
 @media (max-width: 900px) {
@@ -347,10 +372,16 @@ export default {
     padding-top: 18px;
     padding-bottom: 18px;
   }
-  .hero-content-wrapper, .test-content-wrapper {
+  .hero-content-wrapper {
     flex-direction: column;
     gap: 10px;
     text-align: center;
+  }
+  .test-content-wrapper {
+    flex-direction: row;
+    align-items: center;
+    gap: 22px;
+    text-align: left;
   }
   .hero-left h1 {
     font-size: 1.08rem;
@@ -363,6 +394,9 @@ export default {
   }
   .hero-text, .hero-desc, .test-question, .test-description {
     font-size: 0.88rem;
+  }
+  .test-description {
+    padding-right: 2vw;
   }
   .btn-group {
     flex-direction: column;
@@ -390,8 +424,35 @@ export default {
     margin-bottom: 2px;
   }
   .test-logo-img {
-    max-width: 60vw;
-    height: auto;
+    display: none;
+  }
+  .test-categories-row {
+    display: flex;
+    flex-direction: row;
+    gap: 12px;
+    justify-content: center;
+    align-items: flex-end;
+    width: 100%;
+    margin-bottom: 8px;
+  }
+  .test-category {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 60px;
+  }
+  .test-category-img {
+    width: 54px;
+    height: 54px;
+    object-fit: contain;
+    border-radius: 8px;
+    margin-bottom: 4px;
+  }
+  .test-category-label {
+    font-size: 0.82rem;
+    color: #6b7280;
+    text-align: center;
+    margin-top: 2px;
   }
   .problems-section {
     padding-top: 10px;
@@ -435,6 +496,11 @@ export default {
     min-width: 180px;
     padding: 14px 0;
     font-size: 1.08rem;
+  }
+  .btn-start {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
   }
 }
 

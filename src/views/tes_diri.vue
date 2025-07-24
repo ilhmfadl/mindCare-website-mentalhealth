@@ -7,15 +7,11 @@
     <section class="hero" v-if="!showResults">
       <div class="hero-content">
         <h1>Kenali Kondisi Mentalmu Sekarang</h1>
-        <p class="desc">Kuesioner ini dirancang untuk membantu Anda memahami kondisi kesehatan mental Anda saat ini. Setiap pertanyaan memiliki skala 1-5 dengan penjelasan:</p>
-        <div class="skala-row">
-          <div class="skala skala-1"><span>1</span><br> Tidak Pernah</div>
-          <div class="skala skala-2"><span>2</span><br> Jarang</div>
-          <div class="skala skala-3"><span>3</span><br> Kadang</div>
-          <div class="skala skala-4"><span>4</span><br> Sering</div>
-          <div class="skala skala-5"><span>5</span><br> Selalu</div>
-        </div>
-        <p class="note">Silakan jawab dengan jujur sesuai dengan perasaan Anda dalam 2 minggu terakhir. Tidak ada jawaban yang salah.</p>
+        <p class="desc">Petunjuk : </p>
+        
+        <p class="note">Bacalah petunjuk ini seluruhnya sebelum mulai mengisi. Pertanyaan berikut berhubungan dengan masalah yang mungkin mengganggu Anda selama 30 hari terakhir. Apabila Anda menganggap pertanyaan itu berlaku bagi Anda dan Anda mengalami masalah yang disebutkan dalam 30 hari terakhir, berilah tanda pada kolom Y. Sebaliknya, Apabila Anda menganggap pertanyaan itu tidak berlaku bagi Anda dan Anda tidak mengalami masalah yang disebutkan dalam 30 hari terakhir, berilah tanda pada kolom T. Jika Anda tidak yakin tentang jawabannya, berilah jawaban yang paling sesuai di antara Y dan T. Kami tegaskan bahwa, jawaban Anda bersifat rahasia, dan akan digunakan hanya untuk membantu pemecahan masalah Anda.
+
+</p>
       </div>
     </section>
 
@@ -44,20 +40,20 @@
     </section>
 
     <!-- Results Section -->
-    <ResultIsDepresi v-if="showResults" :score="totalScore" />
+    <ResultIsNeurosis v-if="showResults" :score="totalScore" />
   </div>
 </template>
 
 <script>
 import QuestionItem from '../components/QuestionItem.vue';
-import ResultIsDepresi from './result/resultIsDepresi.vue';
+import ResultIsNeurosis from './result/resultIsNeurosis.vue';
 import { testState } from '../store/testState';
 
 export default {
   name: 'TesDiri',
   components: {
     QuestionItem,
-    ResultIsDepresi
+    ResultIsNeurosis
   },
   data() {
     return {
@@ -125,7 +121,7 @@ export default {
       // Update global state for persistent result
       testState.testCompleted = true;
       testState.score = this.totalScore;
-      testState.resultType = 'ResultIsDepresi'; // Ganti sesuai logic result
+      testState.resultType = 'ResultIsNeurosis'; // Ganti sesuai logic result
       this.loading = true;
       setTimeout(() => {
         this.loading = false;
@@ -150,7 +146,7 @@ export default {
 }
 .hero {
   background: linear-gradient(45deg, #725c96 30%, #c09df7 100%);
-  padding: 100px 0 32px 0;
+  padding: 120px 0 100px 0;
   color: #fff;
   position: relative;
 }
@@ -178,38 +174,17 @@ export default {
   margin-bottom: 50px;
 }
 .hero-content .desc {
-  font-size: 1.1rem;
+  font-size: 1.4rem;
   margin-bottom: 18px;
 }
-.skala-row {
-  display: flex;
-  gap: 12px;
-  margin: 24px 0;
+.skala-row, .skala {
+  display: none !important;
 }
-.skala {
-  flex: 1;
-  border-radius: 12px;
-  color: #fff;
-  font-weight: 600;
-  text-align: center;
-  padding: 10px 8px;
-  font-size: 1rem;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-  transition: transform 0.2s;
-}
-.skala:hover {
-    transform: translateY(-3px);
-}
-.skala-1 { background: #E57373; }
-.skala-2 { background: #FFB74D; }
-.skala-3 { background: #FFD54F; }
-.skala-4 { background: #81C784; }
-.skala-5 { background: #4DB6AC; }
-
 .note {
-  font-size: 0.9rem;
+  font-size: 1rem;
   margin-top: 8px;
-  color: #f3f3f3;
+  line-height: 1.7;
+  text-align: justify;
 }
 .question-section, .results-section {
   background: #faf7f3;
@@ -226,7 +201,7 @@ export default {
   margin-bottom: 24px;
 }
 .submission-area {
-  max-width: 900px;
+  max-width: 1000px;
   margin: 40px auto 0;
   padding: 0 24px;
   text-align: right;
@@ -391,7 +366,7 @@ export default {
   }
   .note {
     font-size: 0.7rem;
-    margin-top: 2px;
+    margin-top: 8px;
   }
   .question-section {
     padding: 10px 0 14px 0;

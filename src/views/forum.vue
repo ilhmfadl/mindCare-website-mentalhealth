@@ -17,13 +17,14 @@
           </div>
         </div>
         <div class="sidebar-categories">
-          <h3>Kategori</h3>
-          <select class="dropdown-categories" v-model="selectedCategory">
-            <option v-for="category in categories" :key="category" :value="category">{{ category }}</option>
+          <h3>Filter</h3>
+          <select class="dropdown-filter" v-model="filterType">
+            <option value="terbaru">Terbaru</option>
+            <option value="terlama">Terlama</option>
           </select>
-          <ul>
-            <li v-for="category in categories" :key="category" :class="{ active: selectedCategory === category }" @click="selectCategory(category)">{{ category }}</li>
-          </ul>
+          <button class="my-questions-btn" :class="{active: showMyQuestions}" @click="toggleMyQuestions">
+            Pertanyaan Saya
+          </button>
         </div>
       </aside>
 
@@ -65,7 +66,6 @@
               <div class="question-desc">{{ question.desc }}</div>
             </div>
             <div class="question-footer">
-              <span class="question-tag">{{ question.tag }}</span>
               <span class="question-comments"><svg width="16" height="16" fill="none" stroke="#b6a7d6" stroke-width="2" viewBox="0 0 24 24" style="vertical-align:middle;"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg> {{ question.comments }}</span>
             </div>
           </div>
@@ -96,8 +96,7 @@
           </div>
           <div class="detail-title">{{ selectedQuestion.title }}</div>
           <div class="detail-desc">{{ selectedQuestion.fullDesc }}</div>
-          <div class="detail-tag"><span>{{ selectedQuestion.tag }}</span></div>
-          <!-- Ubah input respon di panel detail menjadi textarea dan hubungkan dengan responseText -->
+          <!-- Kategori/tag dihapus -->
           <div class="detail-responses-box">
             <textarea v-model="responseText" placeholder="    Berikan tanggapan anda" rows="2"></textarea>
             <div class="detail-responses-actions">
@@ -134,12 +133,7 @@
               <label>Deskripsi Singkat</label>
               <textarea v-model="askForm.desc" required placeholder="Deskripsi singkat" rows="2"></textarea>
             </div>
-            <div class="ask-form-group">
-              <label>Kategori</label>
-              <select v-model="askForm.tag" required>
-                <option v-for="cat in categories" :key="cat" :value="cat">{{ cat }}</option>
-              </select>
-            </div>
+            <!-- Kategori input dihapus -->
             <div class="ask-form-actions">
               <button type="button" class="cancel-btn" @click="closeAsk">Batal</button>
               <button type="submit" class="response-btn">Kirim</button>
@@ -161,13 +155,8 @@ const user = ref({
 
 const categories = [
   'Semua',
-  'Depresi',
-  'Anxiety',
-  'Skizofrenia',
-  'Bipolar',
-  'Personality Disorders',
-  'Obsessif-Kompulsif (OCD)',
-  'Eating Disorders',
+  'Psikotik',
+  'Neurosis',
   'PTSD',
 ];
 
@@ -315,8 +304,17 @@ function deleteQuestion(question) {
   showMenuId.value = null;
 }
 
+const filterType = ref('terbaru');
+const showMyQuestions = ref(false);
+function toggleMyQuestions() {
+  showMyQuestions.value = !showMyQuestions.value;
+}
+
 const filteredQuestions = computed(() => {
   let result = questions;
+  if (showMyQuestions.value) {
+    result = result.filter(q => q.user === user.value.name);
+  }
   if (selectedCategory.value !== 'Semua') {
     result = result.filter(q => q.tag === selectedCategory.value);
   }
@@ -325,6 +323,11 @@ const filteredQuestions = computed(() => {
     result = result.filter(
       item => item.title.toLowerCase().includes(q) || item.desc.toLowerCase().includes(q)
     );
+  }
+  if (filterType.value === 'terbaru') {
+    result = [...result].sort((a, b) => b.id - a.id);
+  } else {
+    result = [...result].sort((a, b) => a.id - b.id);
   }
   return result;
 });
@@ -660,7 +663,7 @@ const filteredQuestions = computed(() => {
 }
 @media (max-width: 700px) {
   .forum-hero {
-    padding: 40px 0 18px 0;
+    padding: 60px 0 18px 0;
   }
   .forum-hero-content {
     padding-left: 6px;
@@ -1189,5 +1192,33 @@ const filteredQuestions = computed(() => {
     box-shadow: 0 2px 8px rgba(160, 130, 255, 0.07);
     border-radius: 18px;
   }
+}
+.dropdown-filter {
+  display: block;
+  width: 100%;
+  padding: 7px 10px;
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
+  font-size: 0.95rem;
+  margin-bottom: 8px;
+  background: #faf7f3;
+  color: #6a4c9b;
+}
+.my-questions-btn {
+  width: 100%;
+  padding: 8px 0;
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
+  background: #f7f5f9;
+  color: #6a4c9b;
+  font-weight: 600;
+  font-size: 1rem;
+  margin-bottom: 8px;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+.my-questions-btn.active, .my-questions-btn:hover {
+  background: #e5e0f7;
+  color: #8b5cf6;
 }
 </style>

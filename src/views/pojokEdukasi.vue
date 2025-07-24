@@ -10,70 +10,25 @@
       'kategori-section--bottom': idx === topics.length - 1,
       'kategori-section--title-up': ['PTSD','OCD','Anxiety','Schizophrenia'].includes(item.title)
     }]">
-      <router-link v-if="idx === 0" :to="'/edukasi/Depresi'" style="display:block;text-decoration:none;">
+      <router-link v-if="idx === 0" :to="'/edukasi/psikotik'" style="display:block;text-decoration:none;">
         <div class="kategori-content" style="cursor:pointer;">
-          <div class="kategori-bg-title">{{ item.title }}</div>
+          <div class="kategori-bg-title">Gejala Neurosis</div>
           <div class="kategori-img-wrapper">
             <img :src="item.img" :alt="'Ilustrasi ' + item.title" class="kategori-img-overlap" />
           </div>
           <div class="kategori-desc">{{ item.desc }}</div>
         </div>
       </router-link>
-      <router-link v-else-if="idx === 1" :to="'/edukasi/anxiety'" style="display:block;text-decoration:none;">
+      <router-link v-else-if="idx === 1" :to="'/edukasi/neurosis'" style="display:block;text-decoration:none;">
         <div class="kategori-content" style="cursor:pointer;">
-          <div class="kategori-bg-title">{{ item.title }}</div>
+          <div class="kategori-bg-title">Gejala Psikotik</div>
           <div class="kategori-img-wrapper">
             <img :src="item.img" :alt="'Ilustrasi ' + item.title" class="kategori-img-overlap" />
           </div>
           <div class="kategori-desc">{{ item.desc }}</div>
         </div>
       </router-link>
-      <router-link v-else-if="idx === 2" :to="'/edukasi/skizofrenia'" style="display:block;text-decoration:none;">
-        <div class="kategori-content" style="cursor:pointer;">
-          <div class="kategori-bg-title">{{ item.title }}</div>
-          <div class="kategori-img-wrapper">
-            <img :src="item.img" :alt="'Ilustrasi ' + item.title" class="kategori-img-overlap" />
-          </div>
-          <div class="kategori-desc">{{ item.desc }}</div>
-        </div>
-      </router-link>
-      <router-link v-else-if="idx === 3" :to="'/edukasi/bipolar'" style="display:block;text-decoration:none;">
-        <div class="kategori-content" style="cursor:pointer;">
-          <div class="kategori-bg-title">{{ item.title }}</div>
-          <div class="kategori-img-wrapper">
-            <img :src="item.img" :alt="'Ilustrasi ' + item.title" class="kategori-img-overlap" />
-          </div>
-          <div class="kategori-desc">{{ item.desc }}</div>
-        </div>
-      </router-link>
-      <router-link v-else-if="idx === 4" :to="'/edukasi/personality'" style="display:block;text-decoration:none;">
-        <div class="kategori-content" style="cursor:pointer;">
-          <div class="kategori-bg-title">{{ item.title }}</div>
-          <div class="kategori-img-wrapper">
-            <img :src="item.img" :alt="'Ilustrasi ' + item.title" class="kategori-img-overlap" />
-          </div>
-          <div class="kategori-desc">{{ item.desc }}</div>
-        </div>
-      </router-link>
-      <router-link v-else-if="idx === 5" :to="'/edukasi/ocd'" style="display:block;text-decoration:none;">
-        <div class="kategori-content" style="cursor:pointer;">
-          <div class="kategori-bg-title">{{ item.title }}</div>
-          <div class="kategori-img-wrapper">
-            <img :src="item.img" :alt="'Ilustrasi ' + item.title" class="kategori-img-overlap" />
-          </div>
-          <div class="kategori-desc">{{ item.desc }}</div>
-        </div>
-      </router-link>
-      <router-link v-else-if="idx === 6" :to="'/edukasi/eating'" style="display:block;text-decoration:none;">
-        <div class="kategori-content" style="cursor:pointer;">
-          <div class="kategori-bg-title">{{ item.title }}</div>
-          <div class="kategori-img-wrapper">
-            <img :src="item.img" :alt="'Ilustrasi ' + item.title" class="kategori-img-overlap" />
-          </div>
-          <div class="kategori-desc">{{ item.desc }}</div>
-        </div>
-      </router-link>
-      <router-link v-else-if="idx === 7" :to="'/edukasi/ptsd'" style="display:block;text-decoration:none;">
+      <router-link v-else-if="idx === 2" :to="'/edukasi/ptsd'" style="display:block;text-decoration:none;">
         <div class="kategori-content" style="cursor:pointer;">
           <div class="kategori-bg-title">{{ item.title }}</div>
           <div class="kategori-img-wrapper">
@@ -148,53 +103,18 @@ export default {
     return {
       topics: [
         {
-          title: 'Depression',
-          desc: 'Gangguan suasana hati yang membuat seseorang merasa sangat sedih, putus asa, kehilangan minat, dan sulit menikmati aktivitas sehari-hari.',
+          title: 'Gejala Neurosis',
+          desc: 'Gangguan mental ringan seperti kecemasan, fobia, atau depresi ringan yang memengaruhi pikiran dan perilaku, namun tidak sampai kehilangan kontak dengan realita.',
           img: '/src/assets/Depresi.png',
           bgClass: 'bg-depresi',
           colorClass: 'color-depresi',
         },
         {
-          title: 'Anxiety',
-          desc: 'Kondisi saat seseorang merasa cemas atau takut berlebihan secara terus-menerus, bahkan tanpa alasan yang jelas, sering disertai gejala fisik seperti jantung berdebar atau sulit tidur.',
+          title: 'Gejala Psikotik',
+          desc: 'Gangguan mental berat seperti halusinasi, delusi, atau skizofrenia yang menyebabkan seseorang kehilangan kontak dengan realita.',
           img: '/src/assets/anxiety.png',
           bgClass: 'bg-anxiety',
           colorClass: 'color-anxiety',
-        },
-        {
-          title: 'Schizophrenia',
-          desc: 'Gangguan mental serius yang menyebabkan penderitanya sulit membedakan antara kenyataan dan halusinasi/delusi (pikiran tidak nyata).',
-          img: '/src/assets/skizifernia.png',
-          bgClass: 'bg-skizofrenia',
-          colorClass: 'color-skizofrenia',
-        },
-        {
-          title: 'Bipolar Disorder',
-          desc: 'Gangguan yang ditandai perubahan suasana hati ekstrem, dari episode mania (sangat bersemangat) ke depresi (sangat sedih) secara bergantian.',
-          img: '/src/assets/bipolar.png',
-          bgClass: 'bg-bipolar',
-          colorClass: 'color-bipolar',
-        },
-        {
-          title: 'Personality Disorders',
-          desc: 'Pola pikir, perasaan, dan perilaku yang tidak fleksibel dan menyulitkan seseorang dalam berinteraksi sosial atau menjalani kehidupan sehari-hari.',
-          img: '/src/assets/gangguan kepribadian.png',
-          bgClass: 'bg-ocd',
-          colorClass: 'color-ocd',
-        },
-        {
-          title: 'OCD',
-          desc: 'Gangguan yang ditandai pikiran obsesif (mengganggu) dan perilaku kompulsif (berulang) untuk mengurangi kecemasan, seperti mencuci tangan berulang kali.',
-          img: '/src/assets/OCD.png',
-          bgClass: 'bg-ptsd',
-          colorClass: 'color-ptsd',
-        },
-        {
-          title: 'Eating Disorders',
-          desc: 'Masalah serius pada pola makan, seperti anoreksia (takut gemuk, makan sangat sedikit), bulimia (makan banyak lalu memuntahkan), atau binge eating (makan berlebihan).',
-          img: '/src/assets/gangguan makan.png',
-          bgClass: 'bg-eating',
-          colorClass: 'color-eating',
         },
         {
           title: 'PTSD',
@@ -207,24 +127,14 @@ export default {
       journalSearch: '',
       selectedCategory: 'Semua',
       categories: [
-        'Depresi',
-        'Anxiety',
-        'Skizofrenia',
-        'Bipolar',
-        'Personality Disorders',
-        'Obsesif-Kompulsif (OCD)',
-        'Eating Disorders',
+        'Gejala Neurosis',
+        'Gejala Psikotik',
         'PTSD',
       ],
       journals: [
         { title: 'Jurnal Tentang PTSD', summary: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Consequat aliquet maecenas ut sit nulla(link) read more', category: 'PTSD' },
-        { title: 'Judul Jurnal', summary: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Bibendum vitae etiam lectus amet (link) read more', category: 'OCD' },
-        { title: 'Judul Jurnal', summary: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Consequat aliquet maecenas ut sit nulla  (link) read more', category: 'Anxiety' },
-        { title: 'Judul Jurnal', summary: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Consequat aliquet maecenas ut sit nulla (link) read more', category: 'Depresi' },
-        { title: 'Judul Jurnal', summary: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Consequat aliquet maecenas ut sit nulla (link) read more', category: 'Personality Disorders' },
-        { title: 'Judul Jurnal', summary: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Consequat aliquet maecenas ut sit nulla (link) read more', category: 'Eating Disorders' },
-        { title: 'Judul Jurnal', summary: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Consequat aliquet maecenas ut sit nulla (link) read more', category: 'Bipolar' },
-        { title: 'Judul Jurnal', summary: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Consequat aliquet maecenas ut sit nulla (link) read more', category: 'Skizofrenia' },
+        { title: 'Judul Jurnal', summary: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Consequat aliquet maecenas ut sit nulla  (link) read more', category: 'Neurosis' },
+        { title: 'Judul Jurnal', summary: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Consequat aliquet maecenas ut sit nulla (link) read more', category: 'Psikotik' },
       ]
     }
   },
@@ -265,7 +175,7 @@ export default {
 <style scoped>
 .edukasi-bg {
   min-height: 100vh;
-  background-color: #f5f5f5;
+  background-color: #faf7f3;
   padding: 0;
   position: relative;
   /* Subtle pattern overlay */
@@ -434,30 +344,18 @@ export default {
   text-align: center;
   max-width: 600px;
 }
+
 .bg-depresi {
   background: linear-gradient(135deg, #cfd5f7 0%, #e0c3fc 100%);
 }
 .bg-anxiety {
   background: linear-gradient(135deg, #f7f3c7 0%, #f7cac9 100%);
 }
-.bg-skizofrenia {
-  background: linear-gradient(135deg, #e0e7ef 0%, #c9e4f7 100%);
-}
-.bg-bipolar {
-  background: linear-gradient(135deg, #f7e3d5 0%, #f7d5e6 100%);
-}
-.bg-ocd {
-  background: linear-gradient(135deg, #e6f7f3 0%, #c3f7e0 100%);
-}
 .bg-ptsd {
   background: linear-gradient(135deg, #f7d5e6 0%, #f7e3d5 100%);
 }
-.bg-eating {
-  background: linear-gradient(135deg, #f7ecd5 0%, #f7d5d5 100%);
-}
-.bg-fobia {
-  background: linear-gradient(135deg, #e7d5f7 0%, #d5e7f7 100%);
-}
+
+
 .kategori-wave-top-sharp {
   width: 100vw;
   position: absolute;
@@ -524,25 +422,6 @@ export default {
   }
 }
 
-/* Border color mapping by bgClass */
-.bg-depresi .kategori-content { border-color: #cfd5f7; }
-.bg-anxiety .kategori-content { border-color: #f7f3c7; }
-.bg-skizofrenia .kategori-content { border-color: #c9e4f7; }
-.bg-bipolar .kategori-content { border-color: #f7d5e6; }
-.bg-ocd .kategori-content { border-color: #c3f7e0; }
-.bg-ptsd .kategori-content { border-color: #f7d5e6; }
-.bg-eating .kategori-content { border-color: #f7ecd5; }
-.bg-fobia .kategori-content { border-color: #e7d5f7; }
-
-/* Background color mapping by bgClass */
-.bg-depresi .kategori-content { background: rgba(207,213,247,0.85); }
-.bg-anxiety .kategori-content { background: rgba(247,243,199,0.85); }
-.bg-skizofrenia .kategori-content { background: rgba(201,228,247,0.85); }
-.bg-bipolar .kategori-content { background: rgba(247,213,230,0.85); }
-.bg-ocd .kategori-content { background: rgba(195,247,224,0.85); }
-.bg-ptsd .kategori-content { background: rgba(247,213,230,0.85); }
-.bg-eating .kategori-content { background: rgba(247,236,213,0.85); }
-.bg-fobia .kategori-content { background: rgba(231,213,247,0.85); }
 
 .journal-page-layout {
   display: flex;

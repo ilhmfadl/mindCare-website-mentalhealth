@@ -6,6 +6,10 @@
         <p class="auth2-desc">Buat akun baru untuk mengakses semua fitur MindCare.</p>
         <form @submit.prevent="handleRegister">
           <div class="form-group">
+            <label for="username">Username</label>
+            <input type="text" id="username" v-model="username" required placeholder="Username" />
+          </div>
+          <div class="form-group">
             <label for="name">Nama</label>
             <input type="text" id="name" v-model="name" required placeholder="Nama Lengkap" />
           </div>
@@ -41,6 +45,7 @@ export default {
   name: 'Register',
   data() {
     return {
+      username: '',
       name: '',
       email: '',
       password: '',

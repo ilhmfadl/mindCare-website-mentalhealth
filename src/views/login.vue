@@ -6,8 +6,8 @@
         <p class="auth2-desc">Masuk agar anda bisa mengakses semua fitur yang tersedia.</p>
         <form @submit.prevent="handleLogin">
           <div class="form-group">
-            <label for="email">Email</label>
-            <input type="email" id="email" v-model="email" required placeholder="Email" />
+            <label for="username">Username</label>
+            <input type="text" id="username" v-model="username" required placeholder="Username" />
           </div>
           <div class="form-group">
             <label for="password">Katasandi</label>
@@ -33,15 +33,15 @@ export default {
   name: 'Login',
   data() {
     return {
-      email: '',
+      username: '',
       password: '',
       error: ''
     }
   },
   methods: {
     handleLogin() {
-      if (!this.email || !this.password) {
-        this.error = 'Email dan password wajib diisi.';
+      if (!this.username || !this.password) {
+        this.error = 'Username dan password wajib diisi.';
         return;
       }
       this.$router.push('/');

@@ -3,40 +3,44 @@
     <div class="edukasi-detail-header-bg">
       <div class="edukasi-detail-header-center">
         <div class="edukasi-detail-header-content">
-          <h1>Depresi</h1>
-          <p>Perasaan sedih atau hampa yang sangat dalam, sampai hilang semangat untuk melakukan apapun. Bukan sekadar bad mood biasa, tapi bisa berlangsung berminggu-minggu.</p>
+          <h1>Gejala Neurosis</h1>
+          <p>Neurosis adalah gangguan mental ringan yang memengaruhi pikiran, emosi, dan perilaku, namun tidak sampai membuat seseorang kehilangan kontak dengan realita. Gejala ini sering muncul dalam bentuk kecemasan, fobia, atau depresi ringan.</p>
         </div>
         <div class="edukasi-detail-header-img">
-          <img src="/src/assets/Depresi.png" alt="Ilustrasi Depresi" />
+          <img src="/src/assets/Depresi.png" alt="Ilustrasi Neurosis" />
         </div>
       </div>
     </div>
     <div class="edukasi-detail-content">
-      <h2>Depresi</h2>
+      <h2>Gejala Neurosis</h2>
       <hr />
       <div class="edukasi-detail-desc">
         <p>
-          <b>Apa itu Depresi?</b><br>
-          Depresi adalah gangguan suasana hati yang menyebabkan seseorang merasa sedih, hampa, atau kehilangan harapan secara terus-menerus. Kondisi ini bukan sekadar perasaan sedih biasa, melainkan bisa memengaruhi cara berpikir, merasakan, dan berperilaku, bahkan mengganggu aktivitas sehari-hari.
+          <b>Apa itu Neurosis?</b><br>
+          Neurosis adalah istilah untuk berbagai gangguan mental ringan yang menyebabkan stres, kecemasan, atau perubahan suasana hati, namun tidak sampai menyebabkan delusi atau halusinasi. Orang dengan neurosis masih mampu membedakan kenyataan dan fantasi.
         </p>
         <p>
-          <b>Gejala Depresi:</b><br>
-          - Merasa sedih, kosong, atau putus asa hampir setiap hari.<br>
-          - Kehilangan minat atau kesenangan pada aktivitas yang biasanya disukai.<br>
-          - Perubahan nafsu makan dan berat badan.<br>
-          - Sulit tidur atau justru tidur berlebihan.<br>
-          - Mudah lelah, tidak bertenaga.<br>
-          - Merasa tidak berharga atau bersalah secara berlebihan.<br>
-          - Sulit berkonsentrasi atau mengambil keputusan.<br>
-          - Muncul pikiran untuk menyakiti diri sendiri atau bunuh diri.
+          <b>Ciri-ciri Gejala Neurosis:</b><br>
+          - Kecemasan berlebihan tanpa sebab yang jelas<br>
+          - Fobia (takut berlebihan pada objek/situasi tertentu)<br>
+          - Depresi ringan atau perasaan murung berkepanjangan<br>
+          - Mudah marah, gelisah, atau tegang<br>
+          - Gangguan tidur (insomnia atau mimpi buruk)<br>
+          - Gangguan makan (nafsu makan menurun/meningkat)<br>
+          - Obsesif-kompulsif ringan (pikiran atau perilaku berulang yang mengganggu)<br>
+          - Keluhan fisik tanpa sebab medis jelas (psikosomatis)
         </p>
         <p>
-          <b>Penyebab Depresi:</b><br>
-          Depresi bisa disebabkan oleh kombinasi faktor biologis, psikologis, dan lingkungan, seperti perubahan kimia otak, riwayat keluarga, pengalaman traumatis, stres berat, atau masalah kesehatan kronis.
+          <b>Contoh Gangguan Neurosis:</b><br>
+          - Gangguan Kecemasan Umum (GAD)<br>
+          - Fobia sosial atau spesifik<br>
+          - Gangguan obsesif-kompulsif ringan (OCD ringan)<br>
+          - Depresi ringan<br>
+          - Gangguan psikosomatis
         </p>
         <p>
           <b>Kapan Harus Mencari Bantuan?</b><br>
-          Jika kamu atau orang terdekat mengalami gejala di atas selama lebih dari dua minggu, sebaiknya segera konsultasikan ke profesional kesehatan mental (psikolog/psikiater). Penanganan yang tepat dapat membantu pemulihan dan mencegah depresi menjadi lebih parah.
+          Jika gejala-gejala di atas mengganggu aktivitas sehari-hari atau hubungan sosial, sebaiknya konsultasikan ke profesional kesehatan mental. Penanganan dini dapat mencegah gejala berkembang menjadi lebih berat.
         </p>
       </div>
       <h3 style="margin-top:48px; color:#4B4B9F;">Artikel Terkait :</h3>
@@ -60,14 +64,14 @@
 
 <script>
 export default {
-  name: 'DepresiDetail',
+  name: 'NeurosisDetail',
   data() {
     return {
       relatedArticles: [
-        { title: '5 Tanda Depresi yang Sering Diabaikan', summary: 'Kenali gejala depresi yang sering tidak disadari agar bisa mendapatkan bantuan lebih awal.', author: 'Dr. Anisa' },
-        { title: 'Cara Mendukung Teman yang Depresi', summary: 'Tips sederhana untuk membantu orang terdekat yang sedang mengalami depresi.', author: 'Dr. Budi' },
-        { title: 'Mengatasi Depresi dengan Mindfulness', summary: 'Bagaimana latihan mindfulness dapat membantu mengelola gejala depresi.', author: 'Dr. Cantika' },
-        { title: 'Mitos & Fakta Tentang Depresi', summary: 'Meluruskan kesalahpahaman umum seputar depresi agar tidak salah kaprah.', author: 'Dr. Sinta' },
+        { title: 'Cara Mengelola Kecemasan Sehari-hari', summary: 'Tips sederhana untuk mengurangi kecemasan dan stres ringan.', author: 'Dr. Anisa' },
+        { title: 'Mengenal Fobia dan Cara Mengatasinya', summary: 'Penjelasan tentang fobia dan langkah-langkah menghadapinya.', author: 'Dr. Budi' },
+        { title: 'Psikosomatis: Ketika Pikiran Memengaruhi Tubuh', summary: 'Bagaimana stres dan kecemasan bisa menimbulkan keluhan fisik.', author: 'Dr. Cantika' },
+        { title: 'Bedakan Depresi Ringan dan Berat', summary: 'Ciri-ciri depresi ringan yang sering diabaikan.', author: 'Dr. Sinta' },
       ]
     }
   },

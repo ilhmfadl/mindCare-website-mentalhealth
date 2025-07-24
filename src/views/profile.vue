@@ -27,6 +27,10 @@
       </div>
       <form class="profile-form" @submit.prevent="onSave">
         <div class="form-group">
+          <label for="username">Username</label>
+          <input id="username" type="text" v-model="form.username" :disabled="!isEditing" />
+        </div>
+        <div class="form-group">
           <label for="fullName">Nama Lengkap</label>
           <input id="fullName" type="text" v-model="form.fullName" :disabled="!isEditing" />
         </div>
@@ -39,10 +43,6 @@
         <div class="form-group">
           <label for="address">Alamat</label>
           <input id="address" type="text" v-model="form.address" :disabled="!isEditing" />
-        </div>
-        <div class="form-group">
-          <label for="job">Pekerjaan</label>
-          <input id="job" type="text" v-model="form.job" :disabled="!isEditing" />
         </div>
         <div class="btn-group-profile">
           <button v-if="!isEditing" type="button" class="edit-btn" @click="onEdit">Edit</button>

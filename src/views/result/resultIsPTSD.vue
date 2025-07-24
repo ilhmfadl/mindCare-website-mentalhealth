@@ -33,6 +33,53 @@
           <h3>Apa yang sedang kamu alami?</h3>
           <h4>{{ diagnosis.name }}</h4>
           <p>{{ diagnosis.description }}</p>
+          <div class="ptsd-info-container">
+            <h2 class="info-title">Penjelasan</h2>
+            <div class="info-block">
+              <h4>Pengertian</h4>
+              <p>Gangguan stres pasca-trauma (PTSD) adalah masalah kesehatan mental yang mungkin dirasakan seseorang setelah mengalami peristiwa traumatis. PSTD pertama kali dikenali oleh veteran perang selama Perang Dunia I. Saat itu, PSTD disebut sebagai "kejutan peluru" atau "shock shell". Gangguan stres pasca trauma (PTSD) adalah gangguan kejiwaan umum yang terjadi setelah seseorang mengalami peristiwa traumatis. PTSD dapat menyebabkan gangguan kronis, menyebabkan penyakit kejiwaan penyerta, dan meningkatkan risiko bunuh diri. (Mann, 2024), kemudian menurut peneliti lain menyebutkan bawa Post traumatic stress disorder suatu sindrom yang dialami oleh yang mengalami kejadian yang traumatis dan individu tersebut tidak mampu menghilangkan ingatan akan kejadian tersebut dari pikirannya.  Post-Traumatic Stress Disorder (PTSD) sering disalahpahami dan salah diagnosis karena gejalanya tumpang tindih dengan gangguan stres akut. Namun, kondisi ini memiliki gejala spesifik yang membedakan dari gangguan jiwa lain, antara lain mimpi buruk dan kilas balik (Sareen, 2014).</p>
+            </div>
+            <div class="info-block">
+              <h4>Penyebab</h4>
+              <p>Post-traumatic Stress Disorder (PTSD) disebabkan oleh kejadian traumatis di masa lalu. Banyak yang beranggapan bahwa kondisi ini banyak menyerang orang dewasa. Namun, PTSD ternyata juga bisa menyerang remaja. Bahkan, para ahli mengatakan bahwa remaja merupakan kelompok yang rentan mengalami kondisi mental ini. Gangguan mental pascatrauma pada remaja dapat berasal dari berbagai kejadian traumatis. Kejadian yang sering terjadi di lingkungan remaja contohnya perundungan (bullying), pelecehan seksual, dan kekerasan. Walaupun kebanyakan remaja sering murung dan moody, remaja sangat rentan mengalami masalah kesehatan mental yang signifikan dan perlu diatasi segera.</p>
+            </div>
+            <div class="info-block">
+              <h4>Tanda dan Gejala</h4>
+              <ul>
+                <li>Mengingat Kejadian Traumatis</li>
+                <li>Mimpi buruk atau mimpi berulang tentang kejadian traumatis</li>
+                <li>Pikiran atau gambaran mengganggu yang muncul tiba-tiba dan tidak diinginkan</li>
+                <li>Distress emosional atau fisik saat dihadapkan dengan hal yang mengingatkan pada trauma</li>
+                <li>Menghindari tempat, orang, atau situasi yang mengingatkan pada kejadian</li>
+                <li>Menarik diri dari aktivitas sosial atau orang lain</li>
+                <li>Gangguan pada cara berpikir dan perasaan terhadap diri sendiri atau dunia.</li>
+                <li>Perasaan putus asa, sedih, atau tidak berharga</li>
+                <li>Amnesia terhadap bagian penting dari kejadian traumatis</li>
+                <li>Perasaan terasing dari orang lain</li>
+                <li>Pikiran negatif berlebihan tentang diri sendiri atau orang lain</li>
+                <li>Peningkatan kewaspadaan yang berlebihan</li>
+                <li>Sulit tidur atau sering terbangun di malam hari</li>
+                <li>Mudah terkejut atau panik</li>
+                <li>Iritabilitas dan ledakan emosi (marah berlebihan)</li>
+                <li>Perilaku merusak diri sendiri (contohnya: menyakiti diri, alkohol, narkoba)</li>
+                <li>Kesulitan berkonsentrasi</li>
+              </ul>
+            </div>
+            <div class="info-block">
+              <h4>Perawatan untuk Mengatasi PTSD</h4>
+              <ul>
+                <li>Intervensi promosi dan pencegahan kesehatan mental.</li>
+                <li>Cognitive Behavioral Therapy (CBT)</li>
+                <li>Eye Movement Desensitization and Reprocessing (EMDR)</li>
+                <li>Terapi Pemaparan Naratif (NET)</li>
+                <li>Terapi Bermain</li>
+                <li>Teknik kesadaran penuh, seperti meditasi dan teknik pernapasan</li>
+                <li>Terapi kelompok</li>
+                <li>Terapi Keluarga</li>
+                <li>Farmakoterapi</li>
+              </ul>
+            </div>
+          </div>
         </div>
         <div class="details-illustration">
           <img src="/src/assets/Hasiltest.png" alt="Doctor illustration" />
@@ -378,12 +425,56 @@ export default {
   border-radius: 50%;
 }
 
+/* Tambahkan style info-block dan info-container agar konsisten dengan neurosis dan psikotik */
+.ptsd-info-container {
+  margin-top: 32px;
+  background: #fff;
+  border-radius: 18px;
+  box-shadow: 0 4px 24px rgba(44,62,80,0.08);
+  padding: 28px 24px;
+}
+.info-title {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #3498db;
+  margin-bottom: 24px;
+  text-align: center;
+}
+.info-block {
+  margin-bottom: 24px;
+}
+.info-block h4 {
+  color: #2c3e50;
+  font-size: 1.1rem;
+  margin-bottom: 10px;
+  font-weight: 700;
+}
+.info-block p, .info-block ul {
+  color: #333;
+  font-size: 1.05rem;
+  line-height: 1.7;
+  margin-bottom: 8px;
+}
+.info-block ul {
+  padding-left: 22px;
+  margin-bottom: 8px;
+}
+.info-block li {
+  margin-bottom: 4px;
+  color: #333;
+  font-size: 1.05rem;
+  line-height: 1.7;
+}
+
 @media (max-width: 768px) {
   .result-container, .details-container {
     flex-direction: column;
     text-align: center;
   }
   .result-illustration { display: none; }
-  .details-illustration { margin-top: 40px; }
+  .details-illustration { margin-top: 40px; display: none; }
+  .details-text, .info-block p, .info-block li {
+    text-align: justify;
+  }
 }
 </style>

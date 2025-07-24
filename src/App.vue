@@ -19,7 +19,6 @@ const isAdminRoute = computed(() => route.path.startsWith('/admin'));
 </template>
 
 <style>
-/* Global styles in App.vue or a dedicated css file */
 #app-container {
   display: flex;
   flex-direction: column;

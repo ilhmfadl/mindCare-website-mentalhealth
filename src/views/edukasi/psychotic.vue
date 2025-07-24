@@ -1,39 +1,43 @@
 <template>
   <div class="edukasi-detail-bg">
-    <div class="edukasi-detail-header-bg-eating">
+    <div class="edukasi-detail-header-bg-anxiety">
       <div class="edukasi-detail-header-center">
         <div class="edukasi-detail-header-content">
-          <h1>Eating Disorders</h1>
-          <p>Masalah serius pada pola makan, seperti anoreksia (takut gemuk, makan sangat sedikit), bulimia (makan banyak lalu memuntahkan), atau binge eating (makan berlebihan).</p>
+          <h1>Gejala Psikotik</h1>
+          <p>Psikosis adalah gangguan mental berat yang menyebabkan seseorang kehilangan kontak dengan realita, sering kali ditandai dengan halusinasi, delusi, dan perubahan perilaku drastis.</p>
         </div>
         <div class="edukasi-detail-header-img">
-          <img src="/src/assets/gangguan makan.png" alt="Ilustrasi Eating Disorders" />
+          <img src="/src/assets/anxiety.png" alt="Ilustrasi Psikotik" />
         </div>
       </div>
     </div>
     <div class="edukasi-detail-content">
-      <h2>Eating Disorders</h2>
+      <h2>Gejala Psikotik</h2>
       <hr />
       <div class="edukasi-detail-desc">
         <p>
-          <b>Apa itu Eating Disorders?</b><br>
-          Eating disorders adalah gangguan mental serius yang memengaruhi pola makan, citra tubuh, dan emosi terkait makanan. Contohnya: anoreksia nervosa, bulimia nervosa, dan binge eating disorder.
+          <b>Apa itu Psikosis?</b><br>
+          Psikosis adalah kondisi mental serius di mana seseorang mengalami gangguan dalam membedakan kenyataan dan fantasi. Orang dengan gejala psikotik bisa mengalami halusinasi (melihat/mendengar sesuatu yang tidak nyata) atau delusi (mempercayai hal yang tidak benar).
         </p>
         <p>
-          <b>Gejala Eating Disorders:</b><br>
-          - Takut berat badan naik, sangat membatasi makan (anoreksia).<br>
-          - Makan berlebihan lalu memuntahkan (bulimia).<br>
-          - Makan dalam jumlah sangat banyak dalam waktu singkat (binge eating).<br>
-          - Terobsesi dengan berat badan, bentuk tubuh, atau kalori.<br>
-          - Perubahan berat badan drastis, masalah kesehatan fisik.
+          <b>Ciri-ciri Gejala Psikotik:</b><br>
+          - Halusinasi: mendengar suara, melihat, atau merasakan sesuatu yang tidak nyata<br>
+          - Delusi: keyakinan kuat yang tidak sesuai kenyataan (misal: merasa diawasi, merasa punya kekuatan khusus)<br>
+          - Pikiran kacau, sulit berbicara dengan jelas<br>
+          - Perubahan perilaku drastis, menarik diri dari lingkungan<br>
+          - Emosi datar atau tidak sesuai situasi<br>
+          - Sulit membedakan mana yang nyata dan tidak
         </p>
         <p>
-          <b>Penyebab Eating Disorders:</b><br>
-          Faktor genetik, tekanan sosial, pengalaman traumatis, masalah citra tubuh, atau stres berat dapat meningkatkan risiko eating disorders.
+          <b>Contoh Gangguan Psikotik:</b><br>
+          - Skizofrenia<br>
+          - Gangguan delusi<br>
+          - Gangguan skizoafektif<br>
+          - Psikosis akibat penggunaan zat/obat
         </p>
         <p>
           <b>Kapan Harus Mencari Bantuan?</b><br>
-          Jika pola makan atau pikiran tentang makanan/tubuh mulai mengganggu kesehatan fisik, emosi, atau kehidupan sehari-hari, segera konsultasikan ke profesional kesehatan mental.
+          Jika seseorang mengalami gejala-gejala di atas, segera konsultasikan ke profesional kesehatan mental. Penanganan dini sangat penting untuk mencegah komplikasi dan membantu pemulihan.
         </p>
       </div>
       <h3 style="margin-top:48px; color:#4B4B9F;">Artikel Terkait :</h3>
@@ -57,13 +61,13 @@
 
 <script>
 export default {
-  name: 'EatingDetail',
+  name: 'PsikotikDetail',
   data() {
     return {
       relatedArticles: [
-        { title: 'Mengenal Anoreksia, Bulimia, dan Binge Eating', summary: 'Penjelasan perbedaan dan ciri khas tiga jenis eating disorders utama.', author: 'Dr. Lestari' },
-        { title: 'Dampak Eating Disorders pada Kesehatan Fisik', summary: 'Risiko kesehatan jangka panjang akibat gangguan makan.', author: 'Dr. Yoga' },
-        { title: 'Cara Mendukung Teman dengan Eating Disorders', summary: 'Tips membantu orang terdekat yang mengalami gangguan makan.', author: 'Dr. Siska' },
+        { title: 'Mengenal Halusinasi dan Delusi', summary: 'Penjelasan tentang dua gejala utama psikosis dan cara mengenalinya.', author: 'Dr. Nino' },
+        { title: 'Peran Keluarga dalam Pemulihan Psikosis', summary: 'Bagaimana dukungan keluarga sangat penting dalam proses pemulihan.', author: 'Dr. Maya' },
+        { title: 'Psikosis Akibat Zat: Apa yang Harus Dilakukan?', summary: 'Langkah-langkah jika psikosis dipicu oleh penggunaan obat/zat tertentu.', author: 'Dr. Olivia' },
       ]
     }
   },
@@ -75,10 +79,10 @@ export default {
   background: #faf7f3;
   min-height: 100vh;
 }
-.edukasi-detail-header-bg-eating {
+.edukasi-detail-header-bg-anxiety {
   width: 100vw;
   min-width: 100vw;
-  background: linear-gradient(135deg, #f7ecd5 0%, #f7d5d5 100%);
+  background: linear-gradient(135deg, #f7f3c7 0%, #f7cac9 100%);
   margin-left: 50%;
   transform: translateX(-50%);
   box-sizing: border-box;
@@ -107,14 +111,14 @@ export default {
 }
 .edukasi-detail-header-content h1 {
   font-size: 3rem;
-  color: #b98a6a;
+  color: #b96a6a;
   margin-bottom: 16px;
   font-weight: 800;
   letter-spacing: 0.5px;
 }
 .edukasi-detail-header-content p {
   font-size: 1.35rem;
-  color: #7a6a5a;
+  color: #7a5a5a;
   margin-bottom: 0;
   line-height: 1.7;
 }
@@ -144,7 +148,7 @@ export default {
   z-index: 3;
 }
 .edukasi-detail-content h2 {
-  color: #b98a6a;
+  color: #b96a6a;
   font-size: 1.6rem;
   margin-bottom: 8px;
   font-weight: 700;
@@ -207,14 +211,14 @@ export default {
 }
 .article-card .author {
   font-size: 0.98rem;
-  color: #b98a6a;
+  color: #b96a6a;
   font-weight: 600;
   margin-top: auto;
   text-align: left;
 }
 .baca-selengkapnya-btn {
   background: none;
-  color: #b98a6a;
+  color: #b96a6a;
   border: none;
   font-weight: 600;
   font-size: 1.01rem;
@@ -272,3 +276,4 @@ export default {
   }
 }
 </style>
+
