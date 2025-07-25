@@ -28,7 +28,7 @@
       <form class="profile-form" @submit.prevent="onSave">
         <div class="form-group">
           <label for="username">Username</label>
-          <input id="username" type="text" v-model="form.username" :disabled="!isEditing" />
+          <input id="username" type="text" v-model="form.username" disabled />
         </div>
         <div class="form-group">
           <label for="fullName">Nama Lengkap</label>
@@ -60,6 +60,9 @@
 
 <script>
 import ConfirmationModal from '../components/ConfirmationModal.vue';
+import axios from 'axios';
+import { resetTestState } from '../store/testState';
+import { isLoggedIn } from '../store/authState';
 
 export default {
   name: 'ProfileView',
@@ -69,25 +72,55 @@ export default {
       isEditing: false,
       showLogoutConfirm: false,
       showSaveConfirm: false,
+      error: '',
       original: {
-        fullName: 'WINDAH BATUBARA',
-        email: 'windah@gmail.com',
-        address: 'Harapan Raya',
-        job: 'Youtuber',
-        avatar: 'https://randomuser.me/api/portraits/men/32.jpg',
+        fullName: '',
+        email: '',
+        address: '',
+        job: '',
+        avatar: '',
         avatarPreview: null,
       },
       form: {
-        fullName: 'WINDAH BATUBARA',
-        email: 'windah@gmail.com',
-        address: 'Harapan Raya',
-        job: 'Youtuber',
-        avatar: 'https://randomuser.me/api/portraits/men/32.jpg',
+        fullName: '',
+        email: '',
+        address: '',
+        job: '',
+        avatar: '',
         avatarPreview: null,
+        avatarFile: null // <-- tambahkan ini
       }
     }
   },
+  mounted() {
+    this.fetchProfile();
+  },
   methods: {
+    async fetchProfile() {
+      try {
+        const user = JSON.parse(localStorage.getItem('user'));
+        if (!user || !user.id) {
+          this.error = 'User belum login!';
+          return;
+        }
+        const formData = new FormData();
+        formData.append('id', user.id);
+        const response = await axios.post('https://mindcareindependent.com/api/get_profile.php', formData);
+        if (response.data.success) {
+          const profile = response.data.user;
+          this.form.username = profile.username || '';
+          this.form.fullName = profile.fullName || '';
+          this.form.email = profile.email || '';
+          this.form.address = profile.address || '';
+          this.form.avatar = profile.photo || '';
+          this.original = { ...this.form, avatarPreview: null };
+        } else {
+          this.error = response.data.message;
+        }
+      } catch (err) {
+        this.error = 'Gagal mengambil data profile.';
+      }
+    },
     onEdit() {
       this.isEditing = true;
     },
@@ -98,19 +131,47 @@ export default {
     onSave() {
       this.showSaveConfirm = true;
     },
-    confirmSave() {
-      this.original = { ...this.form };
-      if (this.form.avatarPreview) {
-        this.original.avatar = this.form.avatarPreview;
-        this.form.avatar = this.form.avatarPreview;
-        this.form.avatarPreview = null;
+    async confirmSave() {
+      try {
+        const user = JSON.parse(localStorage.getItem('user'));
+        const formData = new FormData();
+        formData.append('id', user.id);
+        formData.append('fullName', this.form.fullName);
+        formData.append('email', this.form.email);
+        formData.append('address', this.form.address);
+        if (this.form.avatarFile) {
+          formData.append('photo', this.form.avatarFile);
+        }
+        const response = await axios.post('https://mindcareindependent.com/api/update_profile.php', formData, {
+          headers: { 'Content-Type': 'multipart/form-data' }
+        });
+        if (response.data.success) {
+          this.original = { ...this.form };
+          this.isEditing = false;
+          this.showSaveConfirm = false;
+          // Refresh foto profile jika perlu
+          if (this.form.avatarPreview) {
+            this.form.avatar = this.form.avatarPreview;
+            this.form.avatarPreview = null;
+            this.form.avatarFile = null;
+          }
+        } else {
+          // alert(response.data.message); // Hapus alert
+        }
+      } catch (err) {
+        // alert('Gagal update profile!'); // Hapus alert
       }
-      this.isEditing = false;
-      this.showSaveConfirm = false;
     },
-    onLogout() {
-      // Tambahkan logika logout sesungguhnya di sini
+    async onLogout() {
+      try {
+        await axios.post('https://mindcareindependent.com/api/logout.php');
+      } catch (e) {}
+      localStorage.removeItem('user');
+      localStorage.removeItem('lastTestResult'); // Hapus hasil tes saat logout
+      resetTestState(); // Reset state hasil tes agar header kembali seperti semula
+      isLoggedIn.value = false; // Update state login agar header langsung hilang
       this.showLogoutConfirm = false;
+      this.$router.push('/login');
     },
     confirmLogout() {
       this.onLogout();
@@ -126,6 +187,7 @@ export default {
     onAvatarChange(e) {
       const file = e.target.files[0];
       if (file && file.type.startsWith('image/')) {
+        this.form.avatarFile = file;
         const reader = new FileReader();
         reader.onload = (ev) => {
           this.form.avatarPreview = ev.target.result;

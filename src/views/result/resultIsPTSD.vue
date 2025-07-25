@@ -121,12 +121,6 @@ import { testState } from '../../store/testState';
 
 export default {
   name: 'ResultIsPTSD',
-  props: {
-    score: {
-      type: [Number, String],
-      required: true
-    }
-  },
   components: {
     ConfirmationModal,
   },
@@ -136,56 +130,132 @@ export default {
     };
   },
   computed: {
+    hasil() {
+      // Prioritaskan testState, fallback ke localStorage, lalu default
+      let hasil = testState.hasilTesTerakhir?.hasil;
+      
+      if (!hasil) {
+        try {
+          const localStorageData = localStorage.getItem('lastTestResult');
+          if (localStorageData) {
+            const parsed = JSON.parse(localStorageData);
+            hasil = parsed.hasil;
+          }
+        } catch (e) {
+          console.error('Error parsing localStorage lastTestResult:', e);
+        }
+      }
+      
+      // Fallback ke default jika masih kosong
+      if (!hasil) {
+        hasil = 'Gejala PTSD';
+      }
+      
+      return hasil;
+    },
+    severity() {
+      // Prioritaskan router params, lalu testState, fallback ke localStorage, lalu default
+      let severity = this.$route.params.severity;
+      
+      if (!severity) {
+        severity = testState.hasilTesTerakhir?.severity;
+      }
+      
+      if (!severity) {
+        try {
+          const localStorageData = localStorage.getItem('lastTestResult');
+          if (localStorageData) {
+            const parsed = JSON.parse(localStorageData);
+            severity = parsed.severity;
+          }
+        } catch (e) {
+          console.error('Error parsing localStorage lastTestResult:', e);
+        }
+      }
+      
+      // Fallback ke default jika masih kosong
+      if (!severity) {
+        severity = 'Berat';
+      }
+      
+      console.log('Severity (computed):', severity);
+      console.log('testState.hasilTesTerakhir:', testState.hasilTesTerakhir);
+      console.log('localStorage lastTestResult:', localStorage.getItem('lastTestResult'));
+      console.log('Router params severity:', this.$route.params.severity);
+      
+      return severity;
+    },
     diagnosis() {
-      const s = Number(this.score);
-      // NOTE: Score ranges for PTSD might differ.
-      // This is placeholder logic.
-      if (s <= 14) {
-        return {
-          name: "Tidak Ada Indikasi PTSD",
-          percentage: 20,
-          recommendation: "Anda tampaknya memproses pengalaman sulit dengan baik. Pertahankan mekanisme koping yang sehat.",
-          description: "Adalah normal untuk merasa terpengaruh oleh peristiwa traumatis, tetapi kebanyakan orang pulih seiring waktu tanpa mengembangkan PTSD.",
-          articles: [
-            { title: "Membangun Resiliensi Diri", summary: "Kemampuan untuk bangkit kembali...", author: "Dr. Putra" },
-            { title: "Pentingnya Dukungan Sosial", summary: "Peran teman dan keluarga dalam pemulihan...", author: "Dr. Queen" },
-            { title: "Journaling untuk Memproses Emosi", summary: "Menulis sebagai alat terapi...", author: "Dr. Rama" },
-          ]
-        };
+      console.log('Diagnosis severity:', this.severity);
+      if (this.hasil === 'Gejala PTSD') {
+        const sev = (this.severity || '').toLowerCase();
+        if (sev === 'ringan') {
+          return {
+            name: 'PTSD Ringan',
+            percentage: 25,
+            recommendation: 'Gejala PTSD ringan terdeteksi. Lakukan self-care dan konsultasi jika perlu.',
+            description: 'Anda mengalami beberapa gejala PTSD ringan. Perhatikan kesehatan mental dan pertimbangkan konsultasi dengan profesional.',
+            articles: []
+          };
+        } else if (sev === 'sedang') {
+          return {
+            name: 'PTSD Sedang',
+            percentage: 55,
+            recommendation: 'Gejala PTSD sedang terdeteksi. Konsultasikan dengan psikolog atau psikiater.',
+            description: 'Gejala PTSD sedang terdeteksi. Konsultasi dengan profesional sangat disarankan.',
+            articles: []
+          };
+        } else if (sev === 'berat') {
+          return {
+            name: 'PTSD Berat',
+            percentage: 95,
+            recommendation: 'Gejala PTSD berat terdeteksi. Segera konsultasikan ke profesional kesehatan mental.',
+            description: 'Gejala PTSD berat terdeteksi. Penanganan profesional sangat penting.',
+            articles: []
+          };
+        }
       }
-      if (s <= 24) {
-        return {
-          name: "Kecenderungan Stres Pasca-Trauma",
-          percentage: 50,
-          recommendation: "Anda mungkin mengalami beberapa gejala sisa dari peristiwa traumatis. Penting untuk mempraktikkan perawatan diri dan mempertimbangkan dukungan profesional.",
-          description: "Gejala seperti mimpi buruk, kewaspadaan berlebih, atau menghindari pengingat trauma mungkin muncul. Ini adalah respons stres yang umum tetapi memerlukan perhatian.",
-          articles: [
-            { title: "Teknik Grounding saat Cemas", summary: "Menstabilkan diri di saat-saat sulit...", author: "Dr. Queen" },
-            { title: "Memahami Respon Fight-Flight-Freeze", summary: "Reaksi alami tubuh terhadap trauma...", author: "Dr. Putra" },
-            { title: "Kapan Gejala Stres Menjadi Masalah?", summary: "Mengenali batas antara normal dan gangguan...", author: "Dr. Rama" },
-          ]
-        };
-      }
+      // Jika hasil bukan PTSD, fallback
       return {
-        name: "Indikasi Kuat PTSD",
-        percentage: 85,
-        recommendation: "Gejala Anda sangat konsisten dengan PTSD. Terapi yang berfokus pada trauma, seperti EMDR atau TF-CBT, sangat direkomendasikan.",
-        description: "Post-Traumatic Stress Disorder (PTSD) dapat berkembang setelah mengalami atau menyaksikan peristiwa traumatis. Gejalanya meliputi ingatan yang mengganggu, penghindaran, perubahan mood negatif, dan gairah yang meningkat.",
-        articles: [
-            { title: "Apa itu Terapi EMDR?", summary: "Eye Movement Desensitization and Reprocessing...", author: "Dr. Putra" },
-            { title: "Trauma-Focused CBT (TF-CBT)", summary: "Terapi efektif untuk anak dan dewasa...", author: "Dr. Queen" },
-            { title: "Hidup dengan PTSD Jangka Panjang", summary: "Manajemen gejala dan pemulihan...", author: "Dr. Rama" },
-        ]
+        name: this.hasil,
+        percentage: 20,
+        recommendation: 'Tidak ada gejala PTSD terdeteksi.',
+        description: 'Anda tidak menunjukkan gejala PTSD.',
+        articles: []
       };
     }
   },
+  mounted() {
+    console.log('ResultIsPTSD mounted');
+    console.log('Initial testState.hasilTesTerakhir:', testState.hasilTesTerakhir);
+    console.log('Initial localStorage lastTestResult:', localStorage.getItem('lastTestResult'));
+    
+    // Ambil ulang dari localStorage jika testState kosong
+    if (!testState.hasilTesTerakhir && localStorage.getItem('lastTestResult')) {
+      try {
+        const localStorageData = localStorage.getItem('lastTestResult');
+        const parsed = JSON.parse(localStorageData);
+        testState.hasilTesTerakhir = parsed;
+        console.log('Updated testState.hasilTesTerakhir from localStorage:', testState.hasilTesTerakhir);
+      } catch (e) {
+        console.error('Error parsing lastTestResult in mounted:', e);
+      }
+    }
+    
+    // Jika tidak ada data hasil tes sama sekali, redirect ke tes
+    if (!localStorage.getItem('lastTestResult')) {
+      console.log('No test result found, redirecting to TesDiri');
+      this.$router.replace({ name: 'TesDiri' });
+      return;
+    }
+    
+    console.log('Final testState.hasilTesTerakhir after mounted:', testState.hasilTesTerakhir);
+  },
   methods: {
     handleConfirm() {
-      // Reset the shared state
       testState.testCompleted = false;
       testState.score = 0;
       testState.resultType = null;
-      
       this.$router.push({ name: 'TesDiri' });
       this.showConfirmationModal = false;
     },

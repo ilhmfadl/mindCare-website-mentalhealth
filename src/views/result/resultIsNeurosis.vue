@@ -128,67 +128,6 @@ import { testState } from '../../store/testState';
 
 export default {
   name: 'ResultIsNeurosis',
-  props: {
-    score: {
-      type: [Number, String],
-      required: true
-    }
-  },
-  computed: {
-    diagnosis() {
-      const s = Number(this.score);
-      if (s <= 14) {
-        return {
-          name: "Tidak Ada Gejala Neurosis",
-          percentage: 20,
-          recommendation: "Kondisi mental Anda stabil. Terus pertahankan gaya hidup sehat dan kelola stres dengan baik.",
-          description: "Anda tidak menunjukkan gejala neurosis. Tetap jaga kesehatan mental dengan pola hidup sehat dan komunikasi yang baik.",
-          articles: [
-            { title: "Menjaga Kesehatan Mental Sehari-hari", summary: "Tips sederhana untuk menjaga kestabilan emosi dan pikiran.", author: "Dr. Anisa" },
-            { title: "Pentingnya Dukungan Sosial", summary: "Bagaimana lingkungan mendukung kesehatan mental.", author: "Dr. Budi" },
-            { title: "Manfaat Relaksasi", summary: "Teknik relaksasi untuk mencegah stres berlebih.", author: "Dr. Cantika" },
-          ]
-        };
-      }
-      if (s <= 24) {
-        return {
-          name: "Gejala Neurosis Ringan",
-          percentage: 50,
-          recommendation: "Anda mengalami gejala neurosis ringan. Cobalah teknik relaksasi, olahraga, dan berbicara dengan orang terdekat.",
-          description: "Neurosis ringan dapat berupa kecemasan, kekhawatiran berlebih, atau kesulitan tidur. Gejala ini biasanya tidak mengganggu aktivitas sehari-hari secara signifikan.",
-          articles: [
-            { title: "Mengenal Neurosis", summary: "Apa itu neurosis dan bagaimana gejalanya?", author: "Dr. Budi" },
-            { title: "Teknik Mengelola Kecemasan", summary: "Cara-cara sederhana mengurangi kecemasan.", author: "Dr. Anisa" },
-            { title: "Pentingnya Tidur Berkualitas", summary: "Tidur cukup untuk kesehatan mental.", author: "Dr. Cantika" },
-          ]
-        };
-      }
-      if (s <= 36) {
-        return {
-          name: "Gejala Neurosis Sedang",
-          percentage: 75,
-          recommendation: "Cobalah berbicara dengan tenaga profesional dan hindari menyendiri terlalu lama. Lakukan kegiatan yang menyenangkan.",
-          description: "Neurosis sedang ditandai dengan kecemasan yang lebih sering, mudah marah, atau gangguan tidur yang mulai mengganggu aktivitas harian.",
-          articles: [
-            { title: "Kapan Harus Konsultasi?", summary: "Tanda-tanda Anda perlu bantuan profesional.", author: "Dr. Anisa" },
-            { title: "Mengelola Stres di Tempat Kerja", summary: "Strategi menghadapi tekanan pekerjaan.", author: "Dr. Budi" },
-            { title: "Olahraga dan Kesehatan Mental", summary: "Manfaat aktivitas fisik untuk pikiran.", author: "Dr. Cantika" },
-          ]
-        };
-      }
-      return {
-        name: "Gejala Neurosis Berat",
-        percentage: 95,
-        recommendation: "Gejala yang Anda alami cukup berat. Segera konsultasikan dengan psikolog atau psikiater untuk penanganan lebih lanjut.",
-        description: "Neurosis berat meliputi kecemasan berlebih, fobia, obsesi, atau kompulsi yang sangat mengganggu kehidupan sehari-hari. Bantuan profesional sangat dianjurkan.",
-        articles: [
-            { title: "Terapi untuk Neurosis", summary: "Pilihan terapi yang efektif untuk neurosis berat.", author: "Dr. Budi" },
-            { title: "Dukungan Keluarga dan Teman", summary: "Peran lingkungan dalam pemulihan.", author: "Dr. Anisa" },
-            { title: "Mengenal Obat-obatan Psikotropika", summary: "Kapan obat dibutuhkan dan bagaimana kerjanya.", author: "Dr. Cantika" },
-        ]
-      };
-    }
-  },
   components: {
     ConfirmationModal,
   },
@@ -196,6 +135,102 @@ export default {
     return {
       showConfirmationModal: false,
     };
+  },
+  computed: {
+    severity() {
+      // Prioritaskan router params, lalu testState, fallback ke localStorage, lalu default
+      let severity = this.$route.params.severity;
+      
+      if (!severity) {
+        severity = testState.hasilTesTerakhir?.severity;
+      }
+      
+      if (!severity) {
+        try {
+          const localStorageData = localStorage.getItem('lastTestResult');
+          if (localStorageData) {
+            const parsed = JSON.parse(localStorageData);
+            severity = parsed.severity;
+          }
+        } catch (e) {
+          console.error('Error parsing localStorage lastTestResult:', e);
+        }
+      }
+      
+      // Fallback ke default jika masih kosong
+      if (!severity) {
+        severity = 'Normal';
+      }
+      
+      console.log('Severity (computed):', severity);
+      console.log('testState.hasilTesTerakhir:', testState.hasilTesTerakhir);
+      console.log('localStorage lastTestResult:', localStorage.getItem('lastTestResult'));
+      console.log('Router params severity:', this.$route.params.severity);
+      
+      return severity;
+    },
+    diagnosis() {
+      console.log('Diagnosis severity:', this.severity);
+      if (this.severity === 'Ringan') {
+        return {
+          name: 'Gejala Neurosis Ringan',
+          percentage: 25,
+          recommendation: 'Anda mengalami gejala neurosis ringan. Cobalah teknik relaksasi, olahraga, dan berbicara dengan orang terdekat.',
+          description: 'Neurosis ringan dapat berupa kecemasan, kekhawatiran berlebih, atau kesulitan tidur. Gejala ini biasanya tidak mengganggu aktivitas sehari-hari secara signifikan.',
+          articles: []
+        };
+      } else if (this.severity === 'Sedang') {
+        return {
+          name: 'Gejala Neurosis Sedang',
+          percentage: 55,
+          recommendation: 'Cobalah berbicara dengan tenaga profesional dan hindari menyendiri terlalu lama. Lakukan kegiatan yang menyenangkan.',
+          description: 'Neurosis sedang ditandai dengan kecemasan yang lebih sering, mudah marah, atau gangguan tidur yang mulai mengganggu aktivitas harian.',
+          articles: []
+        };
+      } else if (this.severity === 'Berat') {
+        return {
+          name: 'Gejala Neurosis Berat',
+          percentage: 95,
+          recommendation: 'Gejala yang Anda alami cukup berat. Segera konsultasikan dengan psikolog atau psikiater untuk penanganan lebih lanjut.',
+          description: 'Neurosis berat meliputi kecemasan berlebih, fobia, obsesi, atau kompulsi yang sangat mengganggu kehidupan sehari-hari. Bantuan profesional sangat dianjurkan.',
+          articles: []
+        };
+      } else {
+        return {
+          name: 'Gejala Neurosis Ringan',
+          percentage: 20,
+          recommendation: 'Anda mengalami gejala neurosis ringan. Cobalah teknik relaksasi, olahraga, dan berbicara dengan orang terdekat.',
+          description: 'Neurosis ringan dapat berupa kecemasan, kekhawatiran berlebih, atau kesulitan tidur. Gejala ini biasanya tidak mengganggu aktivitas sehari-hari secara signifikan.',
+          articles: []
+        };
+      }
+    }
+  },
+  mounted() {
+    console.log('ResultIsNeurosis mounted');
+    console.log('Initial testState.hasilTesTerakhir:', testState.hasilTesTerakhir);
+    console.log('Initial localStorage lastTestResult:', localStorage.getItem('lastTestResult'));
+    
+    // Ambil ulang dari localStorage jika testState kosong
+    if (!testState.hasilTesTerakhir && localStorage.getItem('lastTestResult')) {
+      try {
+        const localStorageData = localStorage.getItem('lastTestResult');
+        const parsed = JSON.parse(localStorageData);
+        testState.hasilTesTerakhir = parsed;
+        console.log('Updated testState.hasilTesTerakhir from localStorage:', testState.hasilTesTerakhir);
+      } catch (e) {
+        console.error('Error parsing lastTestResult in mounted:', e);
+      }
+    }
+    
+    // Jika tidak ada data hasil tes sama sekali, redirect ke tes
+    if (!localStorage.getItem('lastTestResult')) {
+      console.log('No test result found, redirecting to TesDiri');
+      this.$router.replace({ name: 'TesDiri' });
+      return;
+    }
+    
+    console.log('Final testState.hasilTesTerakhir after mounted:', testState.hasilTesTerakhir);
   },
   methods: {
     handleConfirm() {

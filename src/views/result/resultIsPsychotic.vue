@@ -1,6 +1,6 @@
 <template>
   <div class="result-page">
-    <section class="result-hero neurosis-bg">
+    <section class="result-hero psychotic-bg">
       <div class="result-container">
         <div class="result-content">
           <div class="title-block">
@@ -8,7 +8,7 @@
             <h2>HASIL TES KAMU</h2>
           </div>
           <p class="subtitle">Gangguan Kesehatan Mental yang paling dominan Kamu alami saat ini adalah:</p>
-          <div class="diagnosis-card">
+          <div v-if="diagnosis" :class="diagnosisCardClass">
             <h3>{{ diagnosis.name }}</h3>
             <div class="progress-bar-container">
               <div class="progress-bar" :style="{ width: diagnosis.percentage + '%' }"></div>
@@ -118,62 +118,80 @@ export default {
   props: {
     score: {
       type: [Number, String],
-      required: true
-    }
+      required: false
+    },
+    severityProp: { type: String, default: '' }
   },
   computed: {
+    severity() {
+      // Prioritaskan router params, lalu testState, fallback ke localStorage, lalu default
+      let severity = this.$route.params.severity;
+      
+      if (!severity) {
+        severity = testState.hasilTesTerakhir?.severity;
+      }
+      
+      if (!severity) {
+        try {
+          const localStorageData = localStorage.getItem('lastTestResult');
+          if (localStorageData) {
+            const parsed = JSON.parse(localStorageData);
+            severity = parsed.severity;
+          }
+        } catch (e) {
+          console.error('Error parsing localStorage lastTestResult:', e);
+        }
+      }
+      
+      // Fallback ke default jika masih kosong
+      if (!severity) {
+        severity = 'Berat';
+      }
+      
+      console.log('Severity (computed):', severity);
+      console.log('testState.hasilTesTerakhir:', testState.hasilTesTerakhir);
+      console.log('localStorage lastTestResult:', localStorage.getItem('lastTestResult'));
+      console.log('Router params severity:', this.$route.params.severity);
+      
+      return severity;
+    },
     diagnosis() {
-      const s = Number(this.score);
-      if (s <= 14) {
+      console.log('Diagnosis severity:', this.severity);
+      if (this.severity === 'Ringan') {
         return {
-          name: "Tidak Ada Gejala Psikotik",
-          percentage: 20,
-          recommendation: "Kondisi mental Anda stabil. Terus pertahankan gaya hidup sehat dan kelola stres dengan baik.",
-          description: "Anda tidak menunjukkan gejala psikotik. Tetap jaga kesehatan mental dan hindari faktor risiko seperti stres berat atau penggunaan zat terlarang.",
-          articles: [
-            { title: "Menjaga Kesehatan Mental Sehari-hari", summary: "Tips sederhana untuk menjaga kestabilan emosi dan pikiran.", author: "Dr. Anisa" },
-            { title: "Pentingnya Dukungan Sosial", summary: "Bagaimana lingkungan mendukung kesehatan mental.", author: "Dr. Budi" },
-            { title: "Manfaat Relaksasi", summary: "Teknik relaksasi untuk mencegah stres berlebih.", author: "Dr. Cantika" },
-          ]
+          name: 'Gejala Psikotik Ringan',
+          percentage: 25,
+          recommendation: 'Anda mengalami gejala psikotik ringan. Segera konsultasikan dengan profesional jika gejala memburuk.',
+          description: 'Psikosis ringan dapat berupa kebingungan, kesulitan membedakan kenyataan, atau perubahan perilaku yang tidak biasa. Gejala ini perlu dipantau dan dikelola dengan baik.',
+          articles: []
         };
-      }
-      if (s <= 24) {
+      } else if (this.severity === 'Sedang') {
         return {
-          name: "Gejala Psikotik Ringan",
-          percentage: 50,
-          recommendation: "Anda mengalami gejala psikotik ringan. Segera konsultasikan dengan profesional jika gejala memburuk.",
-          description: "Psikosis ringan dapat berupa kebingungan, kesulitan membedakan kenyataan, atau perubahan perilaku yang tidak biasa. Gejala ini perlu dipantau dan dikelola dengan baik.",
-          articles: [
-            { title: "Mengenal Psikosis", summary: "Apa itu psikosis dan bagaimana gejalanya?", author: "Dr. Budi" },
-            { title: "Tanda Awal Gangguan Psikotik", summary: "Kenali gejala sejak dini.", author: "Dr. Anisa" },
-            { title: "Pentingnya Dukungan Keluarga", summary: "Peran keluarga dalam pemulihan.", author: "Dr. Cantika" },
-          ]
+          name: 'Gejala Psikotik Sedang',
+          percentage: 55,
+          recommendation: 'Segera konsultasikan dengan psikolog atau psikiater. Hindari isolasi dan tetap terhubung dengan orang terdekat.',
+          description: 'Psikosis sedang ditandai dengan halusinasi ringan, delusi, atau perubahan perilaku yang mulai mengganggu aktivitas harian. Bantuan profesional sangat dianjurkan.',
+          articles: []
         };
-      }
-      if (s <= 36) {
+      } else if (this.severity === 'Berat') {
         return {
-          name: "Gejala Psikotik Sedang",
-          percentage: 75,
-          recommendation: "Segera konsultasikan dengan psikolog atau psikiater. Hindari isolasi dan tetap terhubung dengan orang terdekat.",
-          description: "Psikosis sedang ditandai dengan halusinasi ringan, delusi, atau perubahan perilaku yang mulai mengganggu aktivitas harian. Bantuan profesional sangat dianjurkan.",
-          articles: [
-            { title: "Terapi untuk Psikosis", summary: "Pilihan terapi yang efektif untuk psikosis.", author: "Dr. Anisa" },
-            { title: "Mengelola Halusinasi", summary: "Strategi menghadapi pengalaman tidak nyata.", author: "Dr. Budi" },
-            { title: "Obat-obatan Antipsikotik", summary: "Bagaimana obat membantu pemulihan.", author: "Dr. Cantika" },
-          ]
+          name: 'Gejala Psikotik Berat',
+          percentage: 95,
+          recommendation: 'Gejala yang Anda alami cukup berat. Segera konsultasikan dengan psikiater untuk penanganan lebih lanjut dan hindari bahaya bagi diri sendiri maupun orang lain.',
+          description: 'Psikosis berat meliputi halusinasi intens, delusi berat, dan perilaku yang sangat tidak sesuai dengan kenyataan. Penanganan medis segera sangat penting.',
+          articles: []
         };
+      } else {
+        return null;
       }
-      return {
-        name: "Gejala Psikotik Berat",
-        percentage: 95,
-        recommendation: "Gejala yang Anda alami cukup berat. Segera konsultasikan dengan psikiater untuk penanganan lebih lanjut dan hindari bahaya bagi diri sendiri maupun orang lain.",
-        description: "Psikosis berat meliputi halusinasi intens, delusi berat, dan perilaku yang sangat tidak sesuai dengan kenyataan. Penanganan medis segera sangat penting.",
-        articles: [
-            { title: "Penanganan Darurat Psikosis", summary: "Langkah-langkah penting saat krisis psikotik.", author: "Dr. Budi" },
-            { title: "Peran Keluarga dalam Pemulihan", summary: "Bagaimana keluarga dapat membantu proses pemulihan.", author: "Dr. Anisa" },
-            { title: "Mengenal Rehabilitasi Psikososial", summary: "Dukungan jangka panjang untuk pasien psikotik.", author: "Dr. Cantika" },
-        ]
-      };
+    },
+    diagnosisCardClass() {
+      // Gunakan severity dari diagnosis
+      const name = (this.diagnosis.name || '').toLowerCase();
+      if (name.includes('ringan')) return 'diagnosis-card ringan';
+      if (name.includes('sedang')) return 'diagnosis-card sedang';
+      if (name.includes('berat')) return 'diagnosis-card berat';
+      return 'diagnosis-card normal';
     }
   },
   components: {
@@ -183,6 +201,32 @@ export default {
     return {
       showConfirmationModal: false,
     };
+  },
+  mounted() {
+    console.log('ResultIsPsychotic mounted');
+    console.log('Initial testState.hasilTesTerakhir:', testState.hasilTesTerakhir);
+    console.log('Initial localStorage lastTestResult:', localStorage.getItem('lastTestResult'));
+    
+    // Ambil ulang dari localStorage jika testState kosong
+    if (!testState.hasilTesTerakhir && localStorage.getItem('lastTestResult')) {
+      try {
+        const localStorageData = localStorage.getItem('lastTestResult');
+        const parsed = JSON.parse(localStorageData);
+        testState.hasilTesTerakhir = parsed;
+        console.log('Updated testState.hasilTesTerakhir from localStorage:', testState.hasilTesTerakhir);
+      } catch (e) {
+        console.error('Error parsing lastTestResult in mounted:', e);
+      }
+    }
+    
+    // Jika tidak ada data hasil tes sama sekali, redirect ke tes
+    if (!localStorage.getItem('lastTestResult')) {
+      console.log('No test result found, redirecting to TesDiri');
+      this.$router.replace({ name: 'TesDiri' });
+      return;
+    }
+    
+    console.log('Final testState.hasilTesTerakhir after mounted:', testState.hasilTesTerakhir);
   },
   methods: {
     handleConfirm() {
@@ -206,6 +250,9 @@ export default {
 .result-page {
   background-color: #fdfcfa;
   font-family: 'Inter', sans-serif;
+}
+.psychotic-bg {
+  background: linear-gradient(120deg, #232b5c 0%, #00b4d8 100%); /* Dark blue to cyan */
 }
 /* New gradient for Anxiety */
 
@@ -289,9 +336,9 @@ export default {
   overflow: hidden;
 }
 .progress-bar {
-  background: #34D399; /* Green/Teal color for Anxiety */
-  height: 100%;
-  border-radius: 50px;
+  background: linear-gradient(90deg, #00b4d8 0%, #232b5c 100%);
+  height: 16px;
+  border-radius: 8px;
   transition: width 0.8s ease-in-out;
 }
 .progress-labels {

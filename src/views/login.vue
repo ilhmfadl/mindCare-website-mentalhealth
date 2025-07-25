@@ -29,6 +29,7 @@
 </template>
 
 <script>
+import axios from 'axios';
 export default {
   name: 'Login',
   data() {
@@ -39,12 +40,45 @@ export default {
     }
   },
   methods: {
-    handleLogin() {
+    async handleLogin() {
+      this.error = '';
       if (!this.username || !this.password) {
-        this.error = 'Username dan password wajib diisi.';
+        this.error = 'Username/email dan password wajib diisi!';
         return;
       }
-      this.$router.push('/');
+      try {
+        const formData = new FormData();
+        formData.append('username', this.username);
+        formData.append('password', this.password);
+
+        const response = await axios.post('https://mindcareindependent.com/api/login.php', formData);
+        if (response.data.success) {
+          // Simpan data user ke localStorage
+          localStorage.setItem('user', JSON.stringify(response.data.user));
+          // Ambil hasil tes terakhir user
+          try {
+            const tesForm = new FormData();
+            tesForm.append('user_id', response.data.user.id);
+            const tesRes = await axios.post('https://mindcareindependent.com/api/get_last_tesdiri.php', tesForm);
+            if (tesRes.data.success && tesRes.data.data) {
+              localStorage.setItem('lastTestResult', JSON.stringify(tesRes.data.data));
+            } else {
+              localStorage.removeItem('lastTestResult');
+            }
+          } catch (e) {
+            localStorage.removeItem('lastTestResult');
+          }
+          if (response.data.user.role === 'admin') {
+            this.$router.push('/admin/users').then(() => window.location.reload());
+          } else {
+            this.$router.push('/').then(() => window.location.reload());
+          }
+        } else {
+          this.error = response.data.message;
+        }
+      } catch (err) {
+        this.error = 'Terjadi kesalahan koneksi ke server.';
+      }
     }
   }
 }

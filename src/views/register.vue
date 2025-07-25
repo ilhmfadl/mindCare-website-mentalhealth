@@ -41,6 +41,7 @@
 </template>
 
 <script>
+import axios from 'axios';
 export default {
   name: 'Register',
   data() {
@@ -54,13 +55,27 @@ export default {
     }
   },
   methods: {
-    handleRegister() {
+    async handleRegister() {
       if (this.password !== this.confirmPassword) {
         this.error = 'Password dan konfirmasi password tidak sama.';
         return;
       }
-      alert('Registrasi berhasil!');
-      this.$router.push('/login');
+      try {
+        const formData = new FormData();
+        formData.append('username', this.username);
+        formData.append('email', this.email);
+        formData.append('password', this.password);
+        formData.append('fullName', this.name);
+
+        const response = await axios.post('https://mindcareindependent.com/api/register.php', formData);
+        if (response.data.success) {
+          this.$router.push('/login');
+        } else {
+          this.error = response.data.message;
+        }
+      } catch (err) {
+        this.error = 'Terjadi kesalahan koneksi ke server.';
+      }
     }
   }
 }

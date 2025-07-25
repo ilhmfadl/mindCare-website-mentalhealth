@@ -10,14 +10,14 @@
         <router-link to="/">Home</router-link>
         <router-link to="/tes-diri">Tes Diri</router-link>
         <router-link
-          v-if="testState.testCompleted"
-          :to="{ name: testState.resultType, params: { score: testState.score } }"
+          v-if="testState.hasilTesTerakhir"
+          :to="getHasilTesRoute"
         >
           Hasil Tes
         </router-link>
         <router-link to="/edukasi">Pojok Edukasi</router-link>
         <router-link to="/forum">Forum Diskusi</router-link>
-        <router-link to="/profile">Profile</router-link>
+        <router-link v-if="isLoggedIn" to="/profile">Profile</router-link>
       </nav>
     </div>
   </header>
@@ -25,13 +25,42 @@
 
 <script>
 import { testState } from '../store/testState';
+import { isLoggedIn } from '../store/authState';
+import { ref, computed, onMounted, onUnmounted } from 'vue';
 
 export default {
   name: 'Header',
   setup() {
-    return {
-      testState
+    const userRef = ref(!!localStorage.getItem('user'));
+    const updateUser = () => {
+      userRef.value = !!localStorage.getItem('user');
     };
+    onMounted(() => {
+      window.addEventListener('storage', updateUser);
+    });
+    onUnmounted(() => {
+      window.removeEventListener('storage', updateUser);
+    });
+    return {
+      testState,
+      isLoggedIn: userRef
+    };
+  },
+  computed: {
+    getHasilTesRoute() {
+      const hasil = (testState.hasilTesTerakhir?.hasil || '').toLowerCase();
+      if (hasil.includes('neurosis')) {
+        return { name: 'ResultIsNeurosis' };
+      } else if (hasil.includes('psikotik') || hasil.includes('zat')) {
+        return { name: 'ResultIsPsychotic' };
+      } else if (hasil.includes('ptsd')) {
+        return { name: 'ResultIsPTSD' };
+      } else if (hasil.includes('normal')) {
+        return { name: 'ResultIsNormal' };
+      } else {
+        return { name: 'TesDiri' };
+      }
+    }
   }
 }
 </script>

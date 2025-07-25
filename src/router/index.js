@@ -7,6 +7,7 @@ import ChangePassword from '../views/change_password.vue';
 import ResultIsNeurosis from '../views/result/resultIsNeurosis.vue';
 import ResultIsPsychotic from '../views/result/resultIsPsychotic.vue';
 import ResultIsPTSD from '../views/result/resultIsPTSD.vue';
+import ResultIsNormal from '../views/result/resultIsNormal.vue';
 import PojokEdukasi from '../views/pojokEdukasi.vue';
 import Depresi from '../views/edukasi/neurosis.vue';
 import Anxiety from '../views/edukasi/psychotic.vue';
@@ -18,7 +19,6 @@ import Register from '../views/register.vue';
 import Login from '../views/login.vue';
 
 // Import admin views
-import AdminDashboard from '../adminViews/Dashboard.vue';
 import UsersManagement from '../adminViews/UsersManagement.vue';
 import QuestionerManagement from '../adminViews/QuestionerManagement.vue';
 import JournalManagement from '../adminViews/JournalManagement.vue';
@@ -47,25 +47,36 @@ const routes = [
     path: '/hasil/psikotik',
     name: 'ResultIsPsychotic',
     component: ResultIsPsychotic,
-    props: true
+    props: route => ({
+      severityProp: route.params.severity
+    })
   },
   {
     path: '/hasil/ptsd',
     name: 'ResultIsPTSD',
     component: ResultIsPTSD,
-    props: true
+    props: route => ({
+      hasilProp: route.params.hasil,
+      severityProp: route.params.severity
+    })
+  },
+  {
+    path: '/hasil/normal',
+    name: 'ResultIsNormal',
+    component: ResultIsNormal
   },
   { path: '/edukasi', name: 'Edukasi', component: PojokEdukasi },
   { path: '/edukasi/depresi', name: 'EdukasiDepresi', component: Depresi },
   { path: '/edukasi/anxiety', name: 'EdukasiAnxiety', component: Anxiety },
   { path: '/edukasi/ptsd', name: 'EdukasiPTSD', component: PTSD },
+  { path: '/edukasi/neurosis', name: 'EdukasiNeurosis', component: Depresi },
+  { path: '/edukasi/psikotik', name: 'EdukasiPsikotik', component: Anxiety },
   { path: '/forum', name: 'Forum', component: Forum },
   { path: '/profile', name: 'Profile', component: Profile },
   { path: '/ubah-kata-sandi', name: 'ChangePassword', component: ChangePassword },
   // Tambah route register dan login
   { path: '/register', name: 'Register', component: Register },
   { path: '/login', name: 'Login', component: Login },
-  { path: '/admin/dashboard', name: 'AdminDashboard', component: AdminDashboard },
   { path: '/admin/users', name: 'UsersManagement', component: UsersManagement },
   { path: '/admin/questioner', name: 'QuestionerManagement', component: QuestionerManagement },
   { path: '/admin/journal', name: 'JournalManagement', component: JournalManagement },

@@ -41,6 +41,12 @@
 
     <!-- Results Section -->
     <ResultIsNeurosis v-if="showResults" :score="totalScore" />
+    <div v-if="error" class="error-message" style="color:red;text-align:center;margin:16px 0;">{{ error }}</div>
+    <div v-if="showResults" class="results-section">
+      <h2>Hasil Tes Anda:</h2>
+      <p>{{ hasilTes }}</p>
+      <button class="back-button" @click="resetTest">Ulangi Tes</button>
+    </div>
   </div>
 </template>
 
@@ -48,6 +54,7 @@
 import QuestionItem from '../components/QuestionItem.vue';
 import ResultIsNeurosis from './result/resultIsNeurosis.vue';
 import { testState } from '../store/testState';
+import axios from 'axios';
 
 export default {
   name: 'TesDiri',
@@ -57,24 +64,28 @@ export default {
   },
   data() {
     return {
-      questions: [
-        'Dalam 2 minggu terakhir, seberapa sering Anda merasa kurang tertarik atau senang dalam melakukan sesuatu?',
-        'Seberapa sering Anda merasa murung, sedih, atau putus asa?',
-        'Seberapa sering Anda merasa sulit tidur atau tidur terlalu banyak?',
-        'Seberapa sering Anda merasa lelah atau kurang berenergi?',
-        'Seberapa sering Anda merasa nafsu makan berkurang atau makan berlebihan?',
-        'Seberapa sering Anda merasa buruk tentang diri sendiri, atau merasa bahwa Anda adalah seorang yang gagal?',
-        'Seberapa sering Anda merasa sulit berkonsentrasi pada sesuatu, seperti membaca koran atau menonton televisi?',
-        'Seberapa sering Anda bergerak atau berbicara sangat lambat sehingga orang lain bisa memperhatikan?',
-        'Seberapa sering Anda merasa gelisah atau resah sehingga Anda lebih sering bergerak dari biasanya?',
-        'Seberapa sering Anda berpikir untuk menyakiti diri sendiri atau berpikir bahwa lebih baik Anda mati?'
-      ],
-      answers: Array(10).fill(null),
+      questions: [],
+      answers: [],
       showResults: false,
       totalScore: 0,
       currentPage: 0,
       questionsPerPage: 5,
       loading: false,
+      error: '',
+      hasilTes: '',
+    }
+  },
+  async mounted() {
+    try {
+      const res = await axios.get('https://mindcareindependent.com/api/tesdiri_questions.php');
+      if (res.data.success) {
+        this.questions = res.data.questions.map(q => q.pertanyaan);
+        this.answers = Array(this.questions.length).fill(null);
+      } else {
+        this.error = 'Gagal mengambil pertanyaan tes.';
+      }
+    } catch (e) {
+      this.error = 'Gagal koneksi ke server.';
     }
   },
   computed: {
@@ -115,18 +126,90 @@ export default {
         this.currentPage++;
       }
     },
-    submitTest() {
+    async submitTest() {
       if (!this.allQuestionsAnswered) return;
-      this.totalScore = this.answers.reduce((total, answer) => total + answer, 0);
-      // Update global state for persistent result
-      testState.testCompleted = true;
-      testState.score = this.totalScore;
-      testState.resultType = 'ResultIsNeurosis'; // Ganti sesuai logic result
+      const user = localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user')) : null;
       this.loading = true;
-      setTimeout(() => {
+      this.error = '';
+      try {
+        const formData = new FormData();
+        if (user && user.id) {
+          formData.append('user_id', user.id);
+        }
+        formData.append('jawaban', JSON.stringify(this.answers));
+        console.log('Jawaban dikirim:', this.answers);
+        const response = await axios.post('https://mindcareindependent.com/api/submit_tesdiri.php', formData);
+        console.log('Response backend:', response.data);
+        if (response.data.success) {
+          this.hasilTes = response.data.hasil;
+          this.showResults = true;
+          let routeName = '';
+          console.log('Hasil dari backend:', this.hasilTes, response.data.severity);
+          if (this.hasilTes === 'Gejala Neurosis') routeName = 'ResultIsNeurosis';
+          else if (this.hasilTes === 'Gejala Psikotik') routeName = 'ResultIsPsychotic';
+          else if (this.hasilTes === 'Gejala PTSD') routeName = 'ResultIsPTSD';
+          else if (this.hasilTes === 'Penggunaan Zat Psikotik') routeName = 'ResultIsPsychotic';
+          else if (this.hasilTes === 'Normal') routeName = 'ResultIsNormal';
+          console.log('Route name:', routeName);
+          if (routeName) {
+            testState.testCompleted = true;
+            testState.resultType = routeName;
+            testState.score = this.hasilTes;
+            testState.severity = response.data.severity;
+            
+            // Update testState.hasilTesTerakhir dan localStorage dengan data terbaru
+            const latestData = {
+              hasil: this.hasilTes,
+              severity: response.data.severity
+            };
+            
+            // Jika user login, fetch data terbaru dari backend
+            if (user && user.id) {
+              try {
+                const formFetch = new FormData();
+                formFetch.append('user_id', user.id);
+                const res = await axios.post('https://mindcareindependent.com/api/get_last_tesdiri.php', formFetch);
+                if (res.data.success && res.data.data) {
+                  // Pastikan severity ada dalam data dari backend
+                  const backendData = res.data.data;
+                  if (!backendData.severity) {
+                    backendData.severity = response.data.severity; // Fallback ke severity dari response submit
+                  }
+                  testState.hasilTesTerakhir = backendData;
+                  localStorage.setItem('lastTestResult', JSON.stringify(backendData));
+                } else {
+                  // Fallback ke data dari response submit
+                  testState.hasilTesTerakhir = latestData;
+                  localStorage.setItem('lastTestResult', JSON.stringify(latestData));
+                }
+              } catch (e) {
+                console.error('Error fetching latest data:', e);
+                // Fallback ke data dari response submit
+                testState.hasilTesTerakhir = latestData;
+                localStorage.setItem('lastTestResult', JSON.stringify(latestData));
+              }
+            } else {
+              // Anonymous: update langsung dari response submit
+              testState.hasilTesTerakhir = latestData;
+              localStorage.setItem('lastTestResult', JSON.stringify(latestData));
+            }
+            
+            console.log('Final testState.hasilTesTerakhir:', testState.hasilTesTerakhir);
+            console.log('Final localStorage.lastTestResult:', localStorage.getItem('lastTestResult'));
+            
+            await this.$nextTick();
+            this.$router.push({ name: routeName, params: { hasil: this.hasilTes, severity: response.data.severity } });
+          } else {
+            this.error = 'Tidak dapat menentukan halaman hasil. Hasil: ' + this.hasilTes;
+          }
+        } else {
+          this.error = response.data.message;
+        }
+      } catch (e) {
+        this.error = 'Gagal koneksi ke server: ' + e.message;
+      } finally {
         this.loading = false;
-        this.$router.push({ name: testState.resultType, params: { score: testState.score } });
-      }, 1500);
+      }
     },
     resetTest() {
       this.answers = Array(this.questions.length).fill(null);

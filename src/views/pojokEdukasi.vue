@@ -10,7 +10,7 @@
       'kategori-section--bottom': idx === topics.length - 1,
       'kategori-section--title-up': ['PTSD','OCD','Anxiety','Schizophrenia'].includes(item.title)
     }]">
-      <router-link v-if="idx === 0" :to="'/edukasi/psikotik'" style="display:block;text-decoration:none;">
+      <router-link v-if="idx === 0" :to="'/edukasi/neurosis'" style="display:block;text-decoration:none;">
         <div class="kategori-content" style="cursor:pointer;">
           <div class="kategori-bg-title">Gejala Neurosis</div>
           <div class="kategori-img-wrapper">
@@ -19,7 +19,7 @@
           <div class="kategori-desc">{{ item.desc }}</div>
         </div>
       </router-link>
-      <router-link v-else-if="idx === 1" :to="'/edukasi/neurosis'" style="display:block;text-decoration:none;">
+      <router-link v-else-if="idx === 1" :to="'/edukasi/psikotik'" style="display:block;text-decoration:none;">
         <div class="kategori-content" style="cursor:pointer;">
           <div class="kategori-bg-title">Gejala Psikotik</div>
           <div class="kategori-img-wrapper">
@@ -97,6 +97,9 @@
 </template>
 
 <script>
+import DepresiImg from '../assets/Depresi.png'
+import AnxietyImg from '../assets/anxiety.png'
+import PTSDImg from '../assets/PTSD.png'
 export default {
   name: 'PojokEdukasi',
   data() {
@@ -105,21 +108,21 @@ export default {
         {
           title: 'Gejala Neurosis',
           desc: 'Gangguan mental ringan seperti kecemasan, fobia, atau depresi ringan yang memengaruhi pikiran dan perilaku, namun tidak sampai kehilangan kontak dengan realita.',
-          img: '/src/assets/Depresi.png',
+          img: DepresiImg,
           bgClass: 'bg-depresi',
           colorClass: 'color-depresi',
         },
         {
           title: 'Gejala Psikotik',
           desc: 'Gangguan mental berat seperti halusinasi, delusi, atau skizofrenia yang menyebabkan seseorang kehilangan kontak dengan realita.',
-          img: '/src/assets/anxiety.png',
+          img: AnxietyImg,
           bgClass: 'bg-anxiety',
           colorClass: 'color-anxiety',
         },
         {
           title: 'PTSD',
           desc: 'Gangguan setelah mengalami peristiwa traumatis, seperti kecelakaan, bencana, atau kekerasan, yang menyebabkan kilas balik, mimpi buruk, dan kecemasan berat.',
-          img: '/src/assets/PTSD.png',
+          img: PTSDImg,
           bgClass: 'bg-fobia',
           colorClass: 'color-fobia',
         },
