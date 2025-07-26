@@ -90,6 +90,12 @@ const router = createRouter({
     scrollBehavior(to, from, savedPosition) {
       if (savedPosition) {
         return savedPosition;
+      } else if (to.hash) {
+        // Handle anchor scrolling
+        return {
+          el: to.hash,
+          behavior: 'smooth'
+        };
       } else {
         return { top: 0 };
       }

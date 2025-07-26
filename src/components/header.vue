@@ -26,24 +26,13 @@
 <script>
 import { testState } from '../store/testState';
 import { isLoggedIn } from '../store/authState';
-import { ref, computed, onMounted, onUnmounted } from 'vue';
 
 export default {
   name: 'Header',
   setup() {
-    const userRef = ref(!!localStorage.getItem('user'));
-    const updateUser = () => {
-      userRef.value = !!localStorage.getItem('user');
-    };
-    onMounted(() => {
-      window.addEventListener('storage', updateUser);
-    });
-    onUnmounted(() => {
-      window.removeEventListener('storage', updateUser);
-    });
     return {
       testState,
-      isLoggedIn: userRef
+      isLoggedIn
     };
   },
   computed: {
