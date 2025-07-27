@@ -73,7 +73,7 @@
 <script>
 import QuestionItem from '../components/QuestionItem.vue';
 import ResultIsNeurosis from './result/resultIsNeurosis.vue';
-import { testState } from '../store/testState';
+import { testState, saveTestResult, resetTestState, resetCurrentTestOnly } from '../store/testState';
 import axios from 'axios';
 
 export default {
@@ -101,6 +101,9 @@ export default {
   },
   async mounted() {
     await this.fetchQuestions();
+    
+    // Reset test state ketika user mulai tes baru
+    this.resetTestStateOnStart();
     
     // Optional: Check for new questions every 30 seconds
     this.questionCheckInterval = setInterval(async () => {
@@ -244,13 +247,8 @@ export default {
           else if (this.hasilTes === 'Normal') routeName = 'ResultIsNormal';
           console.log('Route name:', routeName);
           if (routeName) {
-            testState.testCompleted = true;
-            testState.resultType = routeName;
-            testState.score = this.hasilTes;
-            testState.severity = response.data.severity;
-            
-            // Update testState.hasilTesTerakhir dan localStorage dengan data terbaru
-            const latestData = {
+            // Simpan hasil tes dengan user ID
+            const testResult = {
               hasil: this.hasilTes,
               severity: response.data.severity
             };
@@ -267,23 +265,23 @@ export default {
                   if (!backendData.severity) {
                     backendData.severity = response.data.severity; // Fallback ke severity dari response submit
                   }
-                  testState.hasilTesTerakhir = backendData;
+                  saveTestResult(backendData, user.id);
                   localStorage.setItem('lastTestResult', JSON.stringify(backendData));
                 } else {
                   // Fallback ke data dari response submit
-                  testState.hasilTesTerakhir = latestData;
-                  localStorage.setItem('lastTestResult', JSON.stringify(latestData));
+                  saveTestResult(testResult, user.id);
+                  localStorage.setItem('lastTestResult', JSON.stringify(testResult));
                 }
               } catch (e) {
                 console.error('Error fetching latest data:', e);
                 // Fallback ke data dari response submit
-                testState.hasilTesTerakhir = latestData;
-                localStorage.setItem('lastTestResult', JSON.stringify(latestData));
+                saveTestResult(testResult, user.id);
+                localStorage.setItem('lastTestResult', JSON.stringify(testResult));
               }
             } else {
               // Anonymous: update langsung dari response submit
-              testState.hasilTesTerakhir = latestData;
-              localStorage.setItem('lastTestResult', JSON.stringify(latestData));
+              saveTestResult(testResult, null);
+              localStorage.setItem('lastTestResult', JSON.stringify(testResult));
             }
             
             console.log('Final testState.hasilTesTerakhir:', testState.hasilTesTerakhir);
@@ -308,7 +306,15 @@ export default {
       this.totalScore = 0;
       this.showResults = false;
       this.currentPage = 0;
-      // Jangan reset testState agar hasil tetap persist
+      // Reset hanya data tes yang sedang berlangsung
+      // agar menu "Hasil Tes Diri" tetap ditampilkan
+      resetCurrentTestOnly();
+    },
+    
+    resetTestStateOnStart() {
+      // Reset hanya data tes yang sedang berlangsung
+      // agar menu "Hasil Tes Diri" tetap ditampilkan jika user pernah menyelesaikan tes
+      resetCurrentTestOnly();
     }
   }
 }

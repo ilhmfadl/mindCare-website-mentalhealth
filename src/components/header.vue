@@ -10,10 +10,10 @@
         <router-link to="/">Home</router-link>
         <router-link to="/tes-diri">Tes Diri</router-link>
         <router-link
-          v-if="testState.hasilTesTerakhir"
+          v-if="showHasilTes"
           :to="getHasilTesRoute"
         >
-          Hasil Tes
+          Hasil Tes Diri
         </router-link>
         <router-link to="/edukasi">Pojok Edukasi</router-link>
         <router-link to="/forum">Forum Diskusi</router-link>
@@ -24,15 +24,31 @@
 </template>
 
 <script>
-import { testState } from '../store/testState';
+import { testState, hasCompletedTest, checkUserTestStatus } from '../store/testState';
 import { isLoggedIn } from '../store/authState';
+import { computed, onMounted } from 'vue';
 
 export default {
   name: 'Header',
   setup() {
+    const currentUser = computed(() => {
+      const user = JSON.parse(localStorage.getItem('user') || 'null');
+      return user ? user.id : null;
+    });
+
+    const showHasilTes = computed(() => {
+      return checkUserTestStatus(currentUser.value);
+    });
+
+    onMounted(() => {
+      // Cek status tes saat component mount
+      checkUserTestStatus(currentUser.value);
+    });
+
     return {
       testState,
-      isLoggedIn
+      isLoggedIn,
+      showHasilTes
     };
   },
   computed: {

@@ -5,22 +5,93 @@
         <router-link to="/admin/users" class="nav-link" active-class="active"><span class="nav-text">Users</span></router-link>
         <router-link to="/admin/questioner" class="nav-link" active-class="active"><span class="nav-text">Pertanyaan</span></router-link>
         <router-link to="/admin/journal" class="nav-link" active-class="active"><span class="nav-text">Jurnal</span></router-link>
-        <router-link to="/admin/forum" class="nav-link" active-class="active"><span class="nav-text">Forum</span></router-link>
+        <router-link to="/admin/chat" class="nav-link" active-class="active"><span class="nav-text">Inbox</span></router-link>
       </nav>
       <div class="admin-info">
         <div class="admin-name-role">
-          <div class="admin-name">Marvin McKinney</div>
+          <div class="admin-name">{{ adminName }}</div>
           <div class="admin-role">Admin</div>
         </div>
-        <div class="admin-avatar">M</div>
+        <div class="admin-avatar">{{ adminInitials }}</div>
+        <button class="logout-btn" @click="showLogoutModal" title="Logout">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+            <polyline points="16,17 21,12 16,7"/>
+            <line x1="21" y1="12" x2="9" y2="12"/>
+          </svg>
+        </button>
       </div>
     </div>
+    
+    <!-- Confirmation Modal untuk Logout -->
+    <ConfirmationModal
+      :isVisible="showModal"
+      title="Konfirmasi Logout"
+      message="Apakah Anda yakin ingin keluar dari sistem admin?"
+      confirmText="Ya, Logout"
+      cancelText="Batal"
+      @close="hideLogoutModal"
+      @confirm="performLogout"
+    />
   </header>
 </template>
 
 <script>
+import axios from 'axios';
+import ConfirmationModal from '../../components/ConfirmationModal.vue';
+
 export default {
-  name: 'AdminHeader'
+  name: 'AdminHeader',
+  components: {
+    ConfirmationModal
+  },
+  data() {
+    return {
+      adminName: 'Admin',
+      adminInitials: 'A',
+      showModal: false
+    }
+  },
+  mounted() {
+    // Ambil data admin dari localStorage
+    const user = JSON.parse(localStorage.getItem('user') || 'null');
+    if (user && user.role === 'admin') {
+      this.adminName = user.fullName || user.username || 'Admin';
+      this.adminInitials = (user.fullName || user.username || 'A').slice(0, 2).toUpperCase();
+    }
+  },
+  methods: {
+    showLogoutModal() {
+      this.showModal = true;
+    },
+    
+    hideLogoutModal() {
+      this.showModal = false;
+    },
+    
+    async performLogout() {
+      try {
+        // Ambil user ID dari localStorage
+        const user = JSON.parse(localStorage.getItem('user') || 'null');
+        
+        if (user && user.id) {
+          // Call logout API
+          const formData = new FormData();
+          formData.append('user_id', user.id);
+          
+          await axios.post('https://mindcareindependent.com/api/logout.php', formData);
+        }
+      } catch (error) {
+        console.error('Error during logout:', error);
+      } finally {
+        // Clear localStorage
+        localStorage.removeItem('user');
+        
+        // Redirect ke halaman login
+        this.$router.push('/login');
+      }
+    }
+  }
 };
 </script>
 
@@ -120,6 +191,23 @@ export default {
   font-weight: bold;
   font-size: 1.2rem;
   box-shadow: 0 1px 4px rgba(0,0,0,0.07);
+}
+
+.logout-btn {
+  background: transparent;
+  border: none;
+  color: #fff;
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 4px;
+  transition: background-color 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.logout-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
 }
 @media (max-width: 900px) {
   .header-inner {

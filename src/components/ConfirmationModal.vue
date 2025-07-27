@@ -1,11 +1,22 @@
 <template>
-  <div v-if="visible" class="modal-overlay">
-    <div class="modal-content">
-      <h3 class="modal-title">{{ title }}</h3>
-      <p class="modal-message">{{ message }}</p>
-      <div class="modal-actions">
-        <button @click="onCancel" class="btn-cancel">Batal</button>
-        <button @click="onConfirm" class="btn-confirm">Yakin</button>
+  <div v-if="isVisible" class="modal-overlay" @click="closeModal">
+    <div class="modal-container" @click.stop>
+      <div class="modal-header">
+        <h3 class="modal-title">{{ title }}</h3>
+        <button class="modal-close" @click="closeModal">&times;</button>
+      </div>
+      
+      <div class="modal-body">
+        <p class="modal-message">{{ message }}</p>
+      </div>
+      
+      <div class="modal-footer">
+        <button class="btn btn-secondary" @click="closeModal">
+          {{ cancelText }}
+        </button>
+        <button class="btn btn-primary" @click="confirmAction">
+          {{ confirmText }}
+        </button>
       </div>
     </div>
   </div>
@@ -15,29 +26,37 @@
 export default {
   name: 'ConfirmationModal',
   props: {
-    visible: {
+    isVisible: {
       type: Boolean,
-      required: true,
+      default: false
     },
     title: {
       type: String,
-      default: 'Konfirmasi',
+      default: 'Konfirmasi'
     },
     message: {
       type: String,
-      required: true,
+      default: 'Apakah Anda yakin ingin melakukan tindakan ini?'
     },
+    confirmText: {
+      type: String,
+      default: 'Ya'
+    },
+    cancelText: {
+      type: String,
+      default: 'Batal'
+    }
   },
-  emits: ['confirm', 'cancel'],
   methods: {
-    onConfirm() {
+    closeModal() {
+      this.$emit('close');
+    },
+    confirmAction() {
       this.$emit('confirm');
-    },
-    onCancel() {
-      this.$emit('cancel');
-    },
-  },
-};
+      this.closeModal();
+    }
+  }
+}
 </script>
 
 <style scoped>
@@ -47,70 +66,118 @@ export default {
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.6);
+  background: rgba(0, 0, 0, 0.5);
   display: flex;
-  justify-content: center;
   align-items: center;
-  z-index: 2000;
-  animation: fade-in 0.2s ease;
-}
-.modal-content {
-  background: white;
-  padding: 24px 32px;
-  border-radius: 16px;
-  box-shadow: 0 5px 20px rgba(0,0,0,0.2);
-  width: 90%;
-  max-width: 450px;
-  text-align: center;
-  animation: slide-down 0.3s ease-out;
-}
-@keyframes fade-in {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}
-@keyframes slide-down {
-  from { transform: translateY(-30px); opacity: 0; }
-  to { transform: translateY(0); opacity: 1; }
-}
-.modal-title {
-  font-size: 1.5rem;
-  font-weight: 700;
-  color: #333;
-  margin: 0 0 12px;
-}
-.modal-message {
-  font-size: 1rem;
-  color: #555;
-  line-height: 1.6;
-  margin-bottom: 24px;
-}
-.modal-actions {
-  display: flex;
   justify-content: center;
-  gap: 16px;
+  z-index: 1000;
 }
-.modal-actions button {
-  padding: 10px 24px;
-  border-radius: 50px;
+
+.modal-container {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  max-width: 400px;
+  width: 90%;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 24px 0 24px;
+  border-bottom: 1px solid #e9ecef;
+  padding-bottom: 16px;
+}
+
+.modal-title {
+  margin: 0;
+  font-size: 1.25rem;
   font-weight: 600;
-  cursor: pointer;
+  color: #333;
+}
+
+.modal-close {
+  background: none;
   border: none;
-  font-size: 1rem;
-  transition: all 0.3s ease;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: #666;
+  padding: 0;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  transition: background-color 0.2s;
 }
-.btn-cancel {
-  background-color: transparent;
-  border: 2px solid #ccc;
-  color: #555;
+
+.modal-close:hover {
+  background: #f8f9fa;
 }
-.btn-cancel:hover {
-  background-color: #f0f0f0;
+
+.modal-body {
+  padding: 20px 24px;
 }
-.btn-confirm {
-  background-color: #e74c3c;
+
+.modal-message {
+  margin: 0;
+  color: #666;
+  line-height: 1.5;
+}
+
+.modal-footer {
+  display: flex;
+  gap: 12px;
+  padding: 16px 24px 24px 24px;
+  justify-content: flex-end;
+}
+
+.btn {
+  padding: 8px 16px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: all 0.2s;
+}
+
+.btn-secondary {
+  background: #f8f9fa;
+  color: #666;
+  border: 1px solid #dee2e6;
+}
+
+.btn-secondary:hover {
+  background: #e9ecef;
+}
+
+.btn-primary {
+  background: #6C3483;
   color: white;
 }
-.btn-confirm:hover {
-  background-color: #c0392b;
+
+.btn-primary:hover {
+  background: #5a2d6b;
+}
+
+@media (max-width: 480px) {
+  .modal-container {
+    width: 95%;
+    margin: 20px;
+  }
+  
+  .modal-footer {
+    flex-direction: column;
+  }
+  
+  .btn {
+    width: 100%;
+    padding: 12px 16px;
+  }
 }
 </style> 

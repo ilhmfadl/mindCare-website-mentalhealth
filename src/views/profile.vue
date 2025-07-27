@@ -1,17 +1,17 @@
 <template>
   <ConfirmationModal
-    :visible="showLogoutConfirm"
+    :isVisible="showLogoutConfirm"
     title="Konfirmasi Logout"
     message="Apakah Anda yakin ingin logout?"
     @confirm="confirmLogout"
-    @cancel="showLogoutConfirm = false"
+    @close="showLogoutConfirm = false"
   />
   <ConfirmationModal
-    :visible="showSaveConfirm"
+    :isVisible="showSaveConfirm"
     title="Konfirmasi Simpan Profil"
     message="Apakah Anda yakin ingin menyimpan perubahan profil?"
     @confirm="confirmSave"
-    @cancel="showSaveConfirm = false"
+    @close="showSaveConfirm = false"
   />
   <div class="profile-bg">
     <div class="profile-container">
@@ -48,7 +48,7 @@
           <button v-if="!isEditing" type="button" class="edit-btn" @click="onEdit">Edit</button>
           <button v-if="isEditing" type="submit" class="save-btn">Save</button>
           <button v-if="isEditing" type="button" class="cancel-btn" @click="onCancel">Cancel</button>
-          <button v-if="!isEditing" type="button" class="logout-btn" @click="showLogoutConfirm = true">Logout</button>
+          <button v-if="!isEditing" type="button" class="logout-btn" @click="handleLogoutClick">Logout</button>
         </div>
       </form>
       <div class="password-section">
@@ -164,12 +164,29 @@ export default {
     },
     async onLogout() {
       try {
-        await axios.post('https://mindcareindependent.com/api/logout.php');
-      } catch (e) {}
+        const user = JSON.parse(localStorage.getItem('user'));
+        if (user && user.id) {
+          const formData = new FormData();
+          formData.append('user_id', user.id);
+          
+          const response = await axios.post('https://mindcareindependent.com/api/logout.php', formData);
+          
+          if (response.data.success) {
+            console.log('Logout berhasil:', response.data.message);
+          } else {
+            console.error('Logout gagal:', response.data.error);
+          }
+        }
+      } catch (e) {
+        console.error('Error saat logout:', e);
+        // Tetap lanjutkan logout meskipun API gagal
+      }
+      
+      // Hapus data dari localStorage
       localStorage.removeItem('user');
-      localStorage.removeItem('lastTestResult'); // Hapus hasil tes saat logout
-      resetTestState(); // Reset state hasil tes agar header kembali seperti semula
-      isLoggedIn.value = false; // Update state login agar header langsung hilang
+      localStorage.removeItem('lastTestResult');
+      resetTestState();
+      isLoggedIn.value = false;
       this.showLogoutConfirm = false;
       this.$router.push('/login');
     },
@@ -194,6 +211,9 @@ export default {
         };
         reader.readAsDataURL(file);
       }
+    },
+    handleLogoutClick() {
+      this.showLogoutConfirm = true;
     }
   }
 }

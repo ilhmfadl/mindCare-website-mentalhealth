@@ -67,7 +67,7 @@
 
 <script>
 import ConfirmationModal from '../../components/ConfirmationModal.vue';
-import { testState } from '../../store/testState';
+import { testState, resetTestState } from '../../store/testState';
 
 export default {
   name: 'ResultIsNormal',
@@ -137,9 +137,8 @@ export default {
   },
   methods: {
     handleConfirm() {
-      testState.testCompleted = false;
-      testState.score = 0;
-      testState.resultType = null;
+      // Tidak reset testState agar menu "Hasil Tes Diri" tetap ditampilkan
+      // karena user sudah pernah menyelesaikan tes
       this.$router.push({ name: 'TesDiri' });
       this.showConfirmationModal = false;
     },

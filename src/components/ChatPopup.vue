@@ -24,49 +24,6 @@
 
           <!-- Chat Messages Area -->
           <div class="chat-messages" ref="messagesContainer">
-            <!-- Agent Message -->
-            <div class="message agent-message">
-              <div class="message-bubble">
-                <p>Hi, this is Mindhelp from Mental Health Support. How can I assist you today?</p>
-                <span class="message-time">13:34</span>
-              </div>
-            </div>
-
-            <!-- User Message -->
-            <div class="message user-message">
-              <div class="message-bubble">
-                <p>Hi Mindhelp, I've been feeling anxious lately</p>
-                <span class="message-time">13:34</span>
-              </div>
-            </div>
-
-            <!-- Agent Message -->
-            <div class="message agent-message">
-              <div class="message-bubble">
-                <p>I understand anxiety can be challenging. Let's talk about what might be causing this and explore some coping strategies together.</p>
-                <span class="message-time">13:34</span>
-              </div>
-            </div>
-
-
-
-            <!-- User Message -->
-            <div class="message user-message">
-              <div class="message-bubble">
-                <p>I think it's related to work stress</p>
-                <span class="message-time">13:34</span>
-              </div>
-            </div>
-
-            <!-- Agent Message -->
-            <div class="message agent-message">
-              <div class="message-bubble">
-                <p>Work stress is a common trigger for anxiety. Can you tell me more about what specific situations at work are causing you stress?</p>
-                <span class="message-time">13:34</span>
-              </div>
-            </div>
-
-            <!-- Dynamic Messages -->
             <div v-for="message in messages" :key="message.id" class="message" :class="message.type + '-message'">
               <div class="message-bubble" :class="{ 'file-message': message.isFile }">
                 <p>{{ message.text }}</p>
@@ -77,60 +34,24 @@
 
           <!-- Message Input Area -->
           <div class="chat-input-area">
-            <!-- Upload Status -->
-            <div v-if="uploadStatus" class="upload-status" :class="uploadStatus.includes('error') ? 'error' : uploadStatus.includes('success') ? 'success' : 'info'">
-              {{ uploadStatus }}
-            </div>
-            
             <div class="input-container">
               <div class="input-field">
                 <input 
                   v-model="newMessage" 
                   @keyup.enter="sendMessage"
                   type="text" 
-                  placeholder="Type &quot;/&quot; to use template message"
+                  placeholder="Ketik pesan..."
                   class="message-input"
                 />
               </div>
               
-              <div class="input-actions">
-                <div class="input-icons">
-                  <input 
-                    type="file" 
-                    ref="fileInput" 
-                    @change="handleFileUpload" 
-                    accept="image/*,.pdf,.doc,.docx,.txt"
-                    style="display: none;"
-                  />
-                  <button class="icon-btn" title="Attach file (max 10MB)" @click="$refs.fileInput.click()">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                      <path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/>
-                    </svg>
-                  </button>
-                  <input 
-                    type="file" 
-                    ref="imageInput" 
-                    @change="handleImageUpload" 
-                    accept="image/*"
-                    style="display: none;"
-                  />
-                  <button class="icon-btn" title="Send image (max 5MB)" @click="$refs.imageInput.click()">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                      <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
-                      <circle cx="8.5" cy="8.5" r="1.5"/>
-                      <polyline points="21,15 16,10 5,21"/>
-                    </svg>
-                  </button>
-                </div>
-                
-                <div class="action-buttons">
-                  <button class="send-btn" @click="sendMessage" title="Send">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                      <line x1="22" y1="2" x2="11" y2="13"/>
-                      <polygon points="22,2 15,22 11,13 2,9 22,2"/>
-                    </svg>
-                  </button>
-                </div>
+              <div class="action-buttons">
+                <button class="send-btn" @click="sendMessage" title="Send">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="22" y1="2" x2="11" y2="13"/>
+                    <polygon points="22,2 15,22 11,13 2,9 22,2"/>
+                  </svg>
+                </button>
               </div>
             </div>
           </div>
@@ -141,6 +62,8 @@
 </template>
 
 <script>
+import axios from 'axios';
+
 export default {
   name: 'ChatPopup',
   data() {
@@ -149,52 +72,225 @@ export default {
       newMessage: '',
       messages: [],
       currentTime: '13:34',
-      maxImageSize: 5 * 1024 * 1024, // 5MB
-      maxFileSize: 10 * 1024 * 1024, // 10MB
-      uploadStatus: ''
+      userId: null, // Ambil dari auth/session
+      adminId: null, // Akan diisi dari backend
+      conversationId: null, // ID conversation aktif
+      chatPollingInterval: null // Untuk polling pesan baru
     }
   },
   methods: {
-    toggleChat() {
-      this.isVisible = !this.isVisible
+    async toggleChat() {
+      this.isVisible = !this.isVisible;
       if (this.isVisible) {
+        // Clear messages dan conversationId saat pertama kali buka chat
+        this.messages = [];
+        this.conversationId = null;
+        // Force reload data
+        await this.loadChat();
+        this.startChatPolling();
         this.$nextTick(() => {
-          this.scrollToBottom()
-        })
+          this.scrollToBottom();
+        });
+      } else {
+        this.stopChatPolling();
       }
     },
-    openChat() {
-      this.isVisible = true
-      this.$nextTick(() => {
-        this.scrollToBottom()
-      })
-    },
-    closeChat() {
-      this.isVisible = false
-    },
-    sendMessage() {
-      if (this.newMessage.trim()) {
-        const message = {
-          id: Date.now(),
-          text: this.newMessage,
-          type: 'user',
-          time: this.getCurrentTime()
+    startChatPolling() {
+      // Polling setiap 3 detik untuk pesan baru
+      this.chatPollingInterval = setInterval(async () => {
+        if (this.isVisible && this.conversationId) {
+          // Load chat untuk mendapatkan pesan baru tanpa mengganti yang sudah ada
+          await this.loadMessages();
         }
-        this.messages.push(message)
-        this.newMessage = ''
-        this.scrollToBottom()
+      }, 3000);
+    },
+    stopChatPolling() {
+      if (this.chatPollingInterval) {
+        clearInterval(this.chatPollingInterval);
+        this.chatPollingInterval = null;
+      }
+    },
+    async loadChat() {
+      try {
+        // Ambil userId dari localStorage user object
+        const user = JSON.parse(localStorage.getItem('user'));
+        this.userId = user ? user.id : null;
         
-        // Simulate agent response after 1 second
-        setTimeout(() => {
-          const agentResponse = {
-            id: Date.now() + 1,
-            text: 'Thank you for sharing. I\'m here to listen and support you. How can I help you further?',
-            type: 'agent',
-            time: this.getCurrentTime()
+        // Ambil adminId dari backend (admin dengan role admin pertama)
+        if (!this.adminId) {
+          const res = await axios.get('https://mindcareindependent.com/api/get_admin_id.php');
+          this.adminId = parseInt(res.data.admin_id);
+        }
+        
+        // Tambahkan log untuk debug
+        console.log('Loading chat with userId:', this.userId, 'adminId:', this.adminId);
+        
+        if (!this.userId || !this.adminId) {
+          console.error('Missing userId or adminId');
+          return;
+        }
+        
+        // Jika belum ada conversationId, cari atau buat conversation
+        if (!this.conversationId) {
+          await this.getOrCreateConversation();
+        }
+        
+        // Load messages jika ada conversationId
+        if (this.conversationId) {
+          await this.loadMessages();
+          // Scroll ke bawah setelah load messages
+          this.$nextTick(() => {
+            this.scrollToBottom();
+          });
+        }
+      } catch (error) {
+        console.error('Error loading chat:', error);
+        if (error.response) {
+          console.error('Error response:', error.response.data);
+        }
+        console.error('Failed to load messages');
+      }
+    },
+    async getOrCreateConversation() {
+      try {
+        const formData = new FormData();
+        formData.append('user_id', this.userId);
+        formData.append('admin_id', this.adminId);
+        
+        console.log('Sending conversation request with:', {
+          user_id: this.userId,
+          admin_id: this.adminId
+        });
+        
+        const res = await axios.post('https://mindcareindependent.com/api/get_or_create_conversation.php', formData);
+        this.conversationId = res.data.conversation_id;
+        console.log('Conversation ID:', this.conversationId);
+      } catch (error) {
+        console.error('Error getting or creating conversation:', error);
+        if (error.response) {
+          console.error('Error response:', error.response.data);
+        }
+        console.error('Failed to create or get conversation');
+      }
+    },
+    async loadMessages() {
+      try {
+        if (!this.conversationId) {
+          console.error('Conversation ID not available.');
+          return;
+        }
+        console.log('Loading messages for conversation ID:', this.conversationId);
+        const params = { conversation_id: this.conversationId, _t: Date.now() };
+        const res = await axios.get('https://mindcareindependent.com/api/get_messages.php', { params });
+        console.log('API Response:', res.data);
+        
+        if (res.data.success && res.data.messages) {
+          const msgs = res.data.messages;
+          console.log('Raw messages from API:', msgs);
+          console.log('First message details:', msgs[0]);
+          
+          // Convert database messages to UI format
+          const dbMessages = msgs.map(msg => {
+            console.log('Processing message:', msg);
+            const processedMsg = {
+              id: msg.id,
+              text: msg.message || msg.mes || 'No message content',
+              type: msg.sender_role === 'user' ? 'user' : 'agent',
+              time: new Date(msg.created_at).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false }),
+              isFile: !!msg.file_url,
+              fileUrl: msg.file_url,
+              fileName: msg.file_name
+            };
+            console.log('Processed message:', processedMsg);
+            return processedMsg;
+          });
+          
+          // Replace all messages with database messages to ensure consistency
+          this.messages = [...dbMessages]; // Force new array
+          
+          console.log('Final processed messages:', this.messages);
+          console.log('Messages array length:', this.messages.length);
+          console.log('First message text:', this.messages[0]?.text);
+          console.log('First message time:', this.messages[0]?.time);
+        } else {
+          console.error('API response not successful or no messages:', res.data);
+          this.showUploadStatus('Gagal memuat pesan. Coba lagi.', 'error');
+        }
+      } catch (error) {
+        console.error('Error loading messages:', error);
+        if (error.response) {
+          console.error('Error response:', error.response.data);
+        }
+        this.showUploadStatus('Gagal memuat pesan. Coba lagi.', 'error');
+      }
+    },
+    async sendMessage() {
+      if (!this.newMessage.trim()) return;
+      if (!this.userId || !this.adminId) {
+        this.showUploadStatus('User tidak ditemukan. Silakan login ulang.', 'error');
+        return;
+      }
+      
+      const messageText = this.newMessage.trim();
+      this.newMessage = '';
+      
+      const formData = new FormData();
+      formData.append('sender_id', this.userId);
+      formData.append('receiver_id', parseInt(this.adminId));
+      formData.append('sender_role', 'user');
+      formData.append('message', messageText);
+      
+      try {
+        console.log('Sending message with data:', {
+          sender_id: this.userId,
+          receiver_id: parseInt(this.adminId),
+          sender_role: 'user',
+          message: messageText
+        });
+        
+        console.log('Data types:', {
+          sender_id_type: typeof this.userId,
+          receiver_id_type: typeof parseInt(this.adminId),
+          adminId_original: this.adminId,
+          adminId_parsed: parseInt(this.adminId)
+        });
+        
+        const response = await axios.post('https://mindcareindependent.com/api/send_message_new.php', formData);
+        console.log('Send message response:', response.data);
+        
+        // Update conversationId jika belum ada
+        if (response.data.conversation_id && !this.conversationId) {
+          this.conversationId = response.data.conversation_id;
+        }
+        
+        // Reload messages untuk mendapatkan data terbaru dari database
+        await this.loadMessages();
+        this.scrollToBottom();
+      } catch (err) {
+        console.error('Error sending message:', err);
+        console.error('Error response:', err.response);
+        
+
+        
+        let errorMsg = 'Gagal mengirim pesan. Coba lagi.';
+        if (err.response) {
+          if (err.response.status === 500) {
+            errorMsg = 'Server error. Silakan coba lagi nanti.';
+          } else if (err.response.status === 400) {
+            errorMsg = 'Data tidak valid. Silakan cek input Anda.';
           }
-          this.messages.push(agentResponse)
-          this.scrollToBottom()
-        }, 1000)
+          
+          if (err.response.data && err.response.data.error) {
+            errorMsg += ' (' + err.response.data.error + ')';
+            if (err.response.data.details) {
+              errorMsg += ' - ' + JSON.stringify(err.response.data.details);
+            }
+          }
+        } else if (err.request) {
+          errorMsg = 'Tidak dapat terhubung ke server. Cek koneksi internet Anda.';
+        }
+        
+        this.showUploadStatus(errorMsg, 'error');
       }
     },
     getCurrentTime() {
@@ -212,93 +308,13 @@ export default {
           container.scrollTop = container.scrollHeight
         }
       })
-    },
-    handleImageUpload(event) {
-      const file = event.target.files[0]
-      if (!file) return
-      
-      // Validasi ukuran file (5MB untuk gambar)
-      if (file.size > this.maxImageSize) {
-        this.showUploadStatus('Ukuran gambar maksimal 5MB!', 'error')
-        event.target.value = '' // Reset input
-        return
-      }
-      
-      // Validasi tipe file
-      if (!file.type.startsWith('image/')) {
-        this.showUploadStatus('File harus berupa gambar!', 'error')
-        event.target.value = ''
-        return
-      }
-      
-      // Proses upload gambar
-      this.uploadFile(file, 'image')
-      event.target.value = ''
-    },
-    handleFileUpload(event) {
-      const file = event.target.files[0]
-      if (!file) return
-      
-      // Validasi ukuran file (10MB untuk file umum)
-      if (file.size > this.maxFileSize) {
-        this.showUploadStatus('Ukuran file maksimal 10MB!', 'error')
-        event.target.value = ''
-        return
-      }
-      
-      // Proses upload file
-      this.uploadFile(file, 'file')
-      event.target.value = ''
-    },
-    uploadFile(file, type) {
-      // Simulasi upload file
-      this.showUploadStatus(`Mengupload ${type === 'image' ? 'gambar' : 'file'}...`, 'info')
-      
-      setTimeout(() => {
-        const message = {
-          id: Date.now(),
-          text: type === 'image' ? `📷 ${file.name} (${this.formatFileSize(file.size)})` : `📎 ${file.name} (${this.formatFileSize(file.size)})`,
-          type: 'user',
-          time: this.getCurrentTime(),
-          isFile: true,
-          fileName: file.name,
-          fileSize: file.size
-        }
-        
-        this.messages.push(message)
-        this.scrollToBottom()
-        this.showUploadStatus(`${type === 'image' ? 'Gambar' : 'File'} berhasil diupload!`, 'success')
-        
-        // Simulate agent response
-        setTimeout(() => {
-          const agentResponse = {
-            id: Date.now() + 1,
-            text: `Thank you for sharing the ${type === 'image' ? 'image' : 'file'}. I'll review it and get back to you with appropriate guidance.`,
-            type: 'agent',
-            time: this.getCurrentTime()
-          }
-          this.messages.push(agentResponse)
-          this.scrollToBottom()
-        }, 1000)
-      }, 2000)
-    },
-    formatFileSize(bytes) {
-      if (bytes === 0) return '0 Bytes'
-      const k = 1024
-      const sizes = ['Bytes', 'KB', 'MB', 'GB']
-      const i = Math.floor(Math.log(bytes) / Math.log(k))
-      return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i]
-    },
-    showUploadStatus(message, type) {
-      this.uploadStatus = message
-      setTimeout(() => {
-        this.uploadStatus = ''
-      }, 3000)
     }
   },
   mounted() {
-    // Auto-show chat when component is mounted (for demo purposes)
-    // this.isVisible = true
+    // Bisa auto-load chat jika ingin
+  },
+  beforeDestroy() {
+    this.stopChatPolling();
   }
 }
 </script>

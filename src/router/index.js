@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router';
+import { requireAdminAuth, requireGuest } from '../middleware/adminAuth.js';
 
 import TesDiri from '../views/tes_diri.vue';
 import Home from '../views/home.vue';
@@ -22,7 +23,7 @@ import Login from '../views/login.vue';
 import UsersManagement from '../adminViews/UsersManagement.vue';
 import QuestionerManagement from '../adminViews/QuestionerManagement.vue';
 import JournalManagement from '../adminViews/JournalManagement.vue';
-import ForumManagement from '../adminViews/ForumManagement.vue';
+import AdminChatDashboard from '../adminViews/AdminChatDashboard.vue';
 // import QuestionerAdd from '../adminViews/QuestionerAdd.vue';
 // import QuestionerDetail from '../adminViews/QuestionerDetail.vue';
 
@@ -75,13 +76,20 @@ const routes = [
   { path: '/profile', name: 'Profile', component: Profile },
   { path: '/ubah-kata-sandi', name: 'ChangePassword', component: ChangePassword },
   // Tambah route register dan login
-  { path: '/register', name: 'Register', component: Register },
-  { path: '/login', name: 'Login', component: Login },
-  { path: '/admin/users', name: 'UsersManagement', component: UsersManagement },
-  { path: '/admin/questioner', name: 'QuestionerManagement', component: QuestionerManagement },
-  { path: '/admin/journal', name: 'JournalManagement', component: JournalManagement },
-  { path: '/admin/forum', name: 'ForumManagement', component: ForumManagement },
-  { path: '/admin/forum-user', name: 'AdminForumUser', component: Forum },
+  { path: '/register', name: 'Register', component: Register, beforeEnter: requireGuest },
+  { path: '/login', name: 'Login', component: Login, beforeEnter: requireGuest },
+  { path: '/admin/users', name: 'UsersManagement', component: UsersManagement, beforeEnter: requireAdminAuth, meta: { requiresAdmin: true } },
+  { path: '/admin/questioner', name: 'QuestionerManagement', component: QuestionerManagement, beforeEnter: requireAdminAuth, meta: { requiresAdmin: true } },
+  { path: '/admin/journal', name: 'JournalManagement', component: JournalManagement, beforeEnter: requireAdminAuth, meta: { requiresAdmin: true } },
+  { path: '/admin/chat', name: 'AdminChatDashboard', component: AdminChatDashboard, beforeEnter: requireAdminAuth, meta: { requiresAdmin: true } },
+  { path: '/admin/forum-user', name: 'AdminForumUser', component: Forum, beforeEnter: requireAdminAuth, meta: { requiresAdmin: true } },
+  
+  // Catch-all route untuk admin paths yang tidak valid
+  { 
+    path: '/admin/:pathMatch(.*)*', 
+    redirect: '/login',
+    beforeEnter: requireAdminAuth 
+  },
 ];
 
 const router = createRouter({
@@ -100,6 +108,20 @@ const router = createRouter({
         return { top: 0 };
       }
     }
+});
+
+// Global navigation guard untuk keamanan tambahan
+router.beforeEach((to, from, next) => {
+  // Cek apakah route memerlukan autentikasi admin
+  if (to.matched.some(record => record.meta.requiresAdmin)) {
+    const user = JSON.parse(localStorage.getItem('user') || 'null');
+    if (!user || user.role !== 'admin') {
+      next('/login');
+      return;
+    }
+  }
+  
+  next();
 });
 
 export default router;
