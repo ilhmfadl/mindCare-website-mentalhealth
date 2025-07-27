@@ -11,7 +11,26 @@
                 <span class="btn-add-icon">✚</span> Tambah Jurnal
               </button>
             </div>
-            <div class="table-wrapper">
+            
+            <!-- Loading State -->
+            <div v-if="loading" class="loading-state">
+              <div class="loading-spinner"></div>
+              <p>Memuat data jurnal...</p>
+            </div>
+            
+            <!-- Error State -->
+            <div v-else-if="error" class="error-state">
+              <p>{{ error }}</p>
+              <button @click="fetchJournals" class="btn-retry">Coba Lagi</button>
+            </div>
+            
+            <!-- Success Message -->
+            <div v-if="successMessage" class="success-message">
+              {{ successMessage }}
+            </div>
+            
+            <!-- Table Content -->
+            <div v-if="!loading && !error" class="table-wrapper">
               <table class="journal-table">
                 <thead>
                   <tr>
@@ -36,6 +55,7 @@
           </div>
         </div>
       </template>
+      
       <template v-else-if="mode === 'add'">
         <div class="add-journal-card-outer">
           <div class="add-journal-card">
@@ -54,16 +74,30 @@
               </div>
               <div class="form-group">
                 <label for="quote">Masukkan Kutipan Jurnal</label>
-                <textarea id="quote" v-model="quote" rows="6" required placeholder="Your first name"></textarea>
+                <textarea id="quote" v-model="quote" rows="6" required placeholder="Masukkan kutipan jurnal"></textarea>
               </div>
               <div class="form-actions">
-                <button type="button" class="btn-cancel" @click="cancelAdd">Batal</button>
-                <button type="submit" class="btn-save">Simpan</button>
+                <button type="button" class="btn-cancel" @click="cancelAdd" :disabled="submitting">Batal</button>
+                <button type="submit" class="btn-save" :disabled="submitting">
+                  <span v-if="submitting">Menyimpan...</span>
+                  <span v-else>Simpan</span>
+                </button>
+              </div>
+              
+              <!-- Error Message -->
+              <div v-if="error" class="error-message">
+                {{ error }}
+              </div>
+              
+              <!-- Success Message -->
+              <div v-if="successMessage" class="success-message">
+                {{ successMessage }}
               </div>
             </form>
           </div>
         </div>
       </template>
+      
       <template v-else-if="mode === 'detail'">
         <div class="detail-journal-outer">
           <div class="detail-journal-container">
@@ -82,22 +116,36 @@
                     <textarea v-model="editQuote" class="edit-input" placeholder="Kutipan jurnal"></textarea>
                   </template>
                   <template v-else>
-                    <div class="journal-source"><b>Sumber:</b> {{ j.source }}</div>
-                    <div class="journal-quote"><b>Kutipan:</b> {{ j.quote }}</div>
+                    <div class="journal-source"><b>Sumber:</b> {{ j.sumber }}</div>
+                    <div class="journal-quote"><b>Kutipan:</b> {{ j.kutipan }}</div>
                   </template>
                 </div>
                 <div class="journal-actions">
                   <template v-if="editIndex === i">
-                    <button class="btn-save-edit" @click="saveEdit(i)">Simpan</button>
-                    <button class="btn-cancel-edit" @click="cancelEdit">Batal</button>
+                    <button class="btn-save-edit" @click="saveEdit(i)" :disabled="submitting">
+                      <span v-if="submitting">Menyimpan...</span>
+                      <span v-else>Simpan</span>
+                    </button>
+                    <button class="btn-cancel-edit" @click="cancelEdit" :disabled="submitting">Batal</button>
                   </template>
                   <template v-else>
-                    <button class="btn-edit" @click="startEdit(i, j)">Edit</button>
-                    <button class="btn-delete" @click="confirmDelete(i)">Delete</button>
+                    <button class="btn-edit" @click="startEdit(i, j)" :disabled="submitting">Edit</button>
+                    <button class="btn-delete" @click="confirmDelete(i)" :disabled="submitting">Delete</button>
                   </template>
                 </div>
               </li>
             </ul>
+            
+            <!-- Error Message -->
+            <div v-if="error" class="error-message">
+              {{ error }}
+            </div>
+            
+            <!-- Success Message -->
+            <div v-if="successMessage" class="success-message">
+              {{ successMessage }}
+            </div>
+            
             <ConfirmationModal
               :visible="showDeleteModal"
               title="Konfirmasi Hapus"
@@ -115,43 +163,21 @@
 <script>
 import AdminHeader from './components/AdminHeader.vue';
 import ConfirmationModal from '../components/ConfirmationModal.vue';
-const dummyJournals = {
-  Depresi: [
-    { source: 'https://journal1.com', quote: 'Kutipan jurnal depresi 1' },
-    { source: 'https://journal2.com', quote: 'Kutipan jurnal depresi 2' },
-    { source: 'https://journal3.com', quote: 'Kutipan jurnal depresi 3' }
-  ],
-  Anxiety: [
-    { source: 'https://anxiety.com', quote: 'Kutipan jurnal anxiety' },
-    { source: 'https://anxiety2.com', quote: 'Kutipan jurnal anxiety 2' }
-  ],
-  Skizofrenia: [],
-  'Gangguan kepribadian': [],
-  OCD: [],
-  Bipolar: [],
-  'Gangguan Makan': [],
-  PTSD: []
-};
+import axios from 'axios';
+
 export default {
   name: 'JournalManagement',
   components: { AdminHeader, ConfirmationModal },
   data() {
-    // Inisialisasi state jurnal per kategori
-    const journalsByCategory = {};
-    Object.keys(dummyJournals).forEach(key => {
-      journalsByCategory[key] = [...dummyJournals[key]];
-    });
     return {
       mode: 'list',
+      loading: false,
+      error: '',
+      submitting: false,
       journals: [
-        { name: 'Depresi', count: dummyJournals.Depresi.length },
-        { name: 'Anxiety', count: dummyJournals.Anxiety.length },
-        { name: 'Skizofrenia', count: dummyJournals.Skizofrenia.length },
-        { name: 'Gangguan kepribadian', count: dummyJournals['Gangguan kepribadian'].length },
-        { name: 'OCD', count: dummyJournals.OCD.length },
-        { name: 'Bipolar', count: dummyJournals.Bipolar.length },
-        { name: 'Gangguan Makan', count: dummyJournals['Gangguan Makan'].length },
-        { name: 'PTSD', count: dummyJournals.PTSD.length },
+        { name: 'Neurosis', count: 0 },
+        { name: 'Psikotik', count: 0 },
+        { name: 'PTSD', count: 0 },
       ],
       category: '',
       source: '',
@@ -159,89 +185,237 @@ export default {
       // Detail
       detailCategory: '',
       localJournals: [],
-      journalsByCategory,
       editIndex: null,
       editSource: '',
       editQuote: '',
       showDeleteModal: false,
-      deleteIndex: null
+      deleteIndex: null,
+      successMessage: '',
+      allJournals: []
     };
   },
+  mounted() {
+    this.fetchJournals();
+  },
   methods: {
+    async fetchJournals() {
+      this.loading = true;
+      this.error = '';
+      try {
+        const response = await axios.get('https://mindcareindependent.com/api/get_journals.php');
+        
+        if (response.data.success) {
+          const { journals, category_counts } = response.data.data;
+          
+          // Update category counts
+          this.journals = this.journals.map(cat => ({
+            ...cat,
+            count: category_counts[cat.name.toLowerCase()] || 0
+          }));
+          
+          // Store all journals for filtering
+          this.allJournals = journals;
+        } else {
+          this.error = response.data.message || 'Gagal mengambil data jurnal';
+          // Auto hide error message after 5 seconds
+          setTimeout(() => {
+            this.error = '';
+          }, 5000);
+        }
+      } catch (error) {
+        console.error('Error fetching journals:', error);
+        this.error = 'Terjadi kesalahan saat mengambil data jurnal';
+        // Auto hide error message after 5 seconds
+        setTimeout(() => {
+          this.error = '';
+        }, 5000);
+      } finally {
+        this.loading = false;
+      }
+    },
+    
     openDetail(item) {
       this.detailCategory = item.name;
-      this.localJournals = this.journalsByCategory[item.name];
+      // Filter journals by category
+      this.localJournals = this.allJournals.filter(j => 
+        j.kategori.toLowerCase() === item.name.toLowerCase()
+      );
       this.editIndex = null;
       this.editSource = '';
       this.editQuote = '';
       this.mode = 'detail';
     },
-    submitForm() {
-      // Tambah jurnal ke kategori yang dipilih
-      if (!this.journalsByCategory[this.category]) {
-        this.journalsByCategory[this.category] = [];
-      }
-      this.journalsByCategory[this.category].push({ source: this.source, quote: this.quote });
-      // Update count di tabel
-      const cat = this.journals.find(j => j.name === this.category);
-      if (cat) cat.count = this.journalsByCategory[this.category].length;
-      // Jika sedang melihat detail kategori yang sama, update localJournals
-      if (this.mode === 'detail' && this.detailCategory === this.category) {
-        this.localJournals = this.journalsByCategory[this.category];
-      }
-      this.category = '';
-      this.source = '';
-      this.quote = '';
-      if (this.detailCategory && this.mode === 'add') {
-        this.mode = 'detail';
-      } else {
-        this.mode = 'list';
+    
+    async submitForm() {
+      this.submitting = true;
+      this.error = '';
+      this.successMessage = '';
+      
+      try {
+        const response = await axios.post('https://mindcareindependent.com/api/add_journal.php', {
+          kategori: this.category.toLowerCase(),
+          sumber: this.source,
+          kutipan: this.quote
+        });
+        
+        if (response.data.success) {
+          this.successMessage = response.data.message;
+          this.category = '';
+          this.source = '';
+          this.quote = '';
+          
+          // Refresh data
+          await this.fetchJournals();
+          
+          // Auto hide success message after 3 seconds
+          setTimeout(() => {
+            this.successMessage = '';
+          }, 3000);
+          
+          if (this.detailCategory && this.mode === 'add') {
+            this.mode = 'detail';
+            this.openDetail({ name: this.detailCategory });
+          } else {
+            this.mode = 'list';
+          }
+        } else {
+          this.error = response.data.message || 'Gagal menambahkan jurnal';
+          // Auto hide error message after 5 seconds
+          setTimeout(() => {
+            this.error = '';
+          }, 5000);
+        }
+      } catch (error) {
+        console.error('Error adding journal:', error);
+        this.error = 'Terjadi kesalahan saat menambahkan jurnal';
+        // Auto hide error message after 5 seconds
+        setTimeout(() => {
+          this.error = '';
+        }, 5000);
+      } finally {
+        this.submitting = false;
       }
     },
+    
     startEdit(idx, j) {
       this.editIndex = idx;
-      this.editSource = j.source;
-      this.editQuote = j.quote;
+      this.editSource = j.sumber;
+      this.editQuote = j.kutipan;
     },
-    saveEdit(idx) {
-      if (this.editSource.trim() && this.editQuote.trim()) {
-        this.$set ? this.$set(this.localJournals, idx, { source: this.editSource, quote: this.editQuote }) : this.localJournals.splice(idx, 1, { source: this.editSource, quote: this.editQuote });
-        // Sinkronkan ke journalsByCategory
-        if (this.detailCategory && this.journalsByCategory[this.detailCategory]) {
-          this.journalsByCategory[this.detailCategory][idx] = { source: this.editSource, quote: this.editQuote };
-        }
+    
+    async saveEdit(idx) {
+      if (!this.editSource.trim() || !this.editQuote.trim()) {
+        this.error = 'Sumber dan kutipan tidak boleh kosong';
+        return;
       }
-      this.editIndex = null;
-      this.editSource = '';
-      this.editQuote = '';
+      
+      this.submitting = true;
+      this.error = '';
+      this.successMessage = '';
+      
+      try {
+        const journal = this.localJournals[idx];
+        const response = await axios.put('https://mindcareindependent.com/api/update_journal.php', {
+          id: journal.id,
+          kategori: journal.kategori,
+          sumber: this.editSource,
+          kutipan: this.editQuote
+        });
+        
+        if (response.data.success) {
+          this.successMessage = response.data.message;
+          // Update local data
+          this.localJournals[idx] = response.data.data;
+          this.editIndex = null;
+          this.editSource = '';
+          this.editQuote = '';
+          
+          // Refresh main data
+          await this.fetchJournals();
+          
+          // Auto hide success message after 3 seconds
+          setTimeout(() => {
+            this.successMessage = '';
+          }, 3000);
+        } else {
+          this.error = response.data.message || 'Gagal mengupdate jurnal';
+          // Auto hide error message after 5 seconds
+          setTimeout(() => {
+            this.error = '';
+          }, 5000);
+        }
+      } catch (error) {
+        console.error('Error updating journal:', error);
+        this.error = 'Terjadi kesalahan saat mengupdate jurnal';
+        // Auto hide error message after 5 seconds
+        setTimeout(() => {
+          this.error = '';
+        }, 5000);
+      } finally {
+        this.submitting = false;
+      }
     },
+    
     cancelEdit() {
       this.editIndex = null;
       this.editSource = '';
       this.editQuote = '';
     },
+    
     confirmDelete(idx) {
       this.deleteIndex = idx;
       this.showDeleteModal = true;
     },
-    deleteJournal() {
-      if (this.deleteIndex !== null) {
-        // Hapus hanya dari journalsByCategory, lalu update localJournals
-        if (this.detailCategory && this.journalsByCategory[this.detailCategory]) {
-          this.journalsByCategory[this.detailCategory].splice(this.deleteIndex, 1);
-          this.localJournals = [...this.journalsByCategory[this.detailCategory]];
+    
+    async deleteJournal() {
+      this.submitting = true;
+      this.error = '';
+      this.successMessage = '';
+      
+      try {
+        const journal = this.localJournals[this.deleteIndex];
+        const response = await axios.delete(`https://mindcareindependent.com/api/delete_journal.php?id=${journal.id}`);
+        
+        if (response.data.success) {
+          this.successMessage = response.data.message;
+          // Remove from local list
+          this.localJournals.splice(this.deleteIndex, 1);
+          
+          // Refresh main data
+          await this.fetchJournals();
+          
+          // Auto hide success message after 3 seconds
+          setTimeout(() => {
+            this.successMessage = '';
+          }, 3000);
+        } else {
+          this.error = response.data.message || 'Gagal menghapus jurnal';
+          // Auto hide error message after 5 seconds
+          setTimeout(() => {
+            this.error = '';
+          }, 5000);
         }
-        // Update count di tabel
-        const cat = this.journals.find(j => j.name === this.detailCategory);
-        if (cat) cat.count = this.journalsByCategory[this.detailCategory].length;
+      } catch (error) {
+        console.error('Error deleting journal:', error);
+        this.error = 'Terjadi kesalahan saat menghapus jurnal';
+        // Auto hide error message after 5 seconds
+        setTimeout(() => {
+          this.error = '';
+        }, 5000);
+      } finally {
+        this.submitting = false;
+        this.showDeleteModal = false;
+        this.deleteIndex = null;
       }
-      this.showDeleteModal = false;
-      this.deleteIndex = null;
     },
+    
+    // Method ini tidak diperlukan lagi karena data diambil dari API
+    
     addFromDetail() {
       this.category = this.detailCategory;
       this.mode = 'add';
     },
+    
     cancelAdd() {
       if (this.detailCategory) {
         this.mode = 'detail';
@@ -249,6 +423,7 @@ export default {
         this.mode = 'list';
       }
     },
+    
     resetAddForm() {
       this.detailCategory = '';
       this.category = '';
@@ -607,5 +782,96 @@ textarea {
 }
 .btn-cancel-edit:hover {
   background: #922b21;
+}
+
+/* Loading State */
+.loading-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+  color: #6C3483;
+}
+
+.loading-spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid #ede7f6;
+  border-top: 4px solid #6C3483;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 16px;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Error State */
+.error-state {
+  text-align: center;
+  padding: 40px;
+  color: #a94442;
+}
+
+.btn-retry {
+  background: #a94442;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 20px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 16px;
+  transition: background 0.2s;
+}
+
+.btn-retry:hover {
+  background: #922b21;
+}
+
+/* Success Message */
+.success-message {
+  background: #d4edda;
+  color: #155724;
+  padding: 12px 16px;
+  border-radius: 8px;
+  margin-bottom: 16px;
+  border: 1px solid #c3e6cb;
+}
+
+/* Error Message */
+.error-message {
+  background: #f8d7da;
+  color: #721c24;
+  padding: 12px 16px;
+  border-radius: 8px;
+  margin-bottom: 16px;
+  border: 1px solid #f5c6cb;
+}
+
+/* Disabled Button States */
+.btn-add:disabled,
+.btn-save:disabled,
+.btn-cancel:disabled,
+.btn-edit:disabled,
+.btn-delete:disabled,
+.btn-save-edit:disabled,
+.btn-cancel-edit:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.btn-add:disabled:hover,
+.btn-save:disabled:hover,
+.btn-cancel:disabled:hover,
+.btn-edit:disabled:hover,
+.btn-delete:disabled:hover,
+.btn-save-edit:disabled:hover,
+.btn-cancel-edit:disabled:hover {
+  background: inherit;
 }
 </style> 

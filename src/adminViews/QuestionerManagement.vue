@@ -6,28 +6,57 @@
         <div class="questioner-table-outer">
           <div class="questioner-table-container">
             <div class="questioner-header">
-              <div class="table-title">Daftar Pertanyaan</div>
+              <div class="table-title">Daftar Pertanyaan Tes Diri</div>
               <button class="btn-add" type="button" @click="addFromList">
                 <span class="btn-add-icon">✚</span> Tambahkan Pertanyaan Baru
               </button>
             </div>
-            <div class="table-wrapper">
+            
+            <!-- Loading State -->
+            <div v-if="loading" class="loading-state">
+              <div class="loading-spinner"></div>
+              <p>Memuat data pertanyaan...</p>
+            </div>
+            
+            <!-- Error State -->
+            <div v-if="error" class="error-state">
+              <p>{{ error }}</p>
+              <button @click="fetchQuestions" class="btn-retry">Coba Lagi</button>
+            </div>
+            
+            <!-- Success Message -->
+            <div v-if="successMessage" class="success-message">
+              <p>{{ successMessage }}</p>
+            </div>
+            
+            <div v-if="!loading && !error" class="table-wrapper">
               <table class="questioner-table">
                 <thead>
                   <tr>
+                    <th>No</th>
+                    <th>Pertanyaan</th>
                     <th>Kategori</th>
-                    <th>Jumlah Pertanyaan</th>
-                    <th></th>
+                    <th>Aksi</th>
                   </tr>
                 </thead>
                 <tbody>
-                  <tr v-for="item in categories" :key="item.name">
-                    <td>{{ item.name }}</td>
-                    <td>{{ item.count }}</td>
+                  <tr v-for="question in questions" :key="question.nomor">
+                    <td>{{ question.nomor }}</td>
+                    <td>{{ question.pertanyaan }}</td>
                     <td>
-                      <button class="btn-detail" title="Detail" @click="openDetail(item)">
-                        <span class="arrow">→</span>
-                      </button>
+                      <span class="category-badge" :class="'category-' + question.kategori">
+                        {{ getCategoryLabel(question.kategori) }}
+                      </span>
+                    </td>
+                    <td>
+                      <div class="action-buttons">
+                        <button class="btn-edit" title="Edit" @click="editQuestion(question)">
+                          <span>✏️</span>
+                        </button>
+                        <button class="btn-delete" title="Hapus" @click="confirmDelete(question.nomor)">
+                          <span>🗑️</span>
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 </tbody>
@@ -39,287 +68,341 @@
       <template v-else-if="mode === 'add'">
         <div class="add-question-card-outer">
           <div class="add-question-card">
-            <h2 class="form-title">Informasi Pertanyaan</h2>
+            <h2 class="form-title">Tambah Pertanyaan Baru</h2>
             <form @submit.prevent="submitForm">
               <div class="form-group">
-                <label for="category">Kategori Pertanyaan</label>
-                <select id="category" v-model="category" required :disabled="!!detailCategory">
-                  <option value="" disabled>Pilih kategori pertanyaan</option>
-                  <option v-for="cat in categories.map(c => c.name)" :key="cat" :value="cat">{{ cat }}</option>
-                </select>
+                <label for="question">Pertanyaan</label>
+                <textarea 
+                  id="question" 
+                  v-model="question" 
+                  rows="6" 
+                  required 
+                  placeholder="Masukkan pertanyaan tes diri"
+                  :disabled="submitting"
+                ></textarea>
               </div>
               <div class="form-group">
-                <label for="question">Masukkan pertanyaan</label>
-                <textarea id="question" v-model="question" rows="6" required placeholder="Your first name"></textarea>
+                <label for="category">Kategori</label>
+                <select 
+                  id="category" 
+                  v-model="selectedCategory" 
+                  required 
+                  :disabled="submitting"
+                  class="form-select"
+                >
+                  <option value="">Pilih kategori</option>
+                  <option value="neurosis">Neurosis</option>
+                  <option value="psikotik">Psikotik</option>
+                  <option value="ptsd">PTSD</option>
+                </select>
               </div>
               <div class="form-actions">
-                <button type="button" class="btn-cancel" @click="cancelAdd">Batal</button>
-                <button type="submit" class="btn-save">Simpan</button>
+                <button type="button" class="btn-cancel" @click="cancelAdd" :disabled="submitting">Batal</button>
+                <button type="submit" class="btn-save" :disabled="submitting">
+                  {{ submitting ? 'Menyimpan...' : 'Simpan' }}
+                </button>
               </div>
             </form>
           </div>
         </div>
       </template>
-      <template v-else-if="mode === 'detail'">
-        <div class="detail-question-outer">
-          <div class="detail-question-container">
-            <div class="detail-header">
-              <button class="btn-back" @click="mode = 'list'">← Kembali</button>
-              <h2 class="detail-title">Daftar Pertanyaan - {{ categoryName }}</h2>
-              <button class="btn-add" type="button" style="margin-left:auto" @click="addFromDetail">
-                <span class="btn-add-icon">✚</span> Tambah Pertanyaan
-              </button>
-            </div>
-            <ul class="question-list">
-              <li v-for="(q, i) in localQuestions" :key="i" class="question-item">
-                <span class="question-index">{{ i + 1 }}.</span>
-                <div class="question-content">
-                  <template v-if="editIndex === i">
-                    <input v-model="editValue" class="edit-input" />
-                  </template>
-                  <template v-else>
-                    {{ q }}
-                  </template>
-                </div>
-                <div class="question-actions">
-                  <template v-if="editIndex === i">
-                    <button class="btn-save-edit" @click="saveEdit(i)">Simpan</button>
-                    <button class="btn-cancel-edit" @click="cancelEdit">Batal</button>
-                  </template>
-                  <template v-else>
-                    <button class="btn-edit" @click="startEdit(i, q)">Edit</button>
-                    <button class="btn-delete" @click="confirmDelete(i)">Delete</button>
-                  </template>
-                </div>
-              </li>
-            </ul>
-            <ConfirmationModal
-              :visible="showDeleteModal"
-              title="Konfirmasi Hapus"
-              :message="'Yakin ingin menghapus pertanyaan ini? Tindakan ini tidak dapat dibatalkan.'"
-              @confirm="deleteQuestion"
-              @cancel="showDeleteModal = false"
-            />
+      <template v-else-if="mode === 'edit'">
+        <div class="add-question-card-outer">
+          <div class="add-question-card">
+            <h2 class="form-title">Edit Pertanyaan</h2>
+            <form @submit.prevent="submitEdit">
+              <div class="form-group">
+                <label for="editQuestion">Pertanyaan</label>
+                <textarea 
+                  id="editQuestion" 
+                  v-model="editValue" 
+                  rows="6" 
+                  required 
+                  placeholder="Edit pertanyaan tes diri"
+                  :disabled="submitting"
+                ></textarea>
+              </div>
+              <div class="form-group">
+                <label for="editCategory">Kategori</label>
+                <select 
+                  id="editCategory" 
+                  v-model="editCategory" 
+                  required 
+                  :disabled="submitting"
+                  class="form-select"
+                >
+                  <option value="">Pilih kategori</option>
+                  <option value="neurosis">Neurosis</option>
+                  <option value="psikotik">Psikotik</option>
+                  <option value="ptsd">PTSD</option>
+                </select>
+              </div>
+              <div class="form-actions">
+                <button type="button" class="btn-cancel" @click="cancelEdit" :disabled="submitting">Batal</button>
+                <button type="submit" class="btn-save" :disabled="submitting">
+                  {{ submitting ? 'Mengupdate...' : 'Update' }}
+                </button>
+              </div>
+            </form>
           </div>
         </div>
       </template>
     </main>
+    
+    <ConfirmationModal
+      :visible="showDeleteModal"
+      title="Konfirmasi Hapus"
+      :message="'Yakin ingin menghapus pertanyaan nomor ' + deleteNomor + '? Tindakan ini tidak dapat dibatalkan.'"
+      @confirm="deleteQuestion"
+      @cancel="showDeleteModal = false"
+    />
   </div>
 </template>
 
 <script>
 import AdminHeader from './components/AdminHeader.vue';
 import ConfirmationModal from '../components/ConfirmationModal.vue';
-const dummyQuestions = {
-  depresi: [
-    'Saya merasa sedih atau murung hampir setiap hari.',
-    'Saya kehilangan minat pada aktivitas yang biasanya saya nikmati.',
-    'Saya merasa lelah atau kurang energi.',
-    'Saya merasa tidak berharga atau bersalah berlebihan.',
-    'Saya mengalami kesulitan tidur atau tidur berlebihan.'
-  ],
-  anxiety: [
-    'Saya sering merasa cemas atau khawatir berlebihan.',
-    'Saya sulit mengendalikan rasa khawatir.',
-    'Saya merasa gelisah atau tegang.',
-    'Saya mudah lelah karena kecemasan.',
-    'Saya mengalami gangguan tidur karena rasa cemas.'
-  ],
-  skizofrenia: [
-    'Saya mendengar suara-suara yang tidak didengar orang lain.',
-    'Saya merasa ada yang mengendalikan pikiran saya.',
-    'Saya sulit membedakan kenyataan dan khayalan.',
-    'Saya menarik diri dari lingkungan sosial.',
-    'Saya mengalami perubahan emosi yang drastis.'
-  ],
-  kepribadian: [
-    'Saya sering mengalami perubahan suasana hati yang ekstrem.',
-    'Saya kesulitan menjaga hubungan dengan orang lain.',
-    'Saya merasa identitas diri saya tidak jelas.',
-    'Saya sering bertindak impulsif.',
-    'Saya merasa takut ditinggalkan.'
-  ],
-  ocd: [
-    'Saya memiliki pikiran atau dorongan yang tidak diinginkan dan berulang.',
-    'Saya merasa harus melakukan sesuatu berulang-ulang untuk meredakan kecemasan.',
-    'Saya menghabiskan banyak waktu untuk ritual tertentu.',
-    'Saya menyadari pikiran/ritual saya berlebihan, tapi sulit dikendalikan.',
-    'Saya merasa terganggu dengan kebiasaan ini.'
-  ],
-  bipolar: [
-    'Saya pernah mengalami periode sangat bersemangat atau sangat sedih.',
-    'Saya merasa energi saya sangat tinggi atau sangat rendah.',
-    'Saya mengalami perubahan suasana hati yang drastis.',
-    'Saya sulit tidur saat merasa sangat bersemangat.',
-    'Saya pernah melakukan hal impulsif saat suasana hati naik.'
-  ],
-  makan: [
-    'Saya sangat khawatir dengan berat badan atau bentuk tubuh.',
-    'Saya membatasi makan secara berlebihan atau makan berlebihan secara tiba-tiba.',
-    'Saya merasa bersalah setelah makan.',
-    'Saya sering memikirkan makanan sepanjang hari.',
-    'Saya pernah memuntahkan makanan secara sengaja.'
-  ],
-  ptsd: [
-    'Saya pernah mengalami peristiwa traumatis.',
-    'Saya sering teringat kembali peristiwa tersebut.',
-    'Saya menghindari hal-hal yang mengingatkan pada trauma.',
-    'Saya mudah terkejut atau marah.',
-    'Saya sulit tidur atau sering mimpi buruk.'
-  ]
-};
-const categoryNames = {
-  depresi: 'Depresi',
-  anxiety: 'Anxiety',
-  skizofrenia: 'Skizofrenia',
-  kepribadian: 'Gangguan Kepribadian',
-  ocd: 'OCD',
-  bipolar: 'Bipolar',
-  makan: 'Gangguan Makan',
-  ptsd: 'PTSD'
-};
+import axios from 'axios';
+
 export default {
   name: 'QuestionerManagement',
   components: { AdminHeader, ConfirmationModal },
   data() {
-    // Inisialisasi state pertanyaan per kategori
-    const questionsByCategory = {};
-    Object.keys(dummyQuestions).forEach(key => {
-      questionsByCategory[key] = [...dummyQuestions[key]];
-    });
     return {
       mode: 'list',
-      categories: [
-        { name: 'Depresi', count: dummyQuestions.depresi.length, slug: 'depresi' },
-        { name: 'Anxiety', count: dummyQuestions.anxiety.length, slug: 'anxiety' },
-        { name: 'Skizofrenia', count: dummyQuestions.skizofrenia.length, slug: 'skizofrenia' },
-        { name: 'Gangguan kepribadian', count: dummyQuestions.kepribadian.length, slug: 'kepribadian' },
-        { name: 'OCD', count: dummyQuestions.ocd.length, slug: 'ocd' },
-        { name: 'Bipolar', count: dummyQuestions.bipolar.length, slug: 'bipolar' },
-        { name: 'Gangguan Makan', count: dummyQuestions.makan.length, slug: 'makan' },
-        { name: 'PTSD', count: dummyQuestions.ptsd.length, slug: 'ptsd' },
-      ],
+      questions: [],
+      loading: false,
+      error: '',
+      successMessage: '',
+      submitting: false,
+      
       // Add form
-      category: '',
       question: '',
-      // Detail
-      detailCategory: '',
-      localQuestions: [],
-      questionsByCategory,
-      editIndex: null,
+      selectedCategory: '',
+      
+      // Edit form
       editValue: '',
+      editNomor: null,
+      editCategory: '',
+      
+      // Delete
       showDeleteModal: false,
-      deleteIndex: null
+      deleteNomor: null
     };
   },
-  computed: {
-    categoryName() {
-      return categoryNames[this.detailCategory] || this.detailCategory;
-    }
+  async mounted() {
+    await this.fetchQuestions();
   },
   methods: {
-    openDetail(item) {
-      this.detailCategory = item.slug;
-      this.localQuestions = this.questionsByCategory[item.slug];
-      this.editIndex = null;
-      this.editValue = '';
-      this.mode = 'detail';
-    },
-    // Add form
-    submitForm() {
-      // Tambah pertanyaan ke kategori yang dipilih
-      const cat = this.categories.find(c => c.name === this.category);
-      const catSlug = cat ? cat.slug : null;
-      if (cat && catSlug) {
-        cat.count++;
-        if (!this.questionsByCategory[catSlug]) {
-          this.questionsByCategory[catSlug] = [];
+    async fetchQuestions() {
+      this.loading = true;
+      this.error = '';
+      try {
+        // Add timestamp to prevent caching
+        const timestamp = new Date().getTime();
+        const response = await axios.get(`https://mindcareindependent.com/api/tesdiri_questions.php?t=${timestamp}`);
+        console.log('Fetch response:', response.data); // Debug log
+        if (response.data.success) {
+          this.questions = response.data.questions;
+          console.log('Updated questions:', this.questions); // Debug log
+        } else {
+          this.error = 'Gagal mengambil data pertanyaan';
         }
-        this.questionsByCategory[catSlug].push(this.question);
-        // Jika sedang melihat detail kategori yang sama, update localQuestions
-        if (this.mode === 'detail' && this.detailCategory === catSlug) {
-          this.localQuestions = this.questionsByCategory[catSlug];
-        }
-      }
-      this.category = '';
-      this.question = '';
-      // Setelah tambah, jika dari detail, kembali ke detail, jika dari list, kembali ke list
-      if (this.detailCategory && this.mode === 'add') {
-        this.mode = 'detail';
-      } else {
-        this.mode = 'list';
+      } catch (error) {
+        this.error = 'Gagal koneksi ke server';
+        console.error('Error fetching questions:', error);
+      } finally {
+        this.loading = false;
       }
     },
-    addFromDetail() {
-      // Set kategori otomatis sesuai detail, lalu buka form add
-      const cat = this.categories.find(c => c.slug === this.detailCategory);
-      this.category = cat ? cat.name : '';
-      this.mode = 'add';
-    },
+    
+    // Add methods
     addFromList() {
-      this.category = '';
-      this.detailCategory = '';
+      this.question = '';
+      this.selectedCategory = '';
       this.mode = 'add';
     },
-    cancelAdd() {
-      // Jika dari detail, kembali ke detail, jika dari list, kembali ke list
-      if (this.detailCategory) {
-        this.mode = 'detail';
-      } else {
-        this.mode = 'list';
-      }
-    },
-    // Detail edit/delete
-    startEdit(idx, val) {
-      this.editIndex = idx;
-      this.editValue = val;
-    },
-    saveEdit(idx) {
-      if (this.editValue.trim()) {
-        this.$set ? this.$set(this.localQuestions, idx, this.editValue) : this.localQuestions.splice(idx, 1, this.editValue);
-        // Sinkronkan ke questionsByCategory
-        if (this.detailCategory && this.questionsByCategory[this.detailCategory]) {
-          this.questionsByCategory[this.detailCategory][idx] = this.editValue;
+    
+    async submitForm() {
+      if (!this.question.trim() || this.submitting) return;
+      
+      this.submitting = true;
+      this.error = '';
+      try {
+        const response = await axios.post('https://mindcareindependent.com/api/add_tesdiri_question.php', {
+          pertanyaan: this.question.trim(),
+          kategori: this.selectedCategory
+        });
+        
+        if (response.data.success) {
+          this.successMessage = response.data.message;
+          this.question = '';
+          this.selectedCategory = '';
+          this.mode = 'list';
+          
+          // Force refresh data to ensure it's updated
+          await this.forceRefreshData();
+          
+          // Clear success message after 3 seconds
+          setTimeout(() => {
+            this.successMessage = '';
+          }, 3000);
+        } else {
+          this.error = response.data.message || 'Gagal menambah pertanyaan';
         }
+      } catch (error) {
+        console.error('Error adding question:', error);
+        this.error = 'Gagal menambah pertanyaan: ' + (error.response?.data?.message || error.message);
+      } finally {
+        this.submitting = false;
       }
-      this.editIndex = null;
-      this.editValue = '';
     },
+    
+    cancelAdd() {
+      this.question = '';
+      this.selectedCategory = '';
+      this.mode = 'list';
+    },
+    
+    // Edit methods
+    editQuestion(question) {
+      this.editValue = question.pertanyaan;
+      this.editNomor = question.nomor;
+      this.editCategory = question.kategori;
+      this.mode = 'edit';
+    },
+    
+    async submitEdit() {
+      if (!this.editValue.trim() || this.submitting) return;
+      
+      this.submitting = true;
+      this.error = '';
+      try {
+        console.log('Submitting edit:', { nomor: this.editNomor, pertanyaan: this.editValue.trim() }); // Debug log
+        
+        const response = await axios.put('https://mindcareindependent.com/api/update_tesdiri_question.php', {
+          nomor: this.editNomor,
+          pertanyaan: this.editValue.trim(),
+          kategori: this.editCategory
+        });
+        
+        console.log('Edit response:', response.data); // Debug log
+        
+        if (response.data.success) {
+          this.successMessage = response.data.message;
+          this.editValue = '';
+          this.editNomor = null;
+          this.editCategory = '';
+          this.mode = 'list';
+          
+          // Force refresh data multiple times to ensure it's updated
+          await this.forceRefreshData();
+          
+          // Clear success message after 3 seconds
+          setTimeout(() => {
+            this.successMessage = '';
+          }, 3000);
+        } else {
+          this.error = response.data.message || 'Gagal mengupdate pertanyaan';
+        }
+      } catch (error) {
+        console.error('Error updating question:', error);
+        this.error = 'Gagal mengupdate pertanyaan: ' + (error.response?.data?.message || error.message);
+      } finally {
+        this.submitting = false;
+      }
+    },
+    
+    // Force refresh data multiple times to ensure it's updated
+    async forceRefreshData() {
+      // First refresh
+      await this.fetchQuestions();
+      
+      // Second refresh after a short delay
+      setTimeout(async () => {
+        await this.fetchQuestions();
+      }, 200);
+      
+      // Third refresh after another delay
+      setTimeout(async () => {
+        await this.fetchQuestions();
+      }, 500);
+    },
+    
     cancelEdit() {
-      this.editIndex = null;
       this.editValue = '';
+      this.editNomor = null;
+      this.editCategory = '';
+      this.mode = 'list';
     },
-    confirmDelete(idx) {
-      this.deleteIndex = idx;
+    
+    // Delete methods
+    confirmDelete(nomor) {
+      this.deleteNomor = nomor;
       this.showDeleteModal = true;
     },
-    deleteQuestion() {
-      if (this.deleteIndex !== null) {
-        // Hapus hanya dari questionsByCategory, lalu update localQuestions
-        if (this.detailCategory && this.questionsByCategory[this.detailCategory]) {
-          this.questionsByCategory[this.detailCategory].splice(this.deleteIndex, 1);
-          this.localQuestions = [...this.questionsByCategory[this.detailCategory]];
+    
+    async deleteQuestion() {
+      if (this.submitting) return;
+      
+      this.submitting = true;
+      this.error = '';
+      try {
+        const response = await axios.delete('https://mindcareindependent.com/api/delete_tesdiri_question.php', {
+          data: { nomor: this.deleteNomor }
+        });
+        
+        if (response.data.success) {
+          this.successMessage = response.data.message;
+          this.showDeleteModal = false;
+          this.deleteNomor = null;
+          
+          // Force refresh data to ensure it's updated
+          await this.forceRefreshData();
+          
+          // Clear success message after 3 seconds
+          setTimeout(() => {
+            this.successMessage = '';
+          }, 3000);
+        } else {
+          this.error = response.data.message || 'Gagal menghapus pertanyaan';
         }
-        // Kurangi jumlah pertanyaan pada kategori terkait
-        const cat = this.categories.find(c => c.slug === this.detailCategory);
-        if (cat) cat.count = this.questionsByCategory[this.detailCategory].length;
+      } catch (error) {
+        console.error('Error deleting question:', error);
+        this.error = 'Gagal menghapus pertanyaan: ' + (error.response?.data?.message || error.message);
+      } finally {
+        this.submitting = false;
       }
-      this.showDeleteModal = false;
-      this.deleteIndex = null;
+    },
+
+    // Helper to get category label
+    getCategoryLabel(category) {
+      switch (category) {
+        case 'neurosis':
+          return 'Neurosis';
+        case 'psikotik':
+          return 'Psikotik';
+        case 'ptsd':
+          return 'PTSD';
+        default:
+          return 'Tidak Dikategorikan';
+      }
     }
   }
 };
 </script>
 
 <style scoped>
-/* Gabungkan semua style dari ketiga file, tidak diubah, agar tampilan tetap sama */
 .admin-page-bg {
   min-height: 100vh;
   background: #faf7f3;
 }
+
 main {
   flex: 1;
+  padding-top: 20px;
 }
+
 .questioner-table-outer {
   width: 100%;
   max-width: 1350px;
@@ -328,8 +411,8 @@ main {
   padding-right: 40px;
   box-sizing: border-box;
 }
+
 .questioner-table-container {
-  /* background: #fff; */
   background: #faf7f3;
   border-radius: 16px;
   box-shadow: 0 2px 16px rgba(108,52,131,0.06);
@@ -337,18 +420,21 @@ main {
   margin-top: 32px;
   max-width: 100%;
 }
+
 .questioner-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 18px;
+  margin-bottom: 24px;
 }
+
 .table-title {
-  font-size: 1.35rem;
+  font-size: 1.5rem;
   font-weight: 700;
   color: #2d2350;
   letter-spacing: 0.2px;
 }
+
 .btn-add {
   background: #6C3483;
   color: #fff;
@@ -362,297 +448,385 @@ main {
   align-items: center;
   gap: 8px;
   box-shadow: 0 2px 8px rgba(108,52,131,0.07);
-  transition: background 0.2s;
+  transition: all 0.2s ease;
 }
+
 .btn-add:hover {
   background: #51236a;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(108,52,131,0.15);
 }
+
 .btn-add-icon {
   font-size: 1.2rem;
-  margin-right: 4px;
 }
+
+/* Loading State */
+.loading-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+  color: #6C3483;
+}
+
+.loading-spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid #f3f3f3;
+  border-top: 4px solid #6C3483;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 16px;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Error State */
+.error-state {
+  background: #f8d7da;
+  color: #721c24;
+  padding: 16px;
+  border-radius: 8px;
+  border: 1px solid #f5c6cb;
+  margin-bottom: 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.btn-retry {
+  background: #dc3545;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+
+.btn-retry:hover {
+  background: #c82333;
+}
+
+/* Success Message */
+.success-message {
+  background: #d4edda;
+  color: #155724;
+  padding: 16px;
+  border-radius: 8px;
+  border: 1px solid #c3e6cb;
+  margin-bottom: 16px;
+}
+
 .table-wrapper {
   overflow-x: auto;
+  border-radius: 8px;
+  border: 1px solid #e0e0e0;
 }
+
 .questioner-table {
   width: 100%;
-  border-collapse: separate;
-  border-spacing: 0;
-  /* background: #fff; */
-  background: #faf7f3;
+  border-collapse: collapse;
+  background: #fff;
   font-family: inherit;
 }
-.questioner-table th, .questioner-table td {
-  padding: 14px 10px;
+
+.questioner-table th, 
+.questioner-table td {
+  padding: 16px 12px;
   text-align: left;
   font-size: 1rem;
+  border-bottom: 1px solid #f0f0f0;
 }
+
 .questioner-table thead th {
-  color: #b5b5b5;
-  font-weight: 600;
-  background: #f7f3fa;
-  border-bottom: 2px solid #ede7f6;
-}
-.questioner-table tbody tr {
-  border-bottom: 1px solid #f3f3f3;
-  transition: background 0.18s;
-}
-.questioner-table tbody tr:hover {
-  background: #f7f3fa;
-}
-.btn-detail {
-  background: #f4f4f4;
-  border: none;
-  border-radius: 20px;
-  padding: 6px 14px;
-  cursor: pointer;
-  font-size: 1.1rem;
   color: #6C3483;
-  transition: background 0.2s, box-shadow 0.2s;
+  font-weight: 600;
+  background: #f8f5ff;
+  border-bottom: 2px solid #e0d5f0;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.questioner-table tbody tr {
+  background: #faf7f3;
+  transition: background 0.2s ease;
+}
+
+.questioner-table tbody tr:hover {
+  background: #f8f5ff;
+}
+
+.questioner-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.btn-edit, .btn-delete {
+  background: none;
+  border: none;
+  border-radius: 6px;
+  padding: 8px 12px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: all 0.2s ease;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 1px 4px rgba(108,52,131,0.08);
 }
-.btn-detail:hover {
-  background: #ede7f6;
-  box-shadow: 0 2px 8px rgba(108,52,131,0.13);
+
+.btn-edit {
+  color: #6C3483;
+  background: #f0e8ff;
 }
-.arrow {
-  font-size: 1.2rem;
-  font-weight: bold;
+
+.btn-edit:hover {
+  background: #e0d5f0;
+  transform: translateY(-1px);
 }
+
+.btn-delete {
+  color: #dc3545;
+  background: #ffe8e8;
+}
+
+.btn-delete:hover {
+  background: #ffd0d0;
+  transform: translateY(-1px);
+}
+
+.category-badge {
+  display: inline-block;
+  padding: 6px 12px;
+  border-radius: 12px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #fff;
+  text-transform: capitalize;
+}
+
+.category-neurosis {
+  background-color: #6C3483;
+}
+
+.category-psikotik {
+  background-color: #4CAF50;
+}
+
+.category-ptsd {
+  background-color: #F44336;
+}
+
 .add-question-card-outer {
   width: 100%;
   min-height: 80vh;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding-top: 32px;
-  padding-bottom: 32px;
+  padding: 32px 40px;
 }
+
 .add-question-card {
-  /* background: #fff; */
-  background: #faf7f3;
+  background: #fff;
   border-radius: 20px;
-  box-shadow: 0 2px 16px rgba(108,52,131,0.06);
-  padding: 56px 56px 36px 56px;
-  max-width: 950px;
+  box-shadow: 0 4px 20px rgba(108,52,131,0.1);
+  padding: 48px;
+  max-width: 800px;
   width: 100%;
   margin: 0 auto;
 }
+
 .form-title {
-  font-size: 1.35rem;
+  font-size: 1.5rem;
   font-weight: 700;
-  color: #23263b;
-  margin-bottom: 28px;
-  text-align: left;
+  color: #2d2350;
+  margin-bottom: 32px;
+  text-align: center;
 }
+
 .form-group {
   margin-bottom: 24px;
-  display: flex;
-  flex-direction: column;
 }
+
 label {
   font-weight: 600;
-  color: #23263b;
-  margin-bottom: 10px;
-  font-size: 1.08rem;
+  color: #2d2350;
+  margin-bottom: 12px;
+  font-size: 1.1rem;
+  display: block;
 }
-select, textarea {
-  border: 1.5px solid #e0e0e0;
-  border-radius: 8px;
-  padding: 14px 14px;
-  font-size: 1.05rem;
+
+textarea {
+  width: 100%;
+  border: 2px solid #e0e0e0;
+  border-radius: 12px;
+  padding: 16px;
+  font-size: 1rem;
   font-family: inherit;
   background: #fff;
-  transition: border 0.2s;
+  transition: all 0.2s ease;
   outline: none;
-}
-select:focus, textarea:focus {
-  border-color: #6C3483;
-}
-textarea {
   resize: vertical;
-  min-height: 100px;
+  min-height: 120px;
 }
+
+textarea:focus {
+  border-color: #6C3483;
+  box-shadow: 0 0 0 3px rgba(108,52,131,0.1);
+}
+
+textarea:disabled {
+  background: #f8f9fa;
+  cursor: not-allowed;
+}
+
+.form-select {
+  width: 100%;
+  padding: 12px 16px;
+  border: 2px solid #e0e0e0;
+  border-radius: 12px;
+  font-size: 1rem;
+  font-family: inherit;
+  background: #fff;
+  transition: all 0.2s ease;
+  outline: none;
+  cursor: pointer;
+}
+
+.form-select:focus {
+  border-color: #6C3483;
+  box-shadow: 0 0 0 3px rgba(108,52,131,0.1);
+}
+
+.form-select:disabled {
+  background: #f8f9fa;
+  cursor: not-allowed;
+  color: #adb5bd;
+}
+
 .form-actions {
   display: flex;
   justify-content: flex-end;
-  gap: 18px;
-  margin-top: 38px;
-}
-.btn-cancel {
-  background: #a94442;
-  color: #fff;
-  border: none;
-  border-radius: 8px;
-  padding: 14px 38px;
-  font-size: 1.08rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background 0.2s;
-}
-.btn-cancel:hover {
-  background: #922b21;
-}
-.btn-save {
-  background: #388e3c;
-  color: #fff;
-  border: none;
-  border-radius: 8px;
-  padding: 14px 38px;
-  font-size: 1.08rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background 0.2s;
-}
-.btn-save:hover {
-  background: #256029;
-}
-.detail-question-outer {
-  width: 100%;
-  max-width: 1350px;
-  margin: 0 auto;
-  padding-left: 40px;
-  padding-right: 40px;
-  box-sizing: border-box;
-}
-.detail-question-container {
+  gap: 16px;
   margin-top: 32px;
-  /* background: #fff; */
-  background: #faf7f3;
-  border-radius: 16px;
-  box-shadow: 0 2px 16px rgba(108,52,131,0.06);
-  padding: 48px 48px 36px 48px;
-  max-width: 100%;
 }
-.detail-header {
-  display: flex;
-  align-items: center;
-  gap: 24px;
-  margin-bottom: 32px;
-}
-.btn-back {
-  background: #ede7f6;
-  color: #6C3483;
-  border: none;
+
+.btn-cancel, .btn-save {
+  padding: 12px 32px;
   border-radius: 8px;
-  padding: 10px 24px;
   font-size: 1rem;
   font-weight: 600;
   cursor: pointer;
-  transition: background 0.2s;
-}
-.btn-back:hover {
-  background: #d1c4e9;
-}
-.detail-title {
-  font-size: 1.25rem;
-  font-weight: 700;
-  color: #23263b;
-  margin: 0;
-}
-.question-list {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-.question-item {
-  font-size: 1.08rem;
-  color: #23263b;
-  background: #faf7f3;
-  border-radius: 8px;
-  margin-bottom: 16px;
-  padding: 18px 20px;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  box-shadow: 0 1px 4px rgba(108,52,131,0.04);
-}
-.question-index {
-  font-weight: 700;
-  color: #6C3483;
-  margin-right: 8px;
-}
-.question-content {
-  flex: 1;
-  min-width: 0;
-  word-break: break-word;
-}
-.question-actions {
-  display: flex;
-  gap: 8px;
-  margin-left: auto;
-  align-items: center;
-}
-.question-actions .btn-save-edit,
-.question-actions .btn-cancel-edit {
-  margin-left: 0;
-}
-.edit-input {
-  width: 100%;
-  font-size: 1.08rem;
-  padding: 8px 12px;
-  border: 1.5px solid #e0e0e0;
-  border-radius: 6px;
-  margin-right: 0;
-}
-.btn-edit, .btn-delete, .btn-save-edit, .btn-cancel-edit {
-  padding: 6px 16px;
-  border-radius: 8px;
-  font-size: 0.98rem;
-  font-weight: 500;
   border: none;
-  cursor: pointer;
-  transition: background 0.2s;
+  transition: all 0.2s ease;
 }
-.btn-edit {
-  background: #ede7f6;
-  color: #6C3483;
+
+.btn-cancel {
+  background: #f8f9fa;
+  color: #6c757d;
+  border: 1px solid #dee2e6;
 }
-.btn-edit:hover {
-  background: #d1c4e9;
+
+.btn-cancel:hover:not(:disabled) {
+  background: #e9ecef;
+  transform: translateY(-1px);
 }
-.btn-delete {
-  background: #f87171;
+
+.btn-cancel:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.btn-save {
+  background: #6C3483;
   color: #fff;
 }
-.btn-delete:hover {
-  background: #ef4444;
+
+.btn-save:hover:not(:disabled) {
+  background: #51236a;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(108,52,131,0.2);
 }
-.btn-save-edit {
-  background: #388e3c;
-  color: #fff;
+
+.btn-save:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
 }
-.btn-save-edit:hover {
-  background: #256029;
-}
-.btn-cancel-edit {
-  background: #a94442;
-  color: #fff;
-}
-.btn-cancel-edit:hover {
-  background: #922b21;
-}
-@media (max-width: 900px) {
-  .questioner-table-outer, .detail-question-outer {
-    padding-left: 8px;
-    padding-right: 8px;
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .questioner-table-outer {
+    padding-left: 16px;
+    padding-right: 16px;
   }
-  .questioner-table-container, .detail-question-container {
-    padding: 16px 2px 10px 2px;
+  
+  .questioner-table-container {
+    padding: 20px 16px;
   }
-  .table-title, .detail-title {
-    font-size: 1.08rem;
+  
+  .questioner-header {
+    flex-direction: column;
+    gap: 16px;
+    align-items: stretch;
   }
-  .questioner-table th, .questioner-table td {
+  
+  .btn-add {
+    justify-content: center;
+  }
+  
+  .questioner-table th, 
+  .questioner-table td {
+    padding: 12px 8px;
+    font-size: 0.9rem;
+  }
+  
+  .action-buttons {
+    flex-direction: column;
+    gap: 4px;
+  }
+  
+  .add-question-card {
+    padding: 24px;
+    margin: 16px;
+  }
+  
+  .form-actions {
+    flex-direction: column;
+  }
+  
+  .btn-cancel, .btn-save {
+    width: 100%;
+  }
+  
+  .error-state {
+    flex-direction: column;
+    gap: 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .table-title {
+    font-size: 1.2rem;
+  }
+  
+  .questioner-table {
+    font-size: 0.85rem;
+  }
+  
+  .questioner-table th, 
+  .questioner-table td {
     padding: 8px 4px;
-    font-size: 0.92rem;
-  }
-  .question-item {
-    font-size: 0.97rem;
-    padding: 10px 8px;
   }
 }
 </style> 
