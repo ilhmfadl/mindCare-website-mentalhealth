@@ -7,9 +7,25 @@
           <div class="questioner-table-container">
             <div class="questioner-header">
               <div class="table-title">Daftar Pertanyaan Tes Diri</div>
-              <button class="btn-add" type="button" @click="addFromList">
-                <span class="btn-add-icon">✚</span> Tambahkan Pertanyaan Baru
-              </button>
+              <div class="header-controls">
+                <div class="filter-section">
+                  <label for="categoryFilter" class="filter-label">Filter Kategori:</label>
+                  <select 
+                    id="categoryFilter" 
+                    v-model="selectedFilter" 
+                    class="filter-select"
+                    @change="filterQuestions"
+                  >
+                    <option value="semua">Semua</option>
+                    <option value="neurosis">Neurosis</option>
+                    <option value="psikotik">Psikotik</option>
+                    <option value="ptsd">PTSD</option>
+                  </select>
+                </div>
+                <button class="btn-add" type="button" @click="addFromList">
+                  <span class="btn-add-icon">✚</span> Tambahkan Pertanyaan Baru
+                </button>
+              </div>
             </div>
             
             <!-- Loading State -->
@@ -40,7 +56,7 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <tr v-for="question in questions" :key="question.nomor">
+                  <tr v-for="question in filteredQuestions" :key="question.nomor">
                     <td>{{ question.nomor }}</td>
                     <td>{{ question.pertanyaan }}</td>
                     <td>
@@ -61,6 +77,11 @@
                   </tr>
                 </tbody>
               </table>
+              
+              <!-- No results message -->
+              <div v-if="filteredQuestions.length === 0 && !loading" class="no-results">
+                <p>Tidak ada pertanyaan yang ditemukan untuk kategori "{{ getCategoryLabel(selectedFilter) }}"</p>
+              </div>
             </div>
           </div>
         </div>
@@ -187,11 +208,22 @@ export default {
       
       // Delete
       showDeleteModal: false,
-      deleteNomor: null
+      deleteNomor: null,
+
+      // Filter
+      selectedFilter: 'semua'
     };
   },
   async mounted() {
     await this.fetchQuestions();
+  },
+  computed: {
+    filteredQuestions() {
+      if (this.selectedFilter === 'semua') {
+        return this.questions;
+      }
+      return this.questions.filter(question => question.kategori === this.selectedFilter);
+    }
   },
   methods: {
     async fetchQuestions() {
@@ -387,6 +419,12 @@ export default {
         default:
           return 'Tidak Dikategorikan';
       }
+    },
+
+    // Filter questions based on selected category
+    filterQuestions() {
+      // No need to refetch, filteredQuestions will update automatically
+      // This method is primarily for triggering re-evaluation of the computed property
     }
   }
 };
@@ -426,6 +464,42 @@ main {
   justify-content: space-between;
   align-items: center;
   margin-bottom: 24px;
+}
+
+.header-controls {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+}
+
+.filter-section {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.filter-label {
+  font-weight: 600;
+  color: #2d2350;
+  font-size: 1rem;
+}
+
+.filter-select {
+  padding: 10px 16px;
+  border: 2px solid #e0e0e0;
+  border-radius: 12px;
+  font-size: 1rem;
+  font-family: inherit;
+  background: #fff;
+  color: #6C3483;
+  transition: all 0.2s ease;
+  outline: none;
+  cursor: pointer;
+}
+
+.filter-select:focus {
+  border-color: #6C3483;
+  box-shadow: 0 0 0 3px rgba(108,52,131,0.1);
 }
 
 .table-title {
@@ -764,6 +838,15 @@ textarea:disabled {
   cursor: not-allowed;
 }
 
+/* No results message */
+.no-results {
+  text-align: center;
+  padding: 20px;
+  color: #6C3483;
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
   .questioner-table-outer {
@@ -779,6 +862,18 @@ textarea:disabled {
     flex-direction: column;
     gap: 16px;
     align-items: stretch;
+  }
+
+  .header-controls {
+    flex-direction: column;
+    gap: 12px;
+    align-items: stretch;
+  }
+
+  .filter-section {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
   }
   
   .btn-add {

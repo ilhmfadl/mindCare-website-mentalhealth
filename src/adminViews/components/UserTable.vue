@@ -596,10 +596,10 @@ export default {
 }
 
 .user-table thead th {
-  color: #a3a3a3;
+  color: #6C3483;
   font-weight: 600;
-  background: #f7f3fa;
-  border-bottom: 2px solid #ede7f6;
+  background: #f8f5ff;
+  border-bottom: 2px solid #e0d5f0;
   position: sticky;
   top: 0;
   z-index: 1;

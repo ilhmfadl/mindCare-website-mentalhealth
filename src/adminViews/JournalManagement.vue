@@ -509,10 +509,13 @@ main {
   font-size: 1rem;
 }
 .journal-table thead th {
-  color: #b5b5b5;
+  color: #6C3483;
   font-weight: 600;
-  background: #f7f3fa;
-  border-bottom: 2px solid #ede7f6;
+  background: #f8f5ff;
+  border-bottom: 2px solid #e0d5f0;
+  position: sticky;
+  top: 0;
+  z-index: 1;
 }
 .journal-table tbody tr {
   border-bottom: 1px solid #f3f3f3;

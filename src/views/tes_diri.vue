@@ -12,22 +12,33 @@
         <p class="note">Bacalah petunjuk ini seluruhnya sebelum mulai mengisi. Pertanyaan berikut berhubungan dengan masalah yang mungkin mengganggu Anda selama 30 hari terakhir. Apabila Anda menganggap pertanyaan itu berlaku bagi Anda dan Anda mengalami masalah yang disebutkan dalam 30 hari terakhir, berilah tanda pada kolom Y. Sebaliknya, Apabila Anda menganggap pertanyaan itu tidak berlaku bagi Anda dan Anda tidak mengalami masalah yang disebutkan dalam 30 hari terakhir, berilah tanda pada kolom T. Jika Anda tidak yakin tentang jawabannya, berilah jawaban yang paling sesuai di antara Y dan T. Kami tegaskan bahwa, jawaban Anda bersifat rahasia, dan akan digunakan hanya untuk membantu pemecahan masalah Anda.
 
 </p>
+        
       </div>
     </section>
 
     <!-- Question Section (Paginated) -->
     <section v-if="!showResults" class="question-section">
-      <div class="progress-indicator">
-        Halaman {{ currentPage + 1 }} dari {{ totalPages }}
+      <div v-if="questions.length === 0 && !error" class="loading-questions">
+        <div class="loading-spinner"></div>
+        <p>Memuat pertanyaan tes...</p>
       </div>
+      
+      <div v-else-if="questions.length > 0" class="questions-content">
+        <div class="progress-indicator">
+          Halaman {{ currentPage + 1 }} dari {{ totalPages }}
+          <span class="question-count">
+            ({{ questions.length }} pertanyaan tersedia)
+          </span>
+        </div>
 
-      <QuestionItem
-        v-for="(question, index) in paginatedQuestions"
-        :key="getGlobalQuestionIndex(index)"
-        :question-text="question"
-        :question-index="getGlobalQuestionIndex(index)"
-        v-model="answers[getGlobalQuestionIndex(index)]"
-      />
+        <QuestionItem
+          v-for="(question, index) in paginatedQuestions"
+          :key="getGlobalQuestionIndex(index)"
+          :question-text="question"
+          :question-index="getGlobalQuestionIndex(index)"
+          v-model="answers[getGlobalQuestionIndex(index)]"
+        />
+      </div>
       
       <div class="submission-area">
         <button v-if="!isLastPage" @click="nextPage" class="submit-button" :disabled="!isCurrentPageAnswered">
@@ -42,6 +53,15 @@
     <!-- Results Section -->
     <ResultIsNeurosis v-if="showResults" :score="totalScore" />
     <div v-if="error" class="error-message" style="color:red;text-align:center;margin:16px 0;">{{ error }}</div>
+    
+    <!-- New Questions Notification -->
+    <div v-if="showNewQuestionsNotification" class="new-questions-notification">
+      <div class="notification-content">
+        <span>🎉 Pertanyaan baru telah ditambahkan!</span>
+        <button @click="showNewQuestionsNotification = false" class="notification-close">×</button>
+      </div>
+    </div>
+    
     <div v-if="showResults" class="results-section">
       <h2>Hasil Tes Anda:</h2>
       <p>{{ hasilTes }}</p>
@@ -71,22 +91,38 @@ export default {
       currentPage: 0,
       questionsPerPage: 5,
       loading: false,
+
       error: '',
       hasilTes: '',
+      lastQuestionCount: 0,
+      showNewQuestionsNotification: false,
+      questionCheckInterval: null,
     }
   },
   async mounted() {
-    try {
-      const res = await axios.get('https://mindcareindependent.com/api/tesdiri_questions.php');
-      if (res.data.success) {
-        this.questions = res.data.questions.map(q => q.pertanyaan);
-        this.answers = Array(this.questions.length).fill(null);
-      } else {
-        this.error = 'Gagal mengambil pertanyaan tes.';
+    await this.fetchQuestions();
+    
+    // Optional: Check for new questions every 30 seconds
+    this.questionCheckInterval = setInterval(async () => {
+      if (!this.showResults && !this.loading) {
+        await this.checkForNewQuestions();
       }
-    } catch (e) {
-      this.error = 'Gagal koneksi ke server.';
+    }, 30000); // 30 seconds
+  },
+  beforeDestroy() {
+    // Clean up interval when component is destroyed
+    if (this.questionCheckInterval) {
+      clearInterval(this.questionCheckInterval);
     }
+  },
+  async beforeRouteEnter(to, from, next) {
+    // This ensures questions are refreshed when navigating to this page
+    next();
+  },
+  async beforeRouteUpdate(to, from, next) {
+    // Refresh questions when the route updates
+    await this.fetchQuestions();
+    next();
   },
   computed: {
     totalPages() {
@@ -118,6 +154,62 @@ export default {
     }
   },
   methods: {
+    async fetchQuestions() {
+      try {
+        // Add timestamp to prevent caching and ensure latest questions
+        const timestamp = new Date().getTime();
+        const res = await axios.get(`https://mindcareindependent.com/api/tesdiri_questions.php?t=${timestamp}`, {
+          headers: {
+            'Cache-Control': 'no-cache',
+            'Pragma': 'no-cache'
+          }
+        });
+        
+        if (res.data.success) {
+          const newQuestions = res.data.questions.map(q => q.pertanyaan);
+          
+          // Check if there are new questions
+          if (this.lastQuestionCount > 0 && newQuestions.length > this.lastQuestionCount) {
+            this.showNewQuestionsNotification = true;
+            setTimeout(() => {
+              this.showNewQuestionsNotification = false;
+            }, 5000);
+          }
+          
+          this.questions = newQuestions;
+          this.answers = Array(this.questions.length).fill(null);
+          this.lastQuestionCount = this.questions.length;
+          console.log('Fetched questions:', this.questions.length, 'questions');
+        } else {
+          this.error = 'Gagal mengambil pertanyaan tes.';
+        }
+      } catch (e) {
+        console.error('Error fetching questions:', e);
+        this.error = 'Gagal koneksi ke server.';
+      }
+    },
+
+    async checkForNewQuestions() {
+      try {
+        const timestamp = new Date().getTime();
+        const res = await axios.get(`https://mindcareindependent.com/api/tesdiri_questions.php?t=${timestamp}`, {
+          headers: {
+            'Cache-Control': 'no-cache',
+            'Pragma': 'no-cache'
+          }
+        });
+        
+        if (res.data.success && res.data.questions.length > this.lastQuestionCount) {
+          // New questions detected
+          this.showNewQuestionsNotification = true;
+          setTimeout(() => {
+            this.showNewQuestionsNotification = false;
+          }, 5000);
+        }
+      } catch (e) {
+        console.error('Error checking for new questions:', e);
+      }
+    },
     getGlobalQuestionIndex(index) {
       return this.currentPage * this.questionsPerPage + index;
     },
@@ -269,6 +361,8 @@ export default {
   line-height: 1.7;
   text-align: justify;
 }
+
+
 .question-section, .results-section {
   background: #faf7f3;
   margin-top: -32px;
@@ -282,6 +376,87 @@ export default {
   color: #888;
   text-align: center;
   margin-bottom: 24px;
+}
+
+.question-count {
+  color: #6A4C9B;
+  font-weight: 600;
+  margin-left: 8px;
+}
+
+.loading-questions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 20px;
+  color: #6A4C9B;
+}
+
+.loading-questions .loading-spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid #f3f3f3;
+  border-top: 4px solid #6A4C9B;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 16px;
+}
+
+.loading-questions p {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+.new-questions-notification {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background: #4CAF50;
+  color: white;
+  padding: 16px 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  z-index: 1000;
+  animation: slideInRight 0.3s ease-out;
+}
+
+.notification-content {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.notification-close {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 1.5rem;
+  cursor: pointer;
+  padding: 0;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: background-color 0.2s;
+}
+
+.notification-close:hover {
+  background: rgba(255,255,255,0.2);
+}
+
+@keyframes slideInRight {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
 }
 .submission-area {
   max-width: 1000px;
@@ -451,6 +626,7 @@ export default {
     font-size: 0.7rem;
     margin-top: 8px;
   }
+
   .question-section {
     padding: 10px 0 14px 0;
   }
@@ -493,6 +669,23 @@ export default {
   .question-section input[type="checkbox"] {
     width: 18px;
     height: 18px;
+  }
+  
+  .new-questions-notification {
+    top: 10px;
+    right: 10px;
+    left: 10px;
+    padding: 12px 16px;
+  }
+  
+  .notification-content {
+    gap: 8px;
+  }
+  
+  .notification-close {
+    font-size: 1.2rem;
+    width: 20px;
+    height: 20px;
   }
 }
 </style> 
