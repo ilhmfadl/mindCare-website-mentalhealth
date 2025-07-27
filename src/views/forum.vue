@@ -133,7 +133,7 @@
         <h4>Featured links</h4>
         <ul>
           <li><a href="#" @click="goToPojokEdukasi">Cari info yang lebih akurat melalui jurnal!</a></li>
-          <li><a href="#">Tanyakan kepada orang yang memiliki kendala yang sama dengan anda!</a></li>
+          <li><a href="#" @click="openChat">konsul dengan ahlinya</a></li>
         </ul>
       </aside>
     </div>
@@ -284,12 +284,15 @@
     @confirm="handleModalConfirm"
     @cancel="handleModalCancel"
   />
+  
+
 </template>
 
 <script setup>
 import { ref, computed, onMounted, onUnmounted } from 'vue';
 import axios from 'axios';
 import ForumModal from '../components/ForumModal.vue';
+
 // Get user from localStorage or use default
 const getCurrentUser = () => {
   const storedUser = localStorage.getItem('user');
@@ -311,6 +314,7 @@ const getCurrentUser = () => {
 };
 
 const user = ref(getCurrentUser());
+
 
 const categories = [
   'Semua',
@@ -1320,6 +1324,14 @@ function goToPojokEdukasi() {
     window.location.href = '/edukasi#ruang-artikel';
   }
 }
+
+function openChat() {
+  if (window.openChat) {
+    window.openChat();
+  }
+}
+
+
 
 </script>
 

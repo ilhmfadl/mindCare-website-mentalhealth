@@ -1,11 +1,31 @@
 <script setup>
 import Header from './components/header.vue';
 import Footer from './components/footer.vue';
+import ChatPopup from './components/ChatPopup.vue';
 import { useRoute } from 'vue-router';
-import { computed } from 'vue';
+import { computed, ref, onMounted } from 'vue';
 
 const route = useRoute();
 const isAdminRoute = computed(() => route.path.startsWith('/admin'));
+const isTestRoute = computed(() => route.path === '/tes-diri');
+const showChat = computed(() => !isAdminRoute.value && !isTestRoute.value);
+
+const chatPopup = ref(null);
+
+// Make chat accessible globally
+onMounted(() => {
+  window.openChat = () => {
+    if (chatPopup.value) {
+      chatPopup.value.openChat();
+    }
+  };
+  
+  window.closeChat = () => {
+    if (chatPopup.value) {
+      chatPopup.value.closeChat();
+    }
+  };
+});
 </script>
 
 <template>
@@ -15,6 +35,7 @@ const isAdminRoute = computed(() => route.path.startsWith('/admin'));
       <router-view />
     </main>
     <Footer v-if="!isAdminRoute" />
+    <ChatPopup v-if="showChat" ref="chatPopup" />
   </div>
 </template>
 

@@ -104,33 +104,17 @@
         </div>
       </div>
     </section>
-    <section v-if="isLoggedIn && hasTestResult" class="tesdiri-result-section">
-      <div class="home-container">
-        <h2 class="section-title">Hasil Tes Diri Terakhir Anda</h2>
-        <div class="tesdiri-result-card">
-          <p><strong>Hasil:</strong> {{ lastTestResult.hasil }}</p>
-          <p><strong>Tanggal Tes:</strong> {{ formatTanggal(lastTestResult.tanggal) }}</p>
-          <button class="btn-detail" @click="goToDetailHasil">Lihat Detail Hasil Tes</button>
-        </div>
-      </div>
-    </section>
+
   </div>
 </template>
 
 <script>
 import axios from 'axios';
-import { testState } from '../store/testState';
 export default {
   name: "MindCareLanding",
   computed: {
     isLoggedIn() {
       return !!localStorage.getItem('user');
-    },
-    hasTestResult() {
-      return !!testState.hasilTesTerakhir;
-    },
-    lastTestResult() {
-      return testState.hasilTesTerakhir || {};
     }
   },
   methods: {
@@ -143,54 +127,7 @@ export default {
     goToLogin() {
       this.$router.push({ name: 'Login' });
     },
-    goToDetailHasil() {
-      const hasil = (this.lastTestResult.hasil || '').toLowerCase();
-      if (hasil.includes('neurosis')) {
-        this.$router.push({ name: 'ResultIsNeurosis' });
-      } else if (hasil.includes('psikotik')) {
-        this.$router.push({ name: 'ResultIsPsychotic' });
-      } else if (hasil.includes('ptsd')) {
-        this.$router.push({ name: 'ResultIsPTSD' });
-      } else if (hasil.includes('normal')) {
-        this.$router.push({ name: 'ResultIsNormal' });
-      } else {
-        this.$router.push({ name: 'TesDiri' });
-      }
-    },
-    formatTanggal(tgl) {
-      if (!tgl) return '-';
-      const d = new Date(tgl);
-      return d.toLocaleDateString('id-ID', { year: 'numeric', month: 'long', day: 'numeric' });
-    },
-    async fetchLastTestResult() {
-      const user = localStorage.getItem('user');
-      if (!user) {
-        localStorage.removeItem('lastTestResult');
-        testState.hasilTesTerakhir = null;
-        return;
-      }
-      try {
-        const parsed = JSON.parse(user);
-        const formData = new FormData();
-        formData.append('user_id', parsed.id);
-        const res = await axios.post('https://mindcareindependent.com/api/get_last_tesdiri.php', formData);
-        if (res.data.success && res.data.data) {
-          localStorage.setItem('lastTestResult', JSON.stringify(res.data.data));
-          testState.hasilTesTerakhir = res.data.data;
-        } else {
-          localStorage.removeItem('lastTestResult');
-          testState.hasilTesTerakhir = null;
-        }
-      } catch (e) {
-        localStorage.removeItem('lastTestResult');
-        testState.hasilTesTerakhir = null;
-      }
-    }
-  },
-  async created() {
-    if (this.isLoggedIn) {
-      await this.fetchLastTestResult();
-    }
+
   }
 };
 </script>
@@ -578,33 +515,5 @@ export default {
 @media (max-width: 768px) {
     .section-title { font-size: 1.8rem; }
     .hero-left h1 { font-size: 2.5rem; }
-}
-.tesdiri-result-section {
-  background: #f3f7fa;
-  padding: 40px 0 0 0;
-}
-.tesdiri-result-card {
-  background: #fff;
-  border-radius: 18px;
-  box-shadow: 0 4px 24px rgba(106,76,155,0.08);
-  padding: 28px 24px;
-  max-width: 420px;
-  margin: 0 auto 32px auto;
-  text-align: center;
-}
-.btn-detail {
-  background: #EC744A;
-  color: white;
-  padding: 10px 32px;
-  border-radius: 50px;
-  font-weight: 600;
-  cursor: pointer;
-  border: none;
-  font-size: 1rem;
-  margin-top: 18px;
-  transition: all 0.3s ease;
-}
-.btn-detail:hover {
-  background: #d9633a;
 }
 </style>

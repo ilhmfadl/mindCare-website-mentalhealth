@@ -92,11 +92,13 @@
       <aside class="forum-featured-links">
         <h4>Featured links</h4>
         <ul>
-          <li><a href="#">Cari info yang lebih akurat melalui jurnal!</a></li>
           <li><a href="#" @click="goToForumDiskusi">Tanyakan kepada orang yang memiliki kendala yang sama dengan anda!</a></li>
+          <li><a href="#" @click="openChat">konsul dengan ahlinya</a></li>
         </ul>
       </aside>
     </div>
+    
+
   </div>
 </template>
 
@@ -104,8 +106,11 @@
 import DepresiImg from '../assets/Depresi.png'
 import AnxietyImg from '../assets/anxiety.png'
 import PTSDImg from '../assets/PTSD.png'
+
 export default {
   name: 'PojokEdukasi',
+  components: {
+  },
   mounted() {
     // Handle anchor scroll to ruang artikel
     console.log('📍 PojokEdukasi mounted, checking for anchor...');
@@ -213,7 +218,13 @@ export default {
         // this.$router.push('/forum'); // Uncomment jika menggunakan Vue Router
         window.location.href = '/forum';
       }
+    },
+    openChat() {
+      if (window.openChat) {
+        window.openChat();
+      }
     }
+
   }
 }
 </script>
