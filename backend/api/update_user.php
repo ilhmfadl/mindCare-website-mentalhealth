@@ -14,7 +14,32 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     exit(0);
 }
 
-require_once '../config/db.php';
+// Try multiple paths for db.php
+$possible_paths = [
+    '../config/db.php',
+    __DIR__ . '/../config/db.php',
+    dirname(__FILE__) . '/../config/db.php'
+];
+
+$db_loaded = false;
+foreach ($possible_paths as $db_path) {
+    if (file_exists($db_path)) {
+        require_once $db_path;
+        $db_loaded = true;
+        break;
+    }
+}
+
+if (!$db_loaded) {
+    http_response_code(500);
+    echo json_encode(['success' => false, 'message' => 'Database config file not found']);
+    exit;
+}
+
+// Log if function doesn't exist (for debugging)
+if (!function_exists('formatUserFriendlyTime')) {
+    error_log('formatUserFriendlyTime function not found after including db.php');
+}
 
 if ($_SERVER['REQUEST_METHOD'] !== 'PUT') {
     http_response_code(405);
@@ -140,7 +165,20 @@ try {
 
         // Format tanggal dengan zona waktu yang benar
         $client_timezone = isset($_POST['timezone']) ? $_POST['timezone'] : 'Asia/Jakarta';
-        $updatedUser['date'] = formatUserFriendlyTime($updatedUser['created_at'], $client_timezone);
+        
+        // Check if function exists before calling it
+        if (function_exists('formatUserFriendlyTime')) {
+            $updatedUser['date'] = formatUserFriendlyTime($updatedUser['created_at'], $client_timezone);
+        } else {
+            // Fallback if function doesn't exist
+            try {
+                $utc_datetime = new DateTime($updatedUser['created_at'], new DateTimeZone('UTC'));
+                $utc_datetime->setTimezone(new DateTimeZone($client_timezone));
+                $updatedUser['date'] = $utc_datetime->format('d/m/Y H:i');
+            } catch (Exception $e) {
+                $updatedUser['date'] = $updatedUser['created_at'];
+            }
+        }
         
         // Format waktu hanya jam dan menit dengan AM/PM
         try {
@@ -148,7 +186,19 @@ try {
             $utc_datetime->setTimezone(new DateTimeZone($client_timezone));
             $updatedUser['time'] = $utc_datetime->format('h:i A');
         } catch (Exception $e) {
-            $updatedUser['time'] = convertToClientTimezone($updatedUser['created_at'], $client_timezone);
+            // Check if function exists before calling it
+            if (function_exists('convertToClientTimezone')) {
+                $updatedUser['time'] = convertToClientTimezone($updatedUser['created_at'], $client_timezone);
+            } else {
+                // Fallback if function doesn't exist
+                try {
+                    $utc_datetime = new DateTime($updatedUser['created_at'], new DateTimeZone('UTC'));
+                    $utc_datetime->setTimezone(new DateTimeZone($client_timezone));
+                    $updatedUser['time'] = $utc_datetime->format('h:i A');
+                } catch (Exception $e2) {
+                    $updatedUser['time'] = $updatedUser['created_at'];
+                }
+            }
         }
 
         // Biarkan photo kosong jika tidak ada di database

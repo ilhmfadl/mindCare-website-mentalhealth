@@ -306,15 +306,17 @@ export default {
       this.totalScore = 0;
       this.showResults = false;
       this.currentPage = 0;
-      // Reset semua data tes untuk memulai tes baru
-      resetTestState();
-      localStorage.removeItem('lastTestResult');
+      // Reset hanya data tes yang sedang berlangsung, tanpa menghapus hasil tes yang sudah selesai
+      resetCurrentTestOnly();
+      // JANGAN hapus lastTestResult karena ini berisi hasil tes yang sudah selesai
+      // localStorage.removeItem('lastTestResult');
     },
     
     resetTestStateOnStart() {
-      // Reset semua data tes untuk memulai tes baru
-      resetTestState();
-      localStorage.removeItem('lastTestResult');
+      // Reset hanya data tes yang sedang berlangsung, tanpa menghapus hasil tes yang sudah selesai
+      resetCurrentTestOnly();
+      // JANGAN hapus lastTestResult karena ini berisi hasil tes yang sudah selesai
+      // localStorage.removeItem('lastTestResult');
       
       // Reset juga data lokal component
       this.answers = [];

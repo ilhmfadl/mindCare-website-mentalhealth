@@ -73,11 +73,22 @@
               </td>
               <td>
                 <div class="action-buttons">
-                  <button class="btn-edit" title="Edit" @click="editUser(user)">
+                  <button 
+                    class="btn-edit" 
+                    title="Edit" 
+                    @click="editUser(user)"
+                    :disabled="submitting"
+                  >
                     <span>✏️</span>
                   </button>
-                  <button class="btn-delete" title="Hapus" @click="confirmDelete(user)">
-                    <span>🗑️</span>
+                  <button 
+                    class="btn-delete" 
+                    title="Hapus" 
+                    @click="confirmDelete(user)"
+                    :disabled="submitting"
+                  >
+                    <span v-if="!submitting">🗑️</span>
+                    <span v-else class="loading-dots">...</span>
                   </button>
                 </div>
               </td>
@@ -174,11 +185,13 @@
     </div>
 
     <ConfirmationModal
-      :visible="modalVisible"
-      title="Konfirmasi Hapus"
+      :isVisible="modalVisible"
+      title="Konfirmasi Hapus User"
       :message="modalMessage"
+      confirmText="Ya, Hapus User"
+      cancelText="Batal"
       @confirm="deleteUserConfirmed"
-      @cancel="modalVisible = false"
+      @close="modalVisible = false"
     />
   </div>
 </template>
@@ -385,19 +398,26 @@ export default {
     // Delete methods
     confirmDelete(user) {
       this.userToDelete = user;
-      this.modalMessage = `Yakin ingin menghapus user "${user.fullName || user.username}"? Tindakan ini tidak dapat dibatalkan.`;
+      this.modalMessage = `Yakin ingin menghapus user "${user.fullName || user.username}" (ID: ${user.id})? 
+
+Tindakan ini tidak dapat dibatalkan dan semua data user akan dihapus secara permanen.`;
       this.modalVisible = true;
+      console.log('Delete confirmation modal opened for user:', user);
     },
 
     async deleteUserConfirmed() {
       if (!this.userToDelete || this.submitting) return;
       
+      console.log('Deleting user:', this.userToDelete);
       this.submitting = true;
       this.error = '';
+      
       try {
         const response = await axios.delete('https://mindcareindependent.com/api/delete_user.php', {
           data: { id: this.userToDelete.id }
         });
+        
+        console.log('Delete response:', response.data);
         
         if (response.data.success) {
           this.successMessage = response.data.message;
@@ -411,10 +431,12 @@ export default {
           }, 3000);
         } else {
           this.error = response.data.message || 'Gagal menghapus user';
+          this.modalVisible = false;
         }
       } catch (error) {
         console.error('Error deleting user:', error);
         this.error = 'Gagal menghapus user: ' + (error.response?.data?.message || error.message);
+        this.modalVisible = false;
       } finally {
         this.submitting = false;
       }
@@ -711,9 +733,15 @@ export default {
   background: #f0e8ff;
 }
 
-.btn-edit:hover {
+.btn-edit:hover:not(:disabled) {
   background: #e0d5f0;
   transform: translateY(-1px);
+}
+
+.btn-edit:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
 }
 
 .btn-delete {
@@ -721,9 +749,26 @@ export default {
   background: #ffe8e8;
 }
 
-.btn-delete:hover {
+.btn-delete:hover:not(:disabled) {
   background: #ffd0d0;
   transform: translateY(-1px);
+}
+
+.btn-delete:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.loading-dots {
+  animation: loadingDots 1.5s infinite;
+}
+
+@keyframes loadingDots {
+  0%, 20% { content: "."; }
+  40% { content: ".."; }
+  60% { content: "..."; }
+  80%, 100% { content: ""; }
 }
 
 /* Add/Edit Form */

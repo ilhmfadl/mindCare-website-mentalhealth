@@ -126,7 +126,9 @@ export default {
 .modal-message {
   margin: 0;
   color: #666;
-  line-height: 1.5;
+  line-height: 1.6;
+  white-space: pre-line;
+  font-size: 0.95rem;
 }
 
 .modal-footer {
@@ -157,12 +159,12 @@ export default {
 }
 
 .btn-primary {
-  background: #6C3483;
+  background: #dc3545;
   color: white;
 }
 
 .btn-primary:hover {
-  background: #5a2d6b;
+  background: #c82333;
 }
 
 @media (max-width: 480px) {

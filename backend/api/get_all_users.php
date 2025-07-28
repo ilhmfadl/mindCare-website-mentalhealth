@@ -14,7 +14,32 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     exit(0);
 }
 
-require_once '../config/db.php';
+// Try multiple paths for db.php
+$possible_paths = [
+    '../config/db.php',
+    __DIR__ . '/../config/db.php',
+    dirname(__FILE__) . '/../config/db.php'
+];
+
+$db_loaded = false;
+foreach ($possible_paths as $db_path) {
+    if (file_exists($db_path)) {
+        require_once $db_path;
+        $db_loaded = true;
+        break;
+    }
+}
+
+if (!$db_loaded) {
+    http_response_code(500);
+    echo json_encode(['success' => false, 'message' => 'Database config file not found']);
+    exit;
+}
+
+// Log if function doesn't exist (for debugging)
+if (!function_exists('formatUserFriendlyTime')) {
+    error_log('formatUserFriendlyTime function not found after including db.php');
+}
 
 try {
     $result = $conn->query("SELECT id, username, email, role, created_at, photo, fullName, address FROM users ORDER BY created_at DESC");
@@ -29,7 +54,20 @@ try {
     while ($row = $result->fetch_assoc()) {
         // Format tanggal dengan zona waktu yang benar
         $client_timezone = isset($_GET['timezone']) ? $_GET['timezone'] : 'Asia/Jakarta';
-        $row['date'] = formatUserFriendlyTime($row['created_at'], $client_timezone);
+        
+        // Check if function exists before calling it
+        if (function_exists('formatUserFriendlyTime')) {
+            $row['date'] = formatUserFriendlyTime($row['created_at'], $client_timezone);
+        } else {
+            // Fallback if function doesn't exist
+            try {
+                $utc_datetime = new DateTime($row['created_at'], new DateTimeZone('UTC'));
+                $utc_datetime->setTimezone(new DateTimeZone($client_timezone));
+                $row['date'] = $utc_datetime->format('d/m/Y H:i');
+            } catch (Exception $e) {
+                $row['date'] = $row['created_at'];
+            }
+        }
         
         // Format waktu hanya jam dan menit dengan AM/PM
         try {
@@ -37,7 +75,19 @@ try {
             $utc_datetime->setTimezone(new DateTimeZone($client_timezone));
             $row['time'] = $utc_datetime->format('h:i A');
         } catch (Exception $e) {
-            $row['time'] = convertToClientTimezone($row['created_at'], $client_timezone);
+            // Check if function exists before calling it
+            if (function_exists('convertToClientTimezone')) {
+                $row['time'] = convertToClientTimezone($row['created_at'], $client_timezone);
+            } else {
+                // Fallback if function doesn't exist
+                try {
+                    $utc_datetime = new DateTime($row['created_at'], new DateTimeZone('UTC'));
+                    $utc_datetime->setTimezone(new DateTimeZone($client_timezone));
+                    $row['time'] = $utc_datetime->format('h:i A');
+                } catch (Exception $e2) {
+                    $row['time'] = $row['created_at'];
+                }
+            }
         }
         
         // Handle photo URL

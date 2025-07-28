@@ -1338,6 +1338,8 @@ function openChat() {
   width: 100%;
   min-height: 100vh;
   background: #fcf9f6;
+  -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
+  overflow-x: hidden; /* Prevent horizontal scroll */
 }
 
 .forum-hero {
@@ -1699,184 +1701,220 @@ function openChat() {
 }
 @media (max-width: 700px) {
   .forum-hero {
-    padding: 60px 0 18px 0;
+    padding: 40px 0 20px 0;
   }
   .forum-hero-content {
-    padding-left: 6px;
-    padding-top: 40px;
+    padding-left: 20px;
+    padding-right: 20px;
+    padding-top: 20px;
   }
   .forum-hero-content h1 {
-    font-size: 1.1rem;
-    margin-bottom: 4px;
-    margin-left: 20px;
+    font-size: 1.8rem;
+    margin-bottom: 8px;
+    margin-left: 0;
+    text-align: center;
   }
   .forum-hero-content p {
-    font-size: 0.85rem;
-    margin-left: 20px;
+    font-size: 1rem;
+    margin-left: 0;
+    text-align: center;
   }
   .forum-main-content {
     flex-direction: column;
-    padding: 0 2px 12px 2px;
+    padding: 0 16px 20px 16px;
     gap: 0;
+    margin-top: -40px;
   }
   .forum-sidebar {
     display: none; /* Sembunyikan sidebar di mobile */
   }
   .mobile-filter-row {
     display: flex; /* Tampilkan mobile filter di mobile */
+    margin-bottom: 16px;
+    gap: 12px;
+    flex-wrap: wrap; /* Allow wrapping on very small screens */
+  }
+  
+  .mobile-dropdown-filter {
+    flex: 1;
+    min-width: 120px; /* Ensure minimum width */
+  }
+  
+  .mobile-my-questions-btn {
+    flex-shrink: 0; /* Prevent button from shrinking */
   }
   .forum-featured-links {
-    padding: 20px 2px;
-    margin-top: 60px;
+    padding: 20px 16px;
+    margin-top: 20px;
     margin-bottom: 0px;
     min-width: 0;
     width: 100%;
-    font-size: 0.85rem;
+    font-size: 0.9rem;
+    border-radius: 12px;
   }
   .forum-content {
-    margin-top: 12px;
-    font-size: 0.85rem;
+    margin-top: 0;
+    font-size: 0.9rem;
   }
   .forum-search-row {
     flex-direction: column;
-    gap: 6px;
-    margin-bottom: 10px;
+    gap: 12px;
+    margin-bottom: 16px;
+    padding: 16px;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
   }
   .forum-search-box {
     padding-right: 0;
   }
   .forum-search-box input {
-    padding: 8px 28px 8px 8px;
-    font-size: 0.85rem;
+    padding: 12px 16px;
+    font-size: 0.9rem;
     border-radius: 8px;
+    border: 1px solid #e5e7eb;
   }
   .refresh-btn {
-    padding: 8px;
+    padding: 12px;
     border-radius: 8px;
+    align-self: flex-end;
   }
   .refresh-btn svg {
-    width: 16px;
-    height: 16px;
+    width: 18px;
+    height: 18px;
   }
   .ask-btn {
-    padding: 7px 12px;
-    font-size: 0.85rem;
+    padding: 12px 24px;
+    font-size: 0.9rem;
     border-radius: 8px;
+    align-self: flex-end;
   }
   .forum-questions-list {
-    gap: 10px;
+    gap: 12px;
   }
   .forum-question-card {
-    padding: 8px 2px 6px 2px;
-    border-radius: 8px;
-    font-size: 0.85rem;
+    padding: 16px;
+    border-radius: 12px;
+    font-size: 0.9rem;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
   }
   .question-header {
-    gap: 6px;
+    gap: 8px;
+    margin-bottom: 8px;
   }
   .question-avatar {
-    width: 22px;
-    height: 22px;
+    width: 32px;
+    height: 32px;
   }
   .question-user {
-    font-size: 0.85rem;
+    font-size: 0.9rem;
+    font-weight: 600;
   }
   .question-time {
-    font-size: 0.7rem;
+    font-size: 0.8rem;
   }
   .question-title {
-    font-size: 0.92rem;
-    margin-bottom: 1px;
+    font-size: 1rem;
+    margin-bottom: 4px;
+    line-height: 1.4;
   }
   .question-desc {
-    font-size: 0.8rem;
-    margin-bottom: 1px;
+    font-size: 0.85rem;
+    margin-bottom: 8px;
+    line-height: 1.5;
   }
   .question-footer {
-    gap: 6px;
-    margin-top: 2px;
-  }
-  .question-tag {
-    font-size: 0.75rem;
-    padding: 2px 6px;
-    border-radius: 5px;
-  }
-  .question-comments {
-    font-size: 0.75rem;
-    gap: 2px;
-  }
-  .forum-featured-links h4 {
-    font-size: 0.9rem;
-    margin-bottom: 4px;
-  }
-  .forum-featured-links a {
-    font-size: 0.85rem;
-  }
-  .forum-detail-panel {
-    max-width: 100vw;
-    padding: 8px 2px 6px 2px;
-    border-radius: 0;
-    font-size: 0.85rem;
-  }
-  .detail-avatar {
-    width: 28px;
-    height: 28px;
-  }
-  .detail-user {
-    font-size: 0.85rem;
-  }
-  .detail-time {
-    font-size: 0.7rem;
-  }
-  .detail-title {
-    font-size: 0.92rem;
-    margin-bottom: 2px;
-  }
-  .detail-desc {
-    font-size: 0.8rem;
-    margin-bottom: 4px;
-  }
-  .detail-tag span {
-    font-size: 0.75rem;
-    padding: 2px 6px;
-    border-radius: 5px;
-    margin-bottom: 6px;
-  }
-  .detail-responses-box textarea {
-    font-size: 0.85rem;
-    padding: 6px 1px;
-    border-radius: 6px;
-  }
-  .detail-responses-actions {
-    gap: 4px;
-  }
-  .cancel-btn, .response-btn {
-    padding: 4px 10px;
-    font-size: 0.85rem;
-    border-radius: 6px;
-  }
-  .detail-answers {
     gap: 8px;
     margin-top: 8px;
   }
-  .detail-answer {
+  .question-tag {
+    font-size: 0.8rem;
+    padding: 4px 8px;
     border-radius: 6px;
-    padding: 6px 8px;
-    font-size: 0.85rem;
   }
-  .answer-header {
+  .question-comments {
     font-size: 0.8rem;
     gap: 4px;
   }
+  .forum-featured-links h4 {
+    font-size: 1rem;
+    margin-bottom: 8px;
+  }
+  .forum-featured-links a {
+    font-size: 0.9rem;
+    line-height: 1.4;
+  }
+  .forum-detail-panel {
+    max-width: 100vw;
+    padding: 16px;
+    border-radius: 0;
+    font-size: 0.9rem;
+  }
+  .detail-avatar {
+    width: 36px;
+    height: 36px;
+  }
+  .detail-user {
+    font-size: 0.9rem;
+  }
+  .detail-time {
+    font-size: 0.8rem;
+  }
+  .detail-title {
+    font-size: 1.1rem;
+    margin-bottom: 8px;
+    line-height: 1.4;
+  }
+  .detail-desc {
+    font-size: 0.9rem;
+    margin-bottom: 16px;
+    line-height: 1.5;
+  }
+  .detail-tag span {
+    font-size: 0.8rem;
+    padding: 4px 8px;
+    border-radius: 6px;
+    margin-bottom: 8px;
+  }
+  .detail-responses-box textarea {
+    font-size: 0.9rem;
+    padding: 12px;
+    border-radius: 8px;
+    min-height: 80px;
+  }
+  .detail-responses-actions {
+    gap: 8px;
+    margin-top: 8px;
+  }
+  .cancel-btn, .response-btn {
+    padding: 8px 16px;
+    font-size: 0.9rem;
+    border-radius: 8px;
+  }
+  .detail-answers {
+    gap: 12px;
+    margin-top: 16px;
+  }
+  .detail-answer {
+    border-radius: 8px;
+    padding: 12px;
+    font-size: 0.9rem;
+  }
+  .answer-header {
+    font-size: 0.85rem;
+    gap: 8px;
+    margin-bottom: 12px;
+  }
   .answer-time {
-    font-size: 0.7rem;
+    font-size: 0.8rem;
   }
   .answer-body {
-    font-size: 0.8rem;
+    font-size: 0.9rem;
+    line-height: 1.5;
   }
   .forum-detail-overlay ~ .forum-main-content,
   .forum-main-content.panel-shift {
-    margin-left: 8vw;
+    margin-left: 0;
   }
 }
 
@@ -2234,38 +2272,87 @@ function openChat() {
     display: block !important;
   }
   .forum-ask-panel {
-    max-width: 88vw;
-    margin-left: 12vw;
+    max-width: 100vw;
+    margin-left: 0;
     box-shadow: 0 2px 12px rgba(80,60,120,0.13);
+    border-radius: 0;
   }
   .close-ask {
-    top: 8px;
-    right: 8px;
-    font-size: 1.3rem;
+    top: 16px;
+    right: 16px;
+    font-size: 1.5rem;
   }
   .ask-form-group {
-    margin-bottom: 8px;
+    margin-bottom: 16px;
   }
   .ask-form-group label {
-    font-size: 0.85rem;
-    margin-bottom: 2px;
+    font-size: 0.9rem;
+    margin-bottom: 8px;
+    font-weight: 600;
   }
   .ask-form-group input, .ask-form-group textarea, .ask-form-group select {
-    padding: 6px 8px;
-    border-radius: 6px;
-    font-size: 0.85rem;
+    padding: 12px 16px;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    border: 1px solid #e5e7eb;
   }
   .ask-form-group textarea {
-    min-height: 40px;
+    min-height: 80px;
+    resize: vertical;
   }
   .ask-form-actions {
-    gap: 4px;
-    margin-top: 4px;
+    gap: 12px;
+    margin-top: 20px;
   }
   .cancel-btn, .response-btn {
-    padding: 4px 10px;
-    font-size: 0.85rem;
-    border-radius: 6px;
+    padding: 12px 20px;
+    font-size: 0.9rem;
+    border-radius: 8px;
+    font-weight: 600;
+  }
+  
+  /* Detail panel improvements for mobile */
+  .forum-detail-panel {
+    padding: 20px 16px;
+    border-radius: 0;
+  }
+  
+  .close-detail {
+    top: 16px;
+    right: 16px;
+    font-size: 1.5rem;
+  }
+  
+  .detail-header {
+    margin-bottom: 16px;
+  }
+  
+  .detail-title {
+    font-size: 1.2rem;
+    margin-bottom: 12px;
+  }
+  
+  .detail-desc {
+    font-size: 1rem;
+    margin-bottom: 20px;
+  }
+  
+  .detail-responses-box {
+    margin: 20px 0;
+  }
+  
+  .detail-responses-box textarea {
+    min-height: 100px;
+    font-size: 1rem;
+  }
+  
+  .detail-responses-actions {
+    margin-top: 12px;
+  }
+  
+  .detail-answers {
+    margin-top: 20px;
+    padding-bottom: 100px;
   }
 }
 @media (min-width: 701px) {
@@ -2399,89 +2486,114 @@ function openChat() {
 /* Mobile Filter Styles */
 .mobile-filter-row {
   display: none;
-  gap: 8px;
+  gap: 12px;
   margin-bottom: 16px;
-  padding: 0 4px;
+  padding: 16px;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
 }
 
 .mobile-dropdown-filter {
   flex: 1;
-  padding: 8px 12px;
+  padding: 12px 16px;
   border: 1px solid #e5e7eb;
   border-radius: 8px;
-  background: #fff;
+  background: #faf7f3;
   font-size: 0.9rem;
-  color: #374151;
+  color: #6a4c9b;
+  font-weight: 500;
+}
+
+.mobile-dropdown-filter:focus {
+  outline: none;
+  border-color: #6a4c9b;
+  box-shadow: 0 0 0 3px rgba(106, 76, 155, 0.1);
 }
 
 .mobile-my-questions-btn {
-  padding: 8px 16px;
+  padding: 12px 20px;
   border: 1px solid #e5e7eb;
   border-radius: 8px;
-  background: #fff;
+  background: #faf7f3;
   color: #6a4c9b;
   font-size: 0.9rem;
-  font-weight: 500;
+  font-weight: 600;
   cursor: pointer;
   transition: all 0.2s;
+  white-space: nowrap;
 }
 
 .mobile-my-questions-btn.active {
-  background: #f3f0f7;
+  background: #e5e0f7;
   border-color: #6a4c9b;
   color: #6a4c9b;
+  box-shadow: 0 2px 4px rgba(106, 76, 155, 0.2);
 }
 
 .mobile-my-questions-btn:hover {
-  background: #f9f7fb;
+  background: #f3f0f7;
+  transform: translateY(-1px);
 }
 
 @media (max-width: 700px) {
   .loading-state, .empty-state {
-    padding: 40px 10px;
+    padding: 40px 20px;
+    margin: 20px 0;
   }
   
   .empty-icon {
-    font-size: 3rem;
+    font-size: 3.5rem;
+    margin-bottom: 20px;
   }
   
   .empty-state h3 {
-    font-size: 1.1rem;
+    font-size: 1.2rem;
+    margin-bottom: 12px;
   }
   
   .empty-state p {
-    font-size: 0.9rem;
+    font-size: 1rem;
+    margin-bottom: 24px;
+    line-height: 1.5;
   }
   
   .ask-first-btn {
-    padding: 10px 24px;
-    font-size: 0.95rem;
-  }
-  
-  .detail-answer {
-    padding: 12px;
-    margin-bottom: 12px;
+    padding: 12px 28px;
+    font-size: 1rem;
     border-radius: 8px;
   }
   
+  .detail-answer {
+    padding: 16px;
+    margin-bottom: 16px;
+    border-radius: 12px;
+  }
+  
   .answer-header {
-    margin-bottom: 6px;
+    margin-bottom: 12px;
   }
   
   .answer-user {
-    font-size: 0.9rem;
+    font-size: 0.95rem;
   }
   
   .answer-time {
-    font-size: 0.8rem;
+    font-size: 0.85rem;
   }
   
   .answer-body {
-    font-size: 0.9rem;
+    font-size: 0.95rem;
+    line-height: 1.5;
   }
   
   .responses-header h3 {
-    font-size: 1rem;
+    font-size: 1.1rem;
+  }
+  
+  .responses-header {
+    margin-bottom: 20px;
+    padding-bottom: 16px;
   }
 }
 .loading-responses, .no-responses {
@@ -2619,75 +2731,172 @@ function openChat() {
 /* Mobile Responsive */
 @media (max-width: 700px) {
   .detail-answers {
-    padding-bottom: 80px; /* Kurangi padding untuk mobile */
-    max-height: 50vh; /* Kurangi tinggi maksimal untuk mobile */
+    padding-bottom: 100px; /* Tambah padding untuk mobile */
+    max-height: 60vh; /* Tingkatkan tinggi maksimal untuk mobile */
   }
   
   .responses-header {
-    margin-bottom: 12px;
-    padding-bottom: 8px;
+    margin-bottom: 16px;
+    padding-bottom: 12px;
   }
   
   .responses-header h3 {
-    font-size: 1rem;
+    font-size: 1.1rem;
+    font-weight: 600;
   }
   
   .answer-user-info {
-    gap: 6px; /* Kurangi gap untuk mobile */
+    gap: 8px; /* Tingkatkan gap untuk mobile */
   }
   
   .answer-avatar {
-    width: 28px; /* Kurangi ukuran avatar untuk mobile */
-    height: 28px;
+    width: 32px; /* Tingkatkan ukuran avatar untuk mobile */
+    height: 32px;
   }
   
   .answer-user-details {
-    gap: 3px; /* Kurangi jarak untuk mobile */
+    gap: 4px; /* Tingkatkan jarak untuk mobile */
   }
   
   .answer-actions {
-    gap: 8px; /* Kurangi gap untuk mobile */
+    gap: 12px; /* Tingkatkan gap untuk mobile */
     justify-content: flex-end; /* Tetap rata kanan di mobile */
   }
   
   .vote-section {
-    gap: 4px; /* Kurangi gap untuk mobile */
+    gap: 6px; /* Tingkatkan gap untuk mobile */
   }
   
   .vote-btn {
-    font-size: 1rem; /* Kurangi ukuran untuk mobile */
-    padding: 3px 4px;
+    font-size: 1.1rem; /* Tingkatkan ukuran untuk mobile */
+    padding: 4px 6px;
   }
   
   .vote-count {
-    font-size: 0.85rem; /* Kurangi ukuran untuk mobile */
+    font-size: 0.9rem; /* Tingkatkan ukuran untuk mobile */
+    font-weight: 600;
   }
   
   .response-actions {
-    gap: 6px;
+    gap: 8px;
   }
   
   .edit-response-btn,
   .delete-response-btn {
-    font-size: 0.9rem;
-    padding: 3px;
+    font-size: 1rem;
+    padding: 4px;
   }
   
   .edit-response-textarea {
-    padding: 10px;
-    font-size: 0.9rem;
-    min-height: 70px;
+    padding: 12px;
+    font-size: 0.95rem;
+    min-height: 80px;
   }
   
   .edit-response-actions {
-    gap: 6px;
-    margin-top: 6px;
+    gap: 8px;
+    margin-top: 8px;
   }
   
   .cancel-edit-btn,
   .save-edit-btn {
-    padding: 5px 10px;
-    font-size: 0.85rem;
+    padding: 8px 16px;
+    font-size: 0.9rem;
+    font-weight: 600;
+  }
+  
+  /* Additional mobile improvements */
+  .question-menu {
+    font-size: 1.2rem;
+    padding: 6px;
+  }
+  
+  .question-menu-dropdown {
+    min-width: 120px;
+    right: -10px;
+  }
+  
+  .question-menu-dropdown button {
+    padding: 12px 16px;
+    font-size: 0.9rem;
+  }
+  
+  /* Improve touch targets */
+  .forum-question-card {
+    min-height: 80px;
+  }
+  
+  .ask-btn, .refresh-btn {
+    min-height: 44px;
+    min-width: 44px;
+  }
+  
+  /* Better spacing for mobile */
+  .forum-questions-list {
+    padding: 0 4px;
+  }
+  
+  .questions-count {
+    padding: 0 4px;
+    margin-bottom: 16px;
+  }
+  
+  .error-state {
+    margin: 0 4px 16px 4px;
+    padding: 16px;
+    border-radius: 8px;
+  }
+  
+  .success-message {
+    margin: 0 4px 16px 4px;
+    padding: 16px;
+    border-radius: 8px;
+  }
+  
+  /* Additional mobile improvements */
+  .forum-hero-content {
+    text-align: center;
+  }
+  
+  .forum-hero-content h1 {
+    text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  }
+  
+  /* Improve touch targets for better mobile UX */
+  .forum-question-card {
+    cursor: pointer;
+    -webkit-tap-highlight-color: rgba(106, 76, 155, 0.1);
+  }
+  
+  .forum-question-card:active {
+    transform: scale(0.98);
+  }
+  
+  /* Better spacing for mobile */
+  .forum-main-content {
+    padding-bottom: 40px;
+  }
+  
+  /* Improve mobile navigation */
+  .forum-detail-overlay,
+  .forum-ask-overlay {
+    -webkit-overflow-scrolling: touch;
+  }
+  
+  /* Better mobile form handling */
+  .detail-responses-box textarea,
+  .ask-form-group input,
+  .ask-form-group textarea {
+    -webkit-appearance: none;
+    border-radius: 8px;
+  }
+  
+  /* Prevent zoom on input focus on iOS */
+  .detail-responses-box textarea,
+  .ask-form-group input,
+  .ask-form-group textarea,
+  .forum-search-box input {
+    font-size: 16px;
   }
 }
 

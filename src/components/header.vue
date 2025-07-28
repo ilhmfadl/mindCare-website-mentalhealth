@@ -43,6 +43,21 @@ export default {
     onMounted(() => {
       // Cek status tes saat component mount
       checkUserTestStatus(currentUser.value);
+      
+      // Jika tidak ada data di testState tapi ada di localStorage, coba muat dari localStorage
+      if (!testState.hasilTesTerakhir) {
+        const lastTestResult = localStorage.getItem('lastTestResult');
+        if (lastTestResult) {
+          try {
+            const parsedResult = JSON.parse(lastTestResult);
+            console.log('Memuat data dari localStorage:', parsedResult);
+            testState.hasilTesTerakhir = parsedResult;
+            testState.testCompleted = true;
+          } catch (e) {
+            console.error('Error parsing lastTestResult:', e);
+          }
+        }
+      }
     });
 
     return {
@@ -53,16 +68,20 @@ export default {
   },
   computed: {
     getHasilTesRoute() {
+      console.log('testState.hasilTesTerakhir:', testState.hasilTesTerakhir);
       const hasil = (testState.hasilTesTerakhir?.hasil || '').toLowerCase();
-      if (hasil.includes('neurosis')) {
+      console.log('hasil untuk routing:', hasil);
+      
+      if (hasil.includes('gejala neurosis') || hasil.includes('neurosis')) {
         return { name: 'ResultIsNeurosis' };
-      } else if (hasil.includes('psikotik') || hasil.includes('zat')) {
+      } else if (hasil.includes('gejala psikotik') || hasil.includes('psikotik') || hasil.includes('penggunaan zat psikotik') || hasil.includes('zat')) {
         return { name: 'ResultIsPsychotic' };
-      } else if (hasil.includes('ptsd')) {
+      } else if (hasil.includes('gejala ptsd') || hasil.includes('ptsd')) {
         return { name: 'ResultIsPTSD' };
       } else if (hasil.includes('normal')) {
         return { name: 'ResultIsNormal' };
       } else {
+        console.log('Tidak ada hasil yang cocok, kembali ke TesDiri. Hasil:', hasil);
         return { name: 'TesDiri' };
       }
     }
