@@ -138,10 +138,18 @@ try {
         $result = $stmt->get_result();
         $updatedUser = $result->fetch_assoc();
 
-        // Format tanggal
-        $created_at = new DateTime($updatedUser['created_at']);
-        $updatedUser['date'] = $created_at->format('d/m/Y');
-        $updatedUser['time'] = $created_at->format('h:i A');
+        // Format tanggal dengan zona waktu yang benar
+        $client_timezone = isset($_POST['timezone']) ? $_POST['timezone'] : 'Asia/Jakarta';
+        $updatedUser['date'] = formatUserFriendlyTime($updatedUser['created_at'], $client_timezone);
+        
+        // Format waktu hanya jam dan menit dengan AM/PM
+        try {
+            $utc_datetime = new DateTime($updatedUser['created_at'], new DateTimeZone('UTC'));
+            $utc_datetime->setTimezone(new DateTimeZone($client_timezone));
+            $updatedUser['time'] = $utc_datetime->format('h:i A');
+        } catch (Exception $e) {
+            $updatedUser['time'] = convertToClientTimezone($updatedUser['created_at'], $client_timezone);
+        }
 
         // Biarkan photo kosong jika tidak ada di database
         if (!$updatedUser['photo']) {

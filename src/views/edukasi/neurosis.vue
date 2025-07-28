@@ -43,21 +43,13 @@
           Jika gejala-gejala di atas mengganggu aktivitas sehari-hari atau hubungan sosial, sebaiknya konsultasikan ke profesional kesehatan mental. Penanganan dini dapat mencegah gejala berkembang menjadi lebih berat.
         </p>
       </div>
-      <h3 style="margin-top:48px; color:#4B4B9F;">Artikel Terkait :</h3>
-      <section class="articles-section">
-        <div class="articles-container">
-          <div class="article-cards">
-            <div class="article-card" v-for="article in relatedArticles" :key="article.title">
-              <h4>{{ article.title }}</h4>
-              <p>{{ article.summary }}</p>
-              <button class="baca-selengkapnya-btn" type="button">Baca Selengkapnya</button>
-              <div class="author" v-if="article.author">
-                <span>{{ article.author }}</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
+      <h3 style="margin-top:48px; color:#4B4B9F;">
+        <router-link to="/edukasi?category=neurosis" style="color: #4B4B9F; text-decoration: none; cursor: pointer; transition: color 0.3s;" 
+                     onmouseover="this.style.color='#8b5cf6'" 
+                     onmouseout="this.style.color='#4B4B9F'">
+          Artikel terkait : cari artikel tentang neurosis
+        </router-link>
+      </h3>
     </div>
   </div>
 </template>
@@ -67,12 +59,6 @@ export default {
   name: 'NeurosisDetail',
   data() {
     return {
-      relatedArticles: [
-        { title: 'Cara Mengelola Kecemasan Sehari-hari', summary: 'Tips sederhana untuk mengurangi kecemasan dan stres ringan.', author: 'Dr. Anisa' },
-        { title: 'Mengenal Fobia dan Cara Mengatasinya', summary: 'Penjelasan tentang fobia dan langkah-langkah menghadapinya.', author: 'Dr. Budi' },
-        { title: 'Psikosomatis: Ketika Pikiran Memengaruhi Tubuh', summary: 'Bagaimana stres dan kecemasan bisa menimbulkan keluhan fisik.', author: 'Dr. Cantika' },
-        { title: 'Bedakan Depresi Ringan dan Berat', summary: 'Ciri-ciri depresi ringan yang sering diabaikan.', author: 'Dr. Sinta' },
-      ]
     }
   },
 }
@@ -169,85 +155,8 @@ export default {
   margin-bottom: 18px;
   line-height: 1.7;
 }
-/* Artikel Terkait ala HasilTes */
-.articles-section {
-  margin-top: 56px;
-  margin-bottom: 32px;
-}
-.articles-container {
-  max-width: 1100px;
-  margin: 0 auto;
-  padding: 0 16px;
-}
-.articles-title {
-  font-size: 1.6rem;
-  font-weight: 700;
-  color: #4B4B9F;
-  margin-bottom: 8px;
-}
-.article-subtitle {
-  font-size: 1.08rem;
-  color: #6b7280;
-  margin-bottom: 28px;
-}
-.article-cards {
-  display: flex;
-  gap: 18px;
-  flex-wrap: wrap;
-  justify-content: center;
-}
-.article-card {
-  background: #fff;
-  border-radius: 16px;
-  box-shadow: 0 4px 24px rgba(106,76,155,0.10), 0 1.5px 6px rgba(0,0,0,0.06);
-  padding: 18px 12px 14px 12px;
-  width: 30%;
-  min-width: 220px;
-  max-width: 320px;
-  min-height: 140px;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  margin-bottom: 12px;
-  transition: box-shadow 0.25s, transform 0.25s;
-  border: 1.5px solid #f3f0fa;
-  font-size: 0.97rem;
-}
-.article-card:hover {
-  box-shadow: 0 8px 32px rgba(106,76,155,0.18), 0 2px 8px rgba(0,0,0,0.10);
-  transform: translateY(-6px) scale(1.03);
-}
-.article-card h4 {
-  font-size: 1.05rem;
-  font-weight: 700;
-  margin-bottom: 8px;
-}
-.article-card p {
-  font-size: 0.97rem;
-  margin-bottom: 8px;
-}
-.article-card .author {
-  font-size: 0.98rem;
-  color: #8b5cf6;
-  font-weight: 600;
-  margin-top: auto;
-  text-align: left;
-}
-.baca-selengkapnya-btn {
-  background: none;
-  color: #4B4B9F;
-  border: none;
-  font-weight: 600;
-  font-size: 1.01rem;
-  cursor: pointer;
-  padding: 0;
-  margin-bottom: 8px;
-  text-decoration: underline;
-  transition: color 0.2s;
-}
-.baca-selengkapnya-btn:hover {
-  color: #222;
-}
+
+
 @media (max-width: 900px) {
   .edukasi-detail-header-center {
     flex-direction: column;

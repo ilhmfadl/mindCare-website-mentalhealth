@@ -89,6 +89,7 @@ export default {
         
         // Redirect ke halaman login
         this.$router.push('/login');
+        setTimeout(() => { window.location.reload(); }, 100);
       }
     }
   }

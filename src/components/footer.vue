@@ -8,7 +8,7 @@
           <img src="/src/assets/LogoMindCare.png" alt="Logo" class="logo-img" />
         </div>
         <p class="desc">
-          Lorem ipsum dolor sit amet consectetur. Convallis est urna.
+          Kenali, Pahami, dan Rawat kesehatan mental Anda.
         </p>
       </div>
       <!-- Services -->
@@ -31,7 +31,7 @@
             <!-- Email SVG -->
             <svg width="18" height="18" fill="none" stroke="black" stroke-width="2"><rect x="2" y="4" width="14" height="10" rx="2"/><path d="M2 4l7 6 7-6"/></svg>
           </span>
-          <span>mindcare@domain.com</span>
+          <span>mindcareindonesia@gmail.com</span>
         </div>
         <div class="contact-item">
           <span class="icon">

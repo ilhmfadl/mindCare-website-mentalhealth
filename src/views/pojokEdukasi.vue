@@ -75,17 +75,20 @@
           </div>
         </div>
         <div class="forum-questions-list">
-          <div v-for="journal in filteredJournals" :key="journal.title" class="forum-question-card">
+          <div v-if="loading" class="journal-empty">Memuat jurnal...</div>
+          <div v-else-if="error" class="journal-empty">{{ error }}</div>
+          <div v-else-if="filteredJournals.length === 0" class="journal-empty">Tidak ada jurnal ditemukan.</div>
+          <div v-for="journal in filteredJournals" :key="journal.id" class="forum-question-card">
             <div class="question-body">
               <div class="question-title">{{ journal.title }}</div>
               <div class="question-desc">{{ journal.summary }}</div>
-              <button class="baca-selengkapnya-btn" type="button">Baca Selengkapnya</button>
+              <a v-if="journal.link" :href="journal.link" target="_blank" class="baca-selengkapnya-btn">Baca Selengkapnya</a>
+              <span v-else class="baca-selengkapnya-btn disabled">Link tidak tersedia</span>
             </div>
             <div class="question-footer">
               <span class="question-tag">{{ journal.category }}</span>
             </div>
           </div>
-          <div v-if="filteredJournals.length === 0" class="journal-empty">Tidak ada jurnal ditemukan.</div>
         </div>
       </main>
       <!-- Featured Links -->
@@ -98,6 +101,8 @@
       </aside>
     </div>
     
+    <!-- Chat Popup Component -->
+    <ChatPopup ref="chatPopup" />
 
   </div>
 </template>
@@ -106,13 +111,49 @@
 import DepresiImg from '../assets/Depresi.png'
 import AnxietyImg from '../assets/anxiety.png'
 import PTSDImg from '../assets/PTSD.png'
+import ChatPopup from '../components/ChatPopup.vue'
+import axios from 'axios';
 
 export default {
   name: 'PojokEdukasi',
   components: {
+    ChatPopup
   },
   mounted() {
-    // Handle anchor scroll to ruang artikel
+    // Fetch journals from database
+    this.fetchJournals();
+    
+    // Handle URL parameters for category filtering
+    const urlParams = new URLSearchParams(window.location.search);
+    const categoryParam = urlParams.get('category');
+    
+    if (categoryParam) {
+      // Map URL parameter to category name
+      const categoryMap = {
+        'ptsd': 'PTSD',
+        'neurosis': 'Neurosis', 
+        'psychotic': 'Psikotik'
+      };
+      
+      const mappedCategory = categoryMap[categoryParam];
+      if (mappedCategory) {
+        this.selectedCategory = mappedCategory;
+        console.log('📍 Category filter set to:', mappedCategory);
+        
+        // Scroll to ruang artikel after a short delay
+        setTimeout(() => {
+          const element = document.getElementById('ruang-artikel');
+          if (element) {
+            console.log('📍 Scrolling to ruang artikel');
+            element.scrollIntoView({ 
+              behavior: 'smooth',
+              block: 'start'
+            });
+          }
+        }, 500);
+      }
+    } else {
+      // Handle anchor scroll to ruang artikel (existing logic)
     console.log('📍 PojokEdukasi mounted, checking for anchor...');
     console.log('📍 Current hash:', window.location.hash);
     
@@ -129,10 +170,18 @@ export default {
         } else {
           console.log('❌ Element not found');
         }
-      }, 300); // Increased timeout for better reliability
+        }, 300);
     } else {
       console.log('📍 No ruang-artikel anchor found');
     }
+    }
+    
+    // Handle scroll position saving
+    const saved = sessionStorage.getItem('pojokEdukasiScroll');
+    if (saved) {
+      window.scrollTo(0, parseInt(saved, 1));
+    }
+    window.addEventListener('scroll', this.saveScroll);
   },
   data() {
     return {
@@ -166,11 +215,9 @@ export default {
         'Psikotik',
         'PTSD',
       ],
-      journals: [
-        { title: 'Jurnal Tentang PTSD', summary: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Consequat aliquet maecenas ut sit nulla(link) read more', category: 'PTSD' },
-        { title: 'Judul Jurnal', summary: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Consequat aliquet maecenas ut sit nulla  (link) read more', category: 'Neurosis' },
-        { title: 'Judul Jurnal', summary: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Consequat aliquet maecenas ut sit nulla (link) read more', category: 'Psikotik' },
-      ]
+      journals: [],
+      loading: false,
+      error: ''
     }
   },
   computed: {
@@ -189,17 +236,48 @@ export default {
       return filtered;
     }
   },
-  mounted() {
-    const saved = sessionStorage.getItem('pojokEdukasiScroll');
-    if (saved) {
-      window.scrollTo(0, parseInt(saved, 10));
-    }
-    window.addEventListener('scroll', this.saveScroll);
-  },
+
   beforeDestroy() {
     window.removeEventListener('scroll', this.saveScroll);
   },
   methods: {
+    async fetchJournals() {
+      this.loading = true;
+      this.error = '';
+      try {
+        const response = await axios.get('https://mindcareindependent.com/api/get_journals.php');
+        if (response.data.success) {
+          // Transform database data to match frontend structure
+          this.journals = response.data.data.journals.map(journal => ({
+            id: journal.id,
+            title: journal.judul,
+            summary: journal.kutipan,
+            category: this.mapCategory(journal.kategori),
+            source: journal.sumber,
+            created_at: journal.created_at,
+            updated_at: journal.updated_at,
+            link: journal.link // Add the link field
+          }));
+          console.log('Journals loaded:', this.journals);
+        } else {
+          this.error = 'Gagal memuat jurnal';
+          console.error('Failed to load journals:', response.data.message);
+        }
+      } catch (error) {
+        this.error = 'Terjadi kesalahan saat memuat jurnal';
+        console.error('Error fetching journals:', error);
+      } finally {
+        this.loading = false;
+      }
+    },
+    mapCategory(dbCategory) {
+      const categoryMap = {
+        'neurosis': 'Neurosis',
+        'psikotik': 'Psikotik', 
+        'ptsd': 'PTSD'
+      };
+      return categoryMap[dbCategory] || dbCategory;
+    },
     saveScroll() {
       sessionStorage.setItem('pojokEdukasiScroll', window.scrollY);
     },
@@ -220,8 +298,9 @@ export default {
       }
     },
     openChat() {
-      if (window.openChat) {
-        window.openChat();
+      // Trigger chat popup
+      if (this.$refs.chatPopup) {
+        this.$refs.chatPopup.toggleChat();
       }
     }
 
@@ -767,19 +846,31 @@ html {
   transform: translateX(1px);
 }
 .baca-selengkapnya-btn {
-  background: none;
-  color: #8b5cf6;
+  background-color: #6A4C9B;
+  color: white;
   border: none;
-  font-weight: 600;
-  font-size: 1.01rem;
+  padding: 8px 16px;
+  border-radius: 4px;
   cursor: pointer;
-  padding: 0;
-  margin-bottom: 8px;
-  text-decoration: underline;
-  transition: color 0.2s;
+  font-size: 0.9rem;
+  text-decoration: none;
+  display: inline-block;
+  margin-top: 8px;
+  transition: background-color 0.3s;
 }
+
 .baca-selengkapnya-btn:hover {
-  color: #222;
+  background-color: #5a3c8b;
+}
+
+.baca-selengkapnya-btn.disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+  color: #666;
+}
+
+.baca-selengkapnya-btn.disabled:hover {
+  background-color: #ccc;
 }
 @media (max-width: 1100px) {
   .journal-page-layout {

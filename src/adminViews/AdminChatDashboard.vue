@@ -144,6 +144,7 @@
 <script>
 import AdminHeader from './components/AdminHeader.vue';
 import axios from 'axios';
+import TimezoneHelper from '../utils/timezoneHelper.js';
 
 export default {
   name: 'AdminChatDashboard',
@@ -319,7 +320,7 @@ export default {
               id: msg.id,
               text: msg.message,
               type: msg.sender_role === 'user' ? 'user' : 'agent',
-              time: new Date(msg.created_at).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false }),
+              time: TimezoneHelper.formatTimeForDisplay(msg.created_at),
               isFile: !!msg.file_url,
               fileUrl: msg.file_url,
               fileName: msg.file_name
@@ -366,6 +367,11 @@ export default {
         formData.append('receiver_id', this.selectedUser.id);
         formData.append('sender_role', 'admin');
         formData.append('message', messageText);
+        
+        // Tambahkan waktu client dengan zona waktu yang akurat
+        const timeData = TimezoneHelper.addTimezoneToRequest();
+        formData.append('current_time', timeData.current_time);
+        formData.append('timezone', timeData.timezone);
         
         const response = await axios.post('https://mindcareindependent.com/api/send_message_new.php', formData);
         
@@ -490,7 +496,7 @@ export default {
               id: msg.id,
               text: msg.message,
               type: msg.sender_role === 'user' ? 'user' : 'agent',
-              time: new Date(msg.created_at).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false }),
+              time: TimezoneHelper.formatTimeForDisplay(msg.created_at),
               isFile: !!msg.file_url,
               fileUrl: msg.file_url,
               fileName: msg.file_name

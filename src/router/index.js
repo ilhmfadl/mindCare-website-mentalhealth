@@ -120,7 +120,14 @@ router.beforeEach((to, from, next) => {
       return;
     }
   }
-  
+
+  // Cegah admin mengakses halaman user/non-admin
+  const user = JSON.parse(localStorage.getItem('user') || 'null');
+  if (user && user.role === 'admin' && !to.path.startsWith('/admin')) {
+    next('/admin/users');
+    return;
+  }
+
   next();
 });
 

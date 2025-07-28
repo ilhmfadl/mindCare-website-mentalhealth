@@ -306,15 +306,22 @@ export default {
       this.totalScore = 0;
       this.showResults = false;
       this.currentPage = 0;
-      // Reset hanya data tes yang sedang berlangsung
-      // agar menu "Hasil Tes Diri" tetap ditampilkan
-      resetCurrentTestOnly();
+      // Reset semua data tes untuk memulai tes baru
+      resetTestState();
+      localStorage.removeItem('lastTestResult');
     },
     
     resetTestStateOnStart() {
-      // Reset hanya data tes yang sedang berlangsung
-      // agar menu "Hasil Tes Diri" tetap ditampilkan jika user pernah menyelesaikan tes
-      resetCurrentTestOnly();
+      // Reset semua data tes untuk memulai tes baru
+      resetTestState();
+      localStorage.removeItem('lastTestResult');
+      
+      // Reset juga data lokal component
+      this.answers = [];
+      this.totalScore = 0;
+      this.showResults = false;
+      this.currentPage = 0;
+      this.hasilTes = '';
     }
   }
 }

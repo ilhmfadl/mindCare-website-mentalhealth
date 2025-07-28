@@ -27,10 +27,18 @@ try {
     
     $users = [];
     while ($row = $result->fetch_assoc()) {
-        // Format tanggal
-        $created_at = new DateTime($row['created_at']);
-        $row['date'] = $created_at->format('d/m/Y');
-        $row['time'] = $created_at->format('h:i A');
+        // Format tanggal dengan zona waktu yang benar
+        $client_timezone = isset($_GET['timezone']) ? $_GET['timezone'] : 'Asia/Jakarta';
+        $row['date'] = formatUserFriendlyTime($row['created_at'], $client_timezone);
+        
+        // Format waktu hanya jam dan menit dengan AM/PM
+        try {
+            $utc_datetime = new DateTime($row['created_at'], new DateTimeZone('UTC'));
+            $utc_datetime->setTimezone(new DateTimeZone($client_timezone));
+            $row['time'] = $utc_datetime->format('h:i A');
+        } catch (Exception $e) {
+            $row['time'] = convertToClientTimezone($row['created_at'], $client_timezone);
+        }
         
         // Handle photo URL
         if ($row['photo']) {

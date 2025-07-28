@@ -31,6 +31,7 @@ try {
     // Validate required fields
     $id = intval($input['id'] ?? 0);
     $kategori = trim($input['kategori'] ?? '');
+    $judul = trim($input['judul'] ?? '');
     $sumber = trim($input['sumber'] ?? '');
     $kutipan = trim($input['kutipan'] ?? '');
     
@@ -40,6 +41,10 @@ try {
     
     if (empty($kategori)) {
         throw new Exception('Kategori tidak boleh kosong');
+    }
+    
+    if (empty($judul)) {
+        throw new Exception('Judul tidak boleh kosong');
     }
     
     if (empty($sumber)) {
@@ -76,15 +81,15 @@ try {
     }
     
     // Update journal
-    $stmt = $conn->prepare("UPDATE jurnal SET kategori = ?, sumber = ?, kutipan = ? WHERE id = ?");
-    $stmt->bind_param("sssi", $kategori, $sumber, $kutipan, $id);
+    $stmt = $conn->prepare("UPDATE jurnal SET kategori = ?, judul = ?, sumber = ?, kutipan = ? WHERE id = ?");
+    $stmt->bind_param("ssssi", $kategori, $judul, $sumber, $kutipan, $id);
     
     if (!$stmt->execute()) {
         throw new Exception("Gagal mengupdate jurnal: " . $stmt->error);
     }
     
     // Get the updated journal
-    $stmt = $conn->prepare("SELECT id, kategori, sumber, kutipan, created_at, updated_at FROM jurnal WHERE id = ?");
+    $stmt = $conn->prepare("SELECT id, kategori, judul, sumber, kutipan, created_at, updated_at FROM jurnal WHERE id = ?");
     $stmt->bind_param("i", $id);
     $stmt->execute();
     $result = $stmt->get_result();

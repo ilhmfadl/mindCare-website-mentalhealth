@@ -189,6 +189,7 @@ export default {
       isLoggedIn.value = false;
       this.showLogoutConfirm = false;
       this.$router.push('/login');
+      setTimeout(() => { window.location.reload(); }, 100);
     },
     confirmLogout() {
       this.onLogout();

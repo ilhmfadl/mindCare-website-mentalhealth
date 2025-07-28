@@ -285,6 +285,8 @@
     @cancel="handleModalCancel"
   />
   
+  <!-- Chat Popup Component -->
+  <ChatPopup ref="chatPopup" />
 
 </template>
 
@@ -292,6 +294,8 @@
 import { ref, computed, onMounted, onUnmounted } from 'vue';
 import axios from 'axios';
 import ForumModal from '../components/ForumModal.vue';
+import ChatPopup from '../components/ChatPopup.vue';
+import TimezoneHelper from '../utils/timezoneHelper.js';
 
 // Get user from localStorage or use default
 const getCurrentUser = () => {
@@ -314,6 +318,7 @@ const getCurrentUser = () => {
 };
 
 const user = ref(getCurrentUser());
+const chatPopup = ref(null);
 
 
 const categories = [
@@ -337,40 +342,37 @@ const errorMessage = ref('');
 function formatTime(dateString) {
   if (!dateString) return '';
   
-  // Parse tanggal dari database (format: YYYY-MM-DD HH:mm:ss)
-  const date = new Date(dateString);
-  const now = new Date();
-  
-  // Cek apakah hari ini
-  const isToday = date.toDateString() === now.toDateString();
-  const isYesterday = new Date(now.getTime() - 24 * 60 * 60 * 1000).toDateString() === date.toDateString();
-  
-  // Jika hari ini
-  if (isToday) {
-    const diffInMinutes = Math.floor((now - date) / (1000 * 60));
-    if (diffInMinutes < 1) return 'Baru saja';
-    if (diffInMinutes < 60) return `${diffInMinutes} menit yang lalu`;
-    const diffInHours = Math.floor(diffInMinutes / 60);
-    if (diffInHours < 24) return `${diffInHours} jam yang lalu`;
+  // Gunakan TimezoneHelper untuk format waktu yang akurat
+  // Untuk forum, gunakan format relatif yang lebih pendek
+  try {
+    const tz = TimezoneHelper.getClientTimezone();
+    const date = new Date(dateString + 'Z');
+    const now = new Date();
+    
+    const diffMs = now - date;
+    const diffMinutes = Math.floor(diffMs / (1000 * 60));
+    const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
+    const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+    
+    if (diffMinutes < 1) {
+      return 'Baru saja';
+    } else if (diffMinutes < 60) {
+      return `${diffMinutes}m`;
+    } else if (diffHours < 24) {
+      return `${diffHours}j`;
+    } else if (diffDays === 1) {
+      return 'Kemarin';
+    } else {
+      return date.toLocaleTimeString('en-US', {
+        timeZone: tz,
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: true
+      });
+    }
+  } catch (e) {
+    return TimezoneHelper.formatRelativeTime(dateString);
   }
-  
-  // Jika kemarin
-  if (isYesterday) {
-    return 'Kemarin';
-  }
-  
-  // Jika lebih dari kemarin, tampilkan tanggal
-  const diffInDays = Math.floor((now - date) / (1000 * 60 * 60 * 24));
-  if (diffInDays < 7) {
-    return `${diffInDays} hari yang lalu`;
-  }
-  
-  // Jika lebih dari seminggu, tampilkan tanggal lengkap
-  return date.toLocaleDateString('id-ID', {
-    day: '2-digit',
-    month: 'long',
-    year: 'numeric'
-  });
 }
 
 async function fetchQuestions() {
@@ -651,8 +653,10 @@ async function submitAsk() {
           const minutes = String(now.getMinutes()).padStart(2, '0');
           const seconds = String(now.getSeconds()).padStart(2, '0');
           
-          const localTime = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
-          formData.append('current_time', localTime);
+          // Gunakan TimezoneHelper untuk waktu yang akurat
+          const timeData = TimezoneHelper.addTimezoneToRequest();
+          formData.append('current_time', timeData.current_time);
+          formData.append('timezone', timeData.timezone);
           
           const createApiUrl = import.meta.env.PROD 
             ? 'https://mindcareindependent.com/api/forum_questions_complete.php'
@@ -737,17 +741,10 @@ async function submitResponse() {
     formData.append('user_id', user.value.id);
     formData.append('response_text', responseText.value.trim());
     
-    // Kirim waktu lokal pengguna
-    const now = new Date();
-    const year = now.getFullYear();
-    const month = String(now.getMonth() + 1).padStart(2, '0');
-    const day = String(now.getDate()).padStart(2, '0');
-    const hours = String(now.getHours()).padStart(2, '0');
-    const minutes = String(now.getMinutes()).padStart(2, '0');
-    const seconds = String(now.getSeconds()).padStart(2, '0');
-    
-    const localTime = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
-    formData.append('current_time', localTime);
+    // Gunakan TimezoneHelper untuk waktu yang akurat
+    const timeData = TimezoneHelper.addTimezoneToRequest();
+    formData.append('current_time', timeData.current_time);
+    formData.append('timezone', timeData.timezone);
     
     console.log('FormData entries:');
     for (let [key, value] of formData.entries()) {
@@ -1326,8 +1323,9 @@ function goToPojokEdukasi() {
 }
 
 function openChat() {
-  if (window.openChat) {
-    window.openChat();
+  // Trigger chat popup
+  if (chatPopup.value) {
+    chatPopup.value.toggleChat();
   }
 }
 

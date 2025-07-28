@@ -98,9 +98,33 @@ try {
     if ($stmt->execute()) {
         $message_id = $stmt->insert_id;
         
-        // Update conversation updated_at
-        $update_conv_stmt = $conn->prepare("UPDATE conversations SET updated_at = CURRENT_TIMESTAMP WHERE id = ?");
-        $update_conv_stmt->bind_param('i', $conversation_id);
+        // Gunakan waktu client dengan zona waktu yang benar
+        $current_time = date('Y-m-d H:i:s');
+        
+        // Jika client mengirim waktu dengan zona waktu, konversi ke UTC
+        if (isset($_POST['current_time']) && isset($_POST['timezone'])) {
+            $client_time = $_POST['current_time'];
+            $client_timezone = $_POST['timezone'];
+            
+            try {
+                // Buat DateTime object dengan zona waktu client
+                $client_datetime = new DateTime($client_time, new DateTimeZone($client_timezone));
+                // Konversi ke UTC untuk disimpan di database
+                $client_datetime->setTimezone(new DateTimeZone('UTC'));
+                $current_time = $client_datetime->format('Y-m-d H:i:s');
+            } catch (Exception $e) {
+                // Jika gagal, gunakan waktu server
+                error_log("Timezone conversion failed: " . $e->getMessage());
+                $current_time = date('Y-m-d H:i:s');
+            }
+        } elseif (isset($_POST['current_time'])) {
+            // Jika hanya ada waktu tanpa zona waktu, asumsikan UTC
+            $current_time = $_POST['current_time'];
+        }
+        
+        // Update conversation updated_at dengan waktu yang akurat
+        $update_conv_stmt = $conn->prepare("UPDATE conversations SET updated_at = ? WHERE id = ?");
+        $update_conv_stmt->bind_param('si', $current_time, $conversation_id);
         $update_conv_stmt->execute();
         $update_conv_stmt->close();
         

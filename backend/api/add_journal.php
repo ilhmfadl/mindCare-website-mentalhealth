@@ -30,11 +30,16 @@ try {
     
     // Validate required fields
     $kategori = trim($input['kategori'] ?? '');
+    $judul = trim($input['judul'] ?? '');
     $sumber = trim($input['sumber'] ?? '');
     $kutipan = trim($input['kutipan'] ?? '');
     
     if (empty($kategori)) {
         throw new Exception('Kategori tidak boleh kosong');
+    }
+    
+    if (empty($judul)) {
+        throw new Exception('Judul tidak boleh kosong');
     }
     
     if (empty($sumber)) {
@@ -61,8 +66,8 @@ try {
     $conn->set_charset("utf8mb4");
     
     // Insert new journal
-    $stmt = $conn->prepare("INSERT INTO jurnal (kategori, sumber, kutipan) VALUES (?, ?, ?)");
-    $stmt->bind_param("sss", $kategori, $sumber, $kutipan);
+    $stmt = $conn->prepare("INSERT INTO jurnal (kategori, judul, sumber, kutipan) VALUES (?, ?, ?, ?)");
+    $stmt->bind_param("ssss", $kategori, $judul, $sumber, $kutipan);
     
     if (!$stmt->execute()) {
         throw new Exception("Gagal menambahkan jurnal: " . $stmt->error);
@@ -71,7 +76,7 @@ try {
     $journalId = $conn->insert_id;
     
     // Get the newly created journal
-    $stmt = $conn->prepare("SELECT id, kategori, sumber, kutipan, created_at, updated_at FROM jurnal WHERE id = ?");
+    $stmt = $conn->prepare("SELECT id, kategori, judul, sumber, kutipan, created_at, updated_at FROM jurnal WHERE id = ?");
     $stmt->bind_param("i", $journalId);
     $stmt->execute();
     $result = $stmt->get_result();

@@ -94,30 +94,43 @@
       <div class="articles-container">
         <h3>Baca artikel selengkapnya mengenai {{ diagnosis.name }}</h3>
         <p class="article-subtitle">Artikel Terkait {{ diagnosis.name }}</p>
-        <div class="article-cards">
+        <div v-if="loadingArticles" class="articles-loading">
+          <p>Memuat artikel...</p>
+        </div>
+        <div v-else-if="articlesError" class="articles-error">
+          <p>{{ articlesError }}</p>
+        </div>
+        <div v-else-if="diagnosis.articles.length === 0" class="articles-empty">
+          <p>Belum ada artikel tersedia untuk kategori ini.</p>
+        </div>
+        <div v-else class="article-cards">
           <div class="article-card" v-for="article in diagnosis.articles" :key="article.title">
             <h4>{{ article.title }}</h4>
             <p>{{ article.summary }}</p>
-            <div class="author" v-if="article.author">
-              <span>{{ article.author }}</span>
+            <div class="article-footer">
+              <div class="author" v-if="article.author">
+                <span>{{ article.author }}</span>
+              </div>
+              <a v-if="article.link" :href="article.link" target="_blank" class="read-more-link">Baca Selengkapnya</a>
             </div>
           </div>
         </div>
       </div>
     </section>
-    <ConfirmationModal
-      :visible="showConfirmationModal"
-      title="Konfirmasi Tes Ulang"
-      message="Anda akan melakukan tes ulang dan hasil tes Anda sebelumnya akan dihapus. Apakah Anda yakin?"
-      @confirm="handleConfirm"
-      @cancel="handleCancel"
-    />
+      <ConfirmationModal
+    :isVisible="showConfirmationModal"
+    title="Konfirmasi Tes Ulang"
+    message="Anda akan melakukan tes ulang dan hasil tes Anda sebelumnya akan dihapus. Apakah Anda yakin?"
+    @confirm="handleConfirm"
+    @close="handleCancel"
+  />
   </div>
 </template>
 
 <script>
 import ConfirmationModal from '../../components/ConfirmationModal.vue';
 import { testState, resetTestState } from '../../store/testState';
+import axios from 'axios';
 
 export default {
   name: 'ResultIsPTSD',
@@ -127,6 +140,9 @@ export default {
   data() {
     return {
       showConfirmationModal: false,
+      articles: [],
+      loadingArticles: false,
+      articlesError: ''
     };
   },
   computed: {
@@ -187,42 +203,39 @@ export default {
     },
     diagnosis() {
       console.log('Diagnosis severity:', this.severity);
-      if (this.hasil === 'Gejala PTSD') {
-        const sev = (this.severity || '').toLowerCase();
-        if (sev === 'ringan') {
-          return {
-            name: 'PTSD Ringan',
-            percentage: 25,
-            recommendation: 'Gejala PTSD ringan terdeteksi. Lakukan self-care dan konsultasi jika perlu.',
-            description: 'Anda mengalami beberapa gejala PTSD ringan. Perhatikan kesehatan mental dan pertimbangkan konsultasi dengan profesional.',
-            articles: []
-          };
-        } else if (sev === 'sedang') {
-          return {
-            name: 'PTSD Sedang',
-            percentage: 55,
-            recommendation: 'Gejala PTSD sedang terdeteksi. Konsultasikan dengan psikolog atau psikiater.',
-            description: 'Gejala PTSD sedang terdeteksi. Konsultasi dengan profesional sangat disarankan.',
-            articles: []
-          };
-        } else if (sev === 'berat') {
-          return {
-            name: 'PTSD Berat',
-            percentage: 95,
-            recommendation: 'Gejala PTSD berat terdeteksi. Segera konsultasikan ke profesional kesehatan mental.',
-            description: 'Gejala PTSD berat terdeteksi. Penanganan profesional sangat penting.',
-            articles: []
-          };
-        }
+      if (this.severity === 'Ringan') {
+        return {
+          name: 'Gejala PTSD Ringan',
+          percentage: 25,
+          recommendation: 'Anda mengalami gejala PTSD ringan. Cobalah teknik relaksasi dan berbicara dengan orang terdekat.',
+          description: 'PTSD ringan dapat berupa kilas balik ringan, mimpi buruk sesekali, atau kecemasan yang tidak terlalu mengganggu.',
+          articles: this.articles
+        };
+      } else if (this.severity === 'Sedang') {
+        return {
+          name: 'Gejala PTSD Sedang',
+          percentage: 55,
+          recommendation: 'Gejala yang Anda alami cukup serius. Segera konsultasikan dengan psikolog atau psikiater.',
+          description: 'PTSD sedang ditandai dengan kilas balik yang sering, mimpi buruk, dan kecemasan yang mulai mengganggu aktivitas harian.',
+          articles: this.articles
+        };
+      } else if (this.severity === 'Berat') {
+        return {
+          name: 'Gejala PTSD Berat',
+          percentage: 95,
+          recommendation: 'Gejala yang Anda alami sangat serius. Segera konsultasikan dengan psikiater untuk penanganan intensif.',
+          description: 'PTSD berat meliputi kilas balik yang sangat intens, mimpi buruk yang mengganggu tidur, dan kecemasan yang sangat mengganggu kehidupan sehari-hari.',
+          articles: this.articles
+        };
+      } else {
+        return {
+          name: 'Gejala PTSD Berat',
+          percentage: 95,
+          recommendation: 'Gejala yang Anda alami sangat serius. Segera konsultasikan dengan psikiater untuk penanganan intensif.',
+          description: 'PTSD berat meliputi kilas balik yang sangat intens, mimpi buruk yang mengganggu tidur, dan kecemasan yang sangat mengganggu kehidupan sehari-hari.',
+          articles: this.articles
+        };
       }
-      // Jika hasil bukan PTSD, fallback
-      return {
-        name: this.hasil,
-        percentage: 20,
-        recommendation: 'Tidak ada gejala PTSD terdeteksi.',
-        description: 'Anda tidak menunjukkan gejala PTSD.',
-        articles: []
-      };
     }
   },
   mounted() {
@@ -249,12 +262,42 @@ export default {
       return;
     }
     
+    // Fetch articles for PTSD category
+    this.fetchArticles('ptsd');
+    
     console.log('Final testState.hasilTesTerakhir after mounted:', testState.hasilTesTerakhir);
   },
   methods: {
+    async fetchArticles(category) {
+      this.loadingArticles = true;
+      this.articlesError = '';
+      try {
+        const response = await axios.get(`https://mindcareindependent.com/api/get_journals_by_category.php?category=${category}`);
+        if (response.data.success) {
+          this.articles = response.data.data.journals.map(article => ({
+            title: article.judul,
+            summary: article.kutipan,
+            author: 'MindCare',
+            link: article.link
+          }));
+          console.log('Articles loaded for category:', category, this.articles);
+        } else {
+          this.articlesError = 'Gagal memuat artikel';
+          console.error('Failed to load articles:', response.data.message);
+        }
+      } catch (error) {
+        this.articlesError = 'Terjadi kesalahan saat memuat artikel';
+        console.error('Error fetching articles:', error);
+      } finally {
+        this.loadingArticles = false;
+      }
+    },
     handleConfirm() {
-      // Tidak reset testState agar menu "Hasil Tes Diri" tetap ditampilkan
-      // karena user sudah pernah menyelesaikan tes
+      // Reset test state untuk memulai tes baru
+      resetTestState();
+      localStorage.removeItem('lastTestResult');
+      
+      // Redirect ke halaman tes
       this.$router.push({ name: 'TesDiri' });
       this.showConfirmationModal = false;
     },
@@ -454,6 +497,7 @@ export default {
   gap: 30px;
   justify-content: center;
   flex-wrap: wrap;
+  align-items: stretch;
 }
 .article-card {
   flex: 1;
@@ -466,6 +510,10 @@ export default {
   text-align: left;
   box-shadow: 0 4px 15px rgba(0,0,0,0.05);
   transition: transform 0.3s, box-shadow 0.3s;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 200px;
 }
 .article-card:hover {
   transform: translateY(-5px);
@@ -479,6 +527,15 @@ export default {
   font-size: 0.9rem;
   color: #666;
   margin-bottom: 20px;
+  flex-grow: 1;
+}
+.article-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: auto;
+  padding-top: 16px;
+  border-top: 1px solid #eee;
 }
 .author {
   display: flex;
@@ -486,12 +543,28 @@ export default {
   gap: 8px;
   font-size: 0.8rem;
   color: #888;
-  margin-top: 16px;
 }
 .author img {
   width: 24px;
   height: 24px;
   border-radius: 50%;
+}
+.read-more-link {
+  font-size: 0.9rem;
+  color: #3498db;
+  text-decoration: none;
+  font-weight: 600;
+}
+.read-more-link:hover {
+  text-decoration: underline;
+}
+
+.articles-loading, .articles-error, .articles-empty {
+  padding: 20px;
+  color: #555;
+  font-size: 1rem;
+  text-align: center;
+  margin-bottom: 20px;
 }
 
 /* Tambahkan style info-block dan info-container agar konsisten dengan neurosis dan psikotik */

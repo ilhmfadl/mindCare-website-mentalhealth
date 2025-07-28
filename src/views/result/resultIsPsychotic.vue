@@ -88,30 +88,43 @@
       <div class="articles-container">
         <h3>Baca artikel selengkapnya mengenai {{ diagnosis.name }}</h3>
         <p class="article-subtitle">Artikel Terkait {{ diagnosis.name }}</p>
-        <div class="article-cards">
+        <div v-if="loadingArticles" class="articles-loading">
+          <p>Memuat artikel...</p>
+        </div>
+        <div v-else-if="articlesError" class="articles-error">
+          <p>{{ articlesError }}</p>
+        </div>
+        <div v-else-if="diagnosis.articles.length === 0" class="articles-empty">
+          <p>Belum ada artikel tersedia untuk kategori ini.</p>
+        </div>
+        <div v-else class="article-cards">
           <div class="article-card" v-for="article in diagnosis.articles" :key="article.title">
             <h4>{{ article.title }}</h4>
             <p>{{ article.summary }}</p>
-            <div class="author" v-if="article.author">
-              <span>{{ article.author }}</span>
+            <div class="article-footer">
+              <div class="author" v-if="article.author">
+                <span>{{ article.author }}</span>
+              </div>
+              <a v-if="article.link" :href="article.link" target="_blank" class="read-more-link">Baca Selengkapnya</a>
             </div>
           </div>
         </div>
       </div>
     </section>
-    <ConfirmationModal
-      :visible="showConfirmationModal"
-      title="Konfirmasi Tes Ulang"
-      message="Anda akan melakukan tes ulang dan hasil tes Anda sebelumnya akan dihapus. Apakah Anda yakin?"
-      @confirm="handleConfirm"
-      @cancel="handleCancel"
-    />
+      <ConfirmationModal
+    :isVisible="showConfirmationModal"
+    title="Konfirmasi Tes Ulang"
+    message="Anda akan melakukan tes ulang dan hasil tes Anda sebelumnya akan dihapus. Apakah Anda yakin?"
+    @confirm="handleConfirm"
+    @close="handleCancel"
+  />
   </div>
 </template>
 
 <script>
 import ConfirmationModal from '../../components/ConfirmationModal.vue';
 import { testState, resetTestState } from '../../store/testState';
+import axios from 'axios';
 
 export default {
   name: 'ResultIsPsychotic',
@@ -121,6 +134,14 @@ export default {
       required: false
     },
     severityProp: { type: String, default: '' }
+  },
+  data() {
+    return {
+      showConfirmationModal: false,
+      articles: [],
+      loadingArticles: false,
+      articlesError: ''
+    };
   },
   computed: {
     severity() {
@@ -161,28 +182,34 @@ export default {
         return {
           name: 'Gejala Psikotik Ringan',
           percentage: 25,
-          recommendation: 'Anda mengalami gejala psikotik ringan. Segera konsultasikan dengan profesional jika gejala memburuk.',
-          description: 'Psikosis ringan dapat berupa kebingungan, kesulitan membedakan kenyataan, atau perubahan perilaku yang tidak biasa. Gejala ini perlu dipantau dan dikelola dengan baik.',
-          articles: []
+          recommendation: 'Anda mengalami gejala psikotik ringan. Segera konsultasikan dengan psikiater untuk penanganan lebih lanjut.',
+          description: 'Psikotik ringan dapat berupa kecurigaan ringan, kesulitan berpikir jernih, atau perubahan perilaku yang tidak signifikan.',
+          articles: this.articles
         };
       } else if (this.severity === 'Sedang') {
         return {
           name: 'Gejala Psikotik Sedang',
           percentage: 55,
-          recommendation: 'Segera konsultasikan dengan psikolog atau psikiater. Hindari isolasi dan tetap terhubung dengan orang terdekat.',
-          description: 'Psikosis sedang ditandai dengan halusinasi ringan, delusi, atau perubahan perilaku yang mulai mengganggu aktivitas harian. Bantuan profesional sangat dianjurkan.',
-          articles: []
+          recommendation: 'Gejala yang Anda alami cukup serius. Segera konsultasikan dengan psikiater untuk penanganan medis.',
+          description: 'Psikotik sedang ditandai dengan halusinasi, delusi, atau gangguan berpikir yang mulai mengganggu aktivitas harian.',
+          articles: this.articles
         };
       } else if (this.severity === 'Berat') {
         return {
           name: 'Gejala Psikotik Berat',
           percentage: 95,
-          recommendation: 'Gejala yang Anda alami cukup berat. Segera konsultasikan dengan psikiater untuk penanganan lebih lanjut dan hindari bahaya bagi diri sendiri maupun orang lain.',
-          description: 'Psikosis berat meliputi halusinasi intens, delusi berat, dan perilaku yang sangat tidak sesuai dengan kenyataan. Penanganan medis segera sangat penting.',
-          articles: []
+          recommendation: 'Gejala yang Anda alami sangat serius. Segera konsultasikan dengan psikiater untuk penanganan intensif.',
+          description: 'Psikotik berat meliputi halusinasi berat, delusi yang kuat, atau gangguan berpikir yang sangat mengganggu kehidupan sehari-hari.',
+          articles: this.articles
         };
       } else {
-        return null;
+        return {
+          name: 'Gejala Psikotik Berat',
+          percentage: 95,
+          recommendation: 'Gejala yang Anda alami sangat serius. Segera konsultasikan dengan psikiater untuk penanganan intensif.',
+          description: 'Psikotik berat meliputi halusinasi berat, delusi yang kuat, atau gangguan berpikir yang sangat mengganggu kehidupan sehari-hari.',
+          articles: this.articles
+        };
       }
     },
     diagnosisCardClass() {
@@ -196,11 +223,6 @@ export default {
   },
   components: {
     ConfirmationModal,
-  },
-  data() {
-    return {
-      showConfirmationModal: false,
-    };
   },
   mounted() {
     console.log('ResultIsPsychotic mounted');
@@ -226,12 +248,42 @@ export default {
       return;
     }
     
+    // Fetch articles for psychotic category
+    this.fetchArticles('psikotik');
+    
     console.log('Final testState.hasilTesTerakhir after mounted:', testState.hasilTesTerakhir);
   },
   methods: {
+    async fetchArticles(category) {
+      this.loadingArticles = true;
+      this.articlesError = '';
+      try {
+        const response = await axios.get(`https://mindcareindependent.com/api/get_journals_by_category.php?category=${category}`);
+        if (response.data.success) {
+          this.articles = response.data.data.journals.map(article => ({
+            title: article.judul,
+            summary: article.kutipan,
+            author: 'MindCare',
+            link: article.link
+          }));
+          console.log('Articles loaded for category:', category, this.articles);
+        } else {
+          this.articlesError = 'Gagal memuat artikel';
+          console.error('Failed to load articles:', response.data.message);
+        }
+      } catch (error) {
+        this.articlesError = 'Terjadi kesalahan saat memuat artikel';
+        console.error('Error fetching articles:', error);
+      } finally {
+        this.loadingArticles = false;
+      }
+    },
     handleConfirm() {
-      // Tidak reset testState agar menu "Hasil Tes Diri" tetap ditampilkan
-      // karena user sudah pernah menyelesaikan tes
+      // Reset test state untuk memulai tes baru
+      resetTestState();
+      localStorage.removeItem('lastTestResult');
+      
+      // Redirect ke halaman tes
       this.$router.push({ name: 'TesDiri' });
       this.showConfirmationModal = false;
     },
@@ -434,6 +486,7 @@ export default {
   gap: 30px;
   justify-content: center;
   flex-wrap: wrap;
+  align-items: stretch;
 }
 .article-card {
   flex: 1;
@@ -446,6 +499,10 @@ export default {
   text-align: left;
   box-shadow: 0 4px 15px rgba(0,0,0,0.05);
   transition: transform 0.3s, box-shadow 0.3s;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 200px;
 }
 .article-card:hover {
   transform: translateY(-5px);
@@ -459,6 +516,15 @@ export default {
   font-size: 0.9rem;
   color: #666;
   margin-bottom: 20px;
+  flex-grow: 1;
+}
+.article-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: auto;
+  padding-top: 16px;
+  border-top: 1px solid #eee;
 }
 .author {
   display: flex;
@@ -466,12 +532,26 @@ export default {
   gap: 8px;
   font-size: 0.8rem;
   color: #888;
-  margin-top: 16px;
 }
 .author img {
   width: 24px;
   height: 24px;
   border-radius: 50%;
+}
+.read-more-link {
+  font-size: 0.9rem;
+  color: #00b4d8;
+  text-decoration: none;
+  font-weight: 600;
+}
+.read-more-link:hover {
+  text-decoration: underline;
+}
+
+.articles-loading, .articles-error, .articles-empty {
+  padding: 20px;
+  color: #555;
+  font-size: 1rem;
 }
 
 /* Terapkan style info-block dan info-container dari neurosis-info-container agar konsisten */

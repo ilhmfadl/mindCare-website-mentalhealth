@@ -57,11 +57,11 @@
     </section>
   </div>
   <ConfirmationModal
-    :visible="showConfirmationModal"
+    :isVisible="showConfirmationModal"
     title="Konfirmasi Tes Ulang"
     message="Anda akan melakukan tes ulang dan hasil tes Anda sebelumnya akan dihapus. Apakah Anda yakin?"
     @confirm="handleConfirm"
-    @cancel="handleCancel"
+    @close="handleCancel"
   />
 </template>
 
@@ -137,8 +137,11 @@ export default {
   },
   methods: {
     handleConfirm() {
-      // Tidak reset testState agar menu "Hasil Tes Diri" tetap ditampilkan
-      // karena user sudah pernah menyelesaikan tes
+      // Reset test state untuk memulai tes baru
+      resetTestState();
+      localStorage.removeItem('lastTestResult');
+      
+      // Redirect ke halaman tes
       this.$router.push({ name: 'TesDiri' });
       this.showConfirmationModal = false;
     },

@@ -69,6 +69,10 @@
                 </select>
               </div>
               <div class="form-group">
+                <label for="title">Judul Jurnal/Artikel</label>
+                <input id="title" v-model="title" type="text" placeholder="Masukkan judul jurnal atau artikel" required />
+              </div>
+              <div class="form-group">
                 <label for="source">Masukkan Sumber Jurnal</label>
                 <input id="source" v-model="source" type="text" placeholder="Masukkan link sumber jurnal" required />
               </div>
@@ -112,10 +116,12 @@
               <li v-for="(j, i) in localJournals" :key="i" class="journal-item">
                 <div class="journal-content">
                   <template v-if="editIndex === i">
+                    <input v-model="editTitle" class="edit-input" placeholder="Judul jurnal" />
                     <input v-model="editSource" class="edit-input" placeholder="Sumber jurnal" />
                     <textarea v-model="editQuote" class="edit-input" placeholder="Kutipan jurnal"></textarea>
                   </template>
                   <template v-else>
+                    <div class="journal-title"><b>Judul:</b> {{ j.judul || 'Tidak ada judul' }}</div>
                     <div class="journal-source"><b>Sumber:</b> {{ j.sumber }}</div>
                     <div class="journal-quote"><b>Kutipan:</b> {{ j.kutipan }}</div>
                   </template>
@@ -180,12 +186,14 @@ export default {
         { name: 'PTSD', count: 0 },
       ],
       category: '',
+      title: '',
       source: '',
       quote: '',
       // Detail
       detailCategory: '',
       localJournals: [],
       editIndex: null,
+      editTitle: '',
       editSource: '',
       editQuote: '',
       showDeleteModal: false,
@@ -241,6 +249,7 @@ export default {
         j.kategori.toLowerCase() === item.name.toLowerCase()
       );
       this.editIndex = null;
+      this.editTitle = '';
       this.editSource = '';
       this.editQuote = '';
       this.mode = 'detail';
@@ -254,6 +263,7 @@ export default {
       try {
         const response = await axios.post('https://mindcareindependent.com/api/add_journal.php', {
           kategori: this.category.toLowerCase(),
+          judul: this.title,
           sumber: this.source,
           kutipan: this.quote
         });
@@ -261,6 +271,7 @@ export default {
         if (response.data.success) {
           this.successMessage = response.data.message;
           this.category = '';
+          this.title = '';
           this.source = '';
           this.quote = '';
           
@@ -299,13 +310,14 @@ export default {
     
     startEdit(idx, j) {
       this.editIndex = idx;
+      this.editTitle = j.judul || '';
       this.editSource = j.sumber;
       this.editQuote = j.kutipan;
     },
     
     async saveEdit(idx) {
-      if (!this.editSource.trim() || !this.editQuote.trim()) {
-        this.error = 'Sumber dan kutipan tidak boleh kosong';
+      if (!this.editTitle.trim() || !this.editSource.trim() || !this.editQuote.trim()) {
+        this.error = 'Judul, sumber, dan kutipan tidak boleh kosong';
         return;
       }
       
@@ -318,6 +330,7 @@ export default {
         const response = await axios.put('https://mindcareindependent.com/api/update_journal.php', {
           id: journal.id,
           kategori: journal.kategori,
+          judul: this.editTitle,
           sumber: this.editSource,
           kutipan: this.editQuote
         });
@@ -327,6 +340,7 @@ export default {
           // Update local data
           this.localJournals[idx] = response.data.data;
           this.editIndex = null;
+          this.editTitle = '';
           this.editSource = '';
           this.editQuote = '';
           
@@ -358,6 +372,7 @@ export default {
     
     cancelEdit() {
       this.editIndex = null;
+      this.editTitle = '';
       this.editSource = '';
       this.editQuote = '';
     },
@@ -413,10 +428,16 @@ export default {
     
     addFromDetail() {
       this.category = this.detailCategory;
+      this.title = '';
+      this.source = '';
+      this.quote = '';
       this.mode = 'add';
     },
     
     cancelAdd() {
+      this.title = '';
+      this.source = '';
+      this.quote = '';
       if (this.detailCategory) {
         this.mode = 'detail';
       } else {
@@ -427,6 +448,7 @@ export default {
     resetAddForm() {
       this.detailCategory = '';
       this.category = '';
+      this.title = '';
       this.source = '';
       this.quote = '';
       this.mode = 'add';
@@ -727,6 +749,13 @@ textarea {
   flex-direction: column;
   gap: 8px;
 }
+.journal-title {
+  color: #4B4B9F;
+  font-size: 1.02rem;
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+
 .journal-source {
   color: #6C3483;
   font-size: 1.01rem;

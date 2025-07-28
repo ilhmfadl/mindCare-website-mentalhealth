@@ -26,7 +26,29 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
     
     // Gunakan waktu lokal pengguna jika dikirim, atau gunakan waktu server
-    $current_time = isset($_POST['current_time']) ? $_POST['current_time'] : date('Y-m-d H:i:s');
+    // Gunakan waktu client dengan zona waktu yang benar
+    $current_time = date('Y-m-d H:i:s');
+    
+    // Jika client mengirim waktu dengan zona waktu, konversi ke UTC
+    if (isset($_POST['current_time']) && isset($_POST['timezone'])) {
+        $client_time = $_POST['current_time'];
+        $client_timezone = $_POST['timezone'];
+        
+        try {
+            // Buat DateTime object dengan zona waktu client
+            $client_datetime = new DateTime($client_time, new DateTimeZone($client_timezone));
+            // Konversi ke UTC untuk disimpan di database
+            $client_datetime->setTimezone(new DateTimeZone('UTC'));
+            $current_time = $client_datetime->format('Y-m-d H:i:s');
+        } catch (Exception $e) {
+            // Jika gagal, gunakan waktu server
+            error_log("Timezone conversion failed: " . $e->getMessage());
+            $current_time = date('Y-m-d H:i:s');
+        }
+    } elseif (isset($_POST['current_time'])) {
+        // Jika hanya ada waktu tanpa zona waktu, asumsikan UTC
+        $current_time = $_POST['current_time'];
+    }
     
     // Pastikan hanya user yang membuat pertanyaan yang bisa edit
     $stmt = $conn->prepare('UPDATE forum_questions SET title = ?, `desc` = ?, updated_at = ? WHERE id = ? AND user_id = ?');

@@ -21,6 +21,27 @@ if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
 require_once '../config/db.php';
 
 try {
+    // Get category from query parameter
+    $category = $_GET['category'] ?? '';
+    
+    if (empty($category)) {
+        throw new Exception('Category parameter is required');
+    }
+    
+    // Map category names to database values
+    $categoryMap = [
+        'neurosis' => 'neurosis',
+        'Neurosis' => 'neurosis',
+        'psikotik' => 'psikotik', 
+        'Psikotik' => 'psikotik',
+        'psychotic' => 'psikotik',
+        'Psychotic' => 'psikotik',
+        'ptsd' => 'ptsd',
+        'PTSD' => 'ptsd'
+    ];
+    
+    $dbCategory = $categoryMap[$category] ?? $category;
+    
     // Use the connection from db.php
     global $conn;
     
@@ -30,8 +51,9 @@ try {
     
     $conn->set_charset("utf8mb4");
     
-    // Ambil semua jurnal
-    $stmt = $conn->prepare("SELECT id, kategori, judul, sumber, kutipan, created_at, updated_at FROM jurnal ORDER BY created_at DESC");
+    // Get 3 most recent articles for the category (highest IDs)
+    $stmt = $conn->prepare("SELECT id, kategori, judul, sumber, kutipan, created_at, updated_at FROM jurnal WHERE kategori = ? ORDER BY id DESC LIMIT 3");
+    $stmt->bind_param("s", $dbCategory);
     $stmt->execute();
     $result = $stmt->get_result();
     
@@ -53,35 +75,18 @@ try {
         ];
     }
     
-    // Hitung jumlah per kategori
-    $stmt = $conn->prepare("SELECT kategori, COUNT(*) as count FROM jurnal GROUP BY kategori");
-    $stmt->execute();
-    $result = $stmt->get_result();
-    
-    $categoryCounts = [];
-    while ($row = $result->fetch_assoc()) {
-        $categoryCounts[$row['kategori']] = $row['count'];
-    }
-    
-    // Pastikan semua kategori ada (meskipun kosong)
-    $allCategories = ['neurosis', 'psikotik', 'ptsd'];
-    foreach ($allCategories as $category) {
-        if (!isset($categoryCounts[$category])) {
-            $categoryCounts[$category] = 0;
-        }
-    }
-    
     http_response_code(200);
     echo json_encode([
         'success' => true,
         'data' => [
             'journals' => $journals,
-            'category_counts' => $categoryCounts
+            'category' => $dbCategory,
+            'count' => count($journals)
         ]
     ]);
     
 } catch (Exception $e) {
-    error_log("Error in get_journals.php: " . $e->getMessage());
+    error_log("Error in get_journals_by_category.php: " . $e->getMessage());
     http_response_code(500);
     echo json_encode(['success' => false, 'message' => 'Internal server error: ' . $e->getMessage()]);
 } finally {

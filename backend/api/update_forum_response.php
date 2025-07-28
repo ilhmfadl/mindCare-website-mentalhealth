@@ -28,7 +28,29 @@ try {
     $response_id = isset($_POST['id']) ? (int)$_POST['id'] : 0;
     $user_id = isset($_POST['user_id']) ? (int)$_POST['user_id'] : 0;
     $response_text = isset($_POST['response_text']) ? trim($_POST['response_text']) : '';
-    $current_time = isset($_POST['current_time']) ? $_POST['current_time'] : date('Y-m-d H:i:s');
+    // Gunakan waktu client dengan zona waktu yang benar
+    $current_time = date('Y-m-d H:i:s');
+    
+    // Jika client mengirim waktu dengan zona waktu, konversi ke UTC
+    if (isset($_POST['current_time']) && isset($_POST['timezone'])) {
+        $client_time = $_POST['current_time'];
+        $client_timezone = $_POST['timezone'];
+        
+        try {
+            // Buat DateTime object dengan zona waktu client
+            $client_datetime = new DateTime($client_time, new DateTimeZone($client_timezone));
+            // Konversi ke UTC untuk disimpan di database
+            $client_datetime->setTimezone(new DateTimeZone('UTC'));
+            $current_time = $client_datetime->format('Y-m-d H:i:s');
+        } catch (Exception $e) {
+            // Jika gagal, gunakan waktu server
+            error_log("Timezone conversion failed: " . $e->getMessage());
+            $current_time = date('Y-m-d H:i:s');
+        }
+    } elseif (isset($_POST['current_time'])) {
+        // Jika hanya ada waktu tanpa zona waktu, asumsikan UTC
+        $current_time = $_POST['current_time'];
+    }
     
     // Validation
     if (!$response_id) {

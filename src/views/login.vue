@@ -30,6 +30,7 @@
 
 <script>
 import axios from 'axios';
+import { testState } from '../store/testState';
 export default {
   name: 'Login',
   data() {
@@ -62,11 +63,22 @@ export default {
             const tesRes = await axios.post('https://mindcareindependent.com/api/get_last_tesdiri.php', tesForm);
             if (tesRes.data.success && tesRes.data.data) {
               localStorage.setItem('lastTestResult', JSON.stringify(tesRes.data.data));
+              // Update testState agar tombol hasil tes muncul
+              testState.hasilTesTerakhir = tesRes.data.data;
+              testState.userId = response.data.user.id;
+              testState.testCompleted = true;
             } else {
               localStorage.removeItem('lastTestResult');
+              // Reset testState jika tidak ada hasil tes
+              testState.hasilTesTerakhir = null;
+              testState.userId = response.data.user.id;
+              testState.testCompleted = false;
             }
           } catch (e) {
             localStorage.removeItem('lastTestResult');
+            testState.hasilTesTerakhir = null;
+            testState.userId = response.data.user.id;
+            testState.testCompleted = false;
           }
           if (response.data.user.role === 'admin') {
             this.$router.push('/admin/users').then(() => window.location.reload());

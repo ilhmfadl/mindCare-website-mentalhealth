@@ -101,30 +101,43 @@
       <div class="articles-container">
         <h3>Baca artikel selengkapnya mengenai {{ diagnosis.name }}</h3>
         <p class="article-subtitle">Artikel Terkait {{ diagnosis.name }}</p>
-        <div class="article-cards">
+        <div v-if="loadingArticles" class="articles-loading">
+          <p>Memuat artikel...</p>
+        </div>
+        <div v-else-if="articlesError" class="articles-error">
+          <p>{{ articlesError }}</p>
+        </div>
+        <div v-else-if="diagnosis.articles.length === 0" class="articles-empty">
+          <p>Belum ada artikel tersedia untuk kategori ini.</p>
+        </div>
+        <div v-else class="article-cards">
           <div class="article-card" v-for="article in diagnosis.articles" :key="article.title">
             <h4>{{ article.title }}</h4>
             <p>{{ article.summary }}</p>
-            <div class="author" v-if="article.author">
-              <span>{{ article.author }}</span>
+            <div class="article-footer">
+              <div class="author" v-if="article.author">
+                <span>{{ article.author }}</span>
+              </div>
+              <a v-if="article.link" :href="article.link" target="_blank" class="read-more-link">Baca Selengkapnya</a>
             </div>
           </div>
         </div>
       </div>
     </section>
-    <ConfirmationModal
-      :visible="showConfirmationModal"
-      title="Konfirmasi Tes Ulang"
-      message="Anda akan melakukan tes ulang dan hasil tes Anda sebelumnya akan dihapus. Apakah Anda yakin?"
-      @confirm="handleConfirm"
-      @cancel="handleCancel"
-    />
+      <ConfirmationModal
+    :isVisible="showConfirmationModal"
+    title="Konfirmasi Tes Ulang"
+    message="Anda akan melakukan tes ulang dan hasil tes Anda sebelumnya akan dihapus. Apakah Anda yakin?"
+    @confirm="handleConfirm"
+    @close="handleCancel"
+  />
   </div>
 </template>
 
 <script>
 import ConfirmationModal from '../../components/ConfirmationModal.vue';
 import { testState, resetTestState } from '../../store/testState';
+import axios from 'axios';
 
 export default {
   name: 'ResultIsNeurosis',
@@ -134,6 +147,9 @@ export default {
   data() {
     return {
       showConfirmationModal: false,
+      articles: [],
+      loadingArticles: false,
+      articlesError: ''
     };
   },
   computed: {
@@ -177,7 +193,7 @@ export default {
           percentage: 25,
           recommendation: 'Anda mengalami gejala neurosis ringan. Cobalah teknik relaksasi, olahraga, dan berbicara dengan orang terdekat.',
           description: 'Neurosis ringan dapat berupa kecemasan, kekhawatiran berlebih, atau kesulitan tidur. Gejala ini biasanya tidak mengganggu aktivitas sehari-hari secara signifikan.',
-          articles: []
+          articles: this.articles
         };
       } else if (this.severity === 'Sedang') {
         return {
@@ -185,7 +201,7 @@ export default {
           percentage: 55,
           recommendation: 'Cobalah berbicara dengan tenaga profesional dan hindari menyendiri terlalu lama. Lakukan kegiatan yang menyenangkan.',
           description: 'Neurosis sedang ditandai dengan kecemasan yang lebih sering, mudah marah, atau gangguan tidur yang mulai mengganggu aktivitas harian.',
-          articles: []
+          articles: this.articles
         };
       } else if (this.severity === 'Berat') {
         return {
@@ -193,7 +209,7 @@ export default {
           percentage: 95,
           recommendation: 'Gejala yang Anda alami cukup berat. Segera konsultasikan dengan psikolog atau psikiater untuk penanganan lebih lanjut.',
           description: 'Neurosis berat meliputi kecemasan berlebih, fobia, obsesi, atau kompulsi yang sangat mengganggu kehidupan sehari-hari. Bantuan profesional sangat dianjurkan.',
-          articles: []
+          articles: this.articles
         };
       } else {
         return {
@@ -201,7 +217,7 @@ export default {
           percentage: 20,
           recommendation: 'Anda mengalami gejala neurosis ringan. Cobalah teknik relaksasi, olahraga, dan berbicara dengan orang terdekat.',
           description: 'Neurosis ringan dapat berupa kecemasan, kekhawatiran berlebih, atau kesulitan tidur. Gejala ini biasanya tidak mengganggu aktivitas sehari-hari secara signifikan.',
-          articles: []
+          articles: this.articles
         };
       }
     }
@@ -230,12 +246,42 @@ export default {
       return;
     }
     
+    // Fetch articles for neurosis category
+    this.fetchArticles('neurosis');
+    
     console.log('Final testState.hasilTesTerakhir after mounted:', testState.hasilTesTerakhir);
   },
   methods: {
+    async fetchArticles(category) {
+      this.loadingArticles = true;
+      this.articlesError = '';
+      try {
+        const response = await axios.get(`https://mindcareindependent.com/api/get_journals_by_category.php?category=${category}`);
+        if (response.data.success) {
+          this.articles = response.data.data.journals.map(article => ({
+            title: article.judul,
+            summary: article.kutipan,
+            author: 'MindCare',
+            link: article.link
+          }));
+          console.log('Articles loaded for category:', category, this.articles);
+        } else {
+          this.articlesError = 'Gagal memuat artikel';
+          console.error('Failed to load articles:', response.data.message);
+        }
+      } catch (error) {
+        this.articlesError = 'Terjadi kesalahan saat memuat artikel';
+        console.error('Error fetching articles:', error);
+      } finally {
+        this.loadingArticles = false;
+      }
+    },
     handleConfirm() {
-      // Tidak reset testState agar menu "Hasil Tes Diri" tetap ditampilkan
-      // karena user sudah pernah menyelesaikan tes
+      // Reset test state untuk memulai tes baru
+      resetTestState();
+      localStorage.removeItem('lastTestResult');
+      
+      // Redirect ke halaman tes
       this.$router.push({ name: 'TesDiri' });
       this.showConfirmationModal = false;
     },
@@ -430,6 +476,7 @@ export default {
   gap: 30px;
   justify-content: center;
   flex-wrap: wrap;
+  align-items: stretch;
 }
 .article-card {
   flex: 1;
@@ -442,6 +489,10 @@ export default {
   text-align: left;
   box-shadow: 0 4px 15px rgba(0,0,0,0.05);
   transition: transform 0.3s, box-shadow 0.3s;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 200px;
 }
 .article-card:hover {
   transform: translateY(-5px);
@@ -455,6 +506,15 @@ export default {
   font-size: 0.9rem;
   color: #666;
   margin-bottom: 20px;
+  flex-grow: 1;
+}
+.article-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: auto;
+  padding-top: 16px;
+  border-top: 1px solid #eee;
 }
 .author {
   display: flex;
@@ -462,12 +522,32 @@ export default {
   gap: 8px;
   font-size: 0.8rem;
   color: #888;
-  margin-top: 16px; /* Added margin-top */
 }
 .author img {
   width: 24px;
   height: 24px;
   border-radius: 50%;
+}
+.read-more-link {
+  font-size: 0.9rem;
+  color: #EC744A;
+  text-decoration: none;
+  font-weight: 600;
+  transition: color 0.3s ease;
+}
+.read-more-link:hover {
+  color: #d9633a;
+}
+
+.articles-loading, .articles-error, .articles-empty {
+  padding: 20px;
+  background-color: #f0f0f0;
+  border-radius: 10px;
+  margin-bottom: 30px;
+}
+.articles-loading p, .articles-error p, .articles-empty p {
+  color: #555;
+  font-size: 1rem;
 }
 
 /* Tambahkan style agar info-block dan neurosis-info-container tampil menarik dan konsisten */
