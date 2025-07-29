@@ -81,10 +81,10 @@
 
 <style scoped>
 .footer {
-  background: #faf7f3;
+  background: var(--bg-tertiary);
   padding: 50px 0 20px 0; /* Increased top padding */
   font-family: 'Poppins', sans-serif;
-  border-top: 1px solid #e0e0e0;
+  border-top: 1px solid var(--border-color);
 }
 .footer-main {
   display: flex;
@@ -113,7 +113,7 @@
 }
 .desc {
   font-size: 14px; /* Slightly larger font */
-  color: #555; /* Softer color */
+  color: var(--text-secondary); /* Softer color */
   line-height: 1.6;
 }
 h4 {
@@ -122,12 +122,13 @@ h4 {
   margin-bottom: 20px; /* More space */
   text-transform: uppercase;
   letter-spacing: 0.5px;
+  color: var(--text-primary);
 }
 .footer-section p {
     line-height: 1.7;
     margin-bottom: 8px;
     font-size: 14px;
-    color: #555;
+    color: var(--text-secondary);
 }
 .contact-item {
   display: flex;
@@ -135,16 +136,16 @@ h4 {
   gap: 10px; /* Increased gap */
   font-size: 14px;
   margin-bottom: 12px; /* Increased margin */
-  color: #555;
+  color: var(--text-secondary);
 }
 .icon {
   display: flex;
   align-items: center;
-  color: #333;
+  color: var(--text-primary);
 }
 .maps-placeholder {
   margin-top: 10px;
-  background: #f0f0f0;
+  background: var(--bg-secondary);
   border-radius: 8px;
   overflow: hidden;
   width: 100%;
@@ -154,7 +155,7 @@ h4 {
 .footer-divider {
   margin: 30px auto; /* Centered */
   border: none;
-  border-top: 1px solid #e0e0e0; /* Softer color */
+  border-top: 1px solid var(--border-color); /* Softer color */
   width: 90%;
 }
 .footer-bottom {
@@ -167,17 +168,17 @@ h4 {
 .socials i {
   font-size: 18px; /* Slightly larger */
   margin: 0 10px;
-  color: #333;
+  color: var(--text-primary);
   cursor: pointer;
   transition: color 0.3s, transform 0.3s;
 }
 .socials i:hover {
-    color: #6A4C9B; /* Example brand color */
+    color: var(--accent-purple); /* Example brand color */
     transform: scale(1.1);
 }
 .copyright {
   font-size: 12px; /* Slightly smaller */
-  color: #888;
+  color: var(--text-muted);
   text-transform: capitalize;
 }
 .logo-img {

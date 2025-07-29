@@ -100,7 +100,7 @@ export default {
 .auth2-bg {
   min-height: 100vh;
   width: 100vw;
-  background: #faf7f3;
+  background: var(--bg-tertiary);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -130,7 +130,7 @@ h2 {
   letter-spacing: 0.5px;
 }
 .auth2-desc {
-  color: #6b7280;
+  color: var(--text-muted);
   font-size: 1.08rem;
   margin-bottom: 32px;
 }
@@ -150,19 +150,20 @@ input {
   border: 1.5px solid #cfd5f7;
   border-radius: 8px;
   font-size: 1.09rem;
-  background: #f8fafc;
+  background: var(--input-bg);
+  color: var(--text-primary);
   transition: border 0.2s, box-shadow 0.2s;
   outline: none;
 }
 input:focus {
   border: 1.5px solid #4B4B9F;
   box-shadow: 0 2px 8px rgba(75,75,159,0.08);
-  background: #fff;
+  background: var(--card-bg);
 }
 button {
   width: 100%;
   padding: 14px;
-  background: linear-gradient(90deg, #4B4B9F 0%, #EC744A 100%);
+  background: linear-gradient(90deg, #4B4B9F 0%, var(--button-primary) 100%);
   color: #fff;
   border: none;
   border-radius: 8px;
@@ -175,12 +176,12 @@ button {
   letter-spacing: 0.5px;
 }
 button:hover {
-  background: linear-gradient(90deg, #37377a 0%, #d97706 100%);
+  background: linear-gradient(90deg, #37377a 0%, var(--button-hover) 100%);
   transform: translateY(-2px) scale(1.03);
   box-shadow: 0 6px 18px rgba(75,75,159,0.13);
 }
 .error {
-  color: #d32f2f;
+  color: var(--error-color);
   margin-bottom: 10px;
   text-align: center;
   font-size: 1.01rem;
@@ -192,13 +193,13 @@ button:hover {
   font-size: 1.01rem;
 }
 .auth2-link a, .auth2-link .router-link {
-  color: #EC744A;
+  color: var(--button-primary);
   text-decoration: underline;
   font-weight: 600;
   transition: color 0.18s;
 }
 .auth2-link a:hover, .auth2-link .router-link:hover {
-  color: #d97706;
+  color: var(--button-hover);
 }
 .auth2-right {
   flex: 1.2;

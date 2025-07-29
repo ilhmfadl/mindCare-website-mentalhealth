@@ -138,8 +138,8 @@ export default {
   width: 100%;
   overflow-x: hidden;
   font-family: 'Inter', sans-serif;
-  background: #faf7f3;
-  color: #374151;
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
 }
 
 /* A reusable container to center content and set max-width */
@@ -162,7 +162,7 @@ export default {
   text-align: center;
   font-size: 2.25rem;
   font-weight: 700;
-  color: #111827;
+  color: var(--text-primary);
   margin-bottom: 50px;
 }
 
@@ -191,20 +191,20 @@ export default {
   font-size: 3rem;
   font-weight: 800;
   line-height: 1.2;
-  color: #111827;
+  color: var(--text-primary);
 }
 .highlight {
-  color: #EC744A;
+  color: var(--button-primary);
 }
 .hero-text {
-  color: #6b7280;
+  color: var(--text-muted);
   font-weight: 500;
   font-size: 1.25rem;
   line-height: 1.5;
   margin-top: 1rem;
 }
 .hero-desc {
-  color: #6b7280;
+  color: var(--text-muted);
   font-size: 1rem;
   line-height: 1.6;
   margin-top: 1.5rem;
@@ -229,18 +229,18 @@ export default {
   letter-spacing: 0.5px;
 }
 .btn-register {
-  background: linear-gradient(90deg, #f97316 0%, #EC744A 100%);
+  background: linear-gradient(90deg, #f97316 0%, var(--button-primary) 100%);
   color: #fff;
   border: none;
   box-shadow: 0 4px 16px rgba(249,115,22,0.13);
 }
 .btn-register:hover {
-  background: linear-gradient(90deg, #ea580c 0%, #d97706 100%);
+  background: linear-gradient(90deg, #ea580c 0%, var(--button-hover) 100%);
   transform: translateY(-2px) scale(1.04);
   box-shadow: 0 8px 24px rgba(249,115,22,0.18);
 }
 .btn-login {
-  background: #fff;
+  background: var(--card-bg);
   border: 2px solid #f97316;
   color: #f97316;
   box-shadow: 0 2px 12px rgba(249,115,22,0.07);
@@ -255,7 +255,7 @@ export default {
 
 /* PROBLEMS SECTION */
 .problems-section {
-  background-color: #faf7f3;
+  background-color: var(--bg-tertiary);
 }
 .cards {
   display: flex;
@@ -269,7 +269,7 @@ export default {
   padding: 32px 24px;
   border-radius: 20px;
   color: white;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 10px 30px var(--shadow-light);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -283,7 +283,7 @@ export default {
 }
 .card:hover {
   transform: translateY(-8px) scale(1.03);
-  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 15px 35px var(--shadow-medium);
 }
 .card-icon {
   width: 50px;
@@ -342,7 +342,7 @@ export default {
 .test-question {
   font-weight: 500;
   font-size: 1.25rem;
-  color: #6b7280;
+  color: var(--text-muted);
 }
 .test-yourself-section .section-title {
     text-align: left;
@@ -352,18 +352,18 @@ export default {
   font-weight: 400;
   font-size: 1rem;
   line-height: 1.6;
-  color: #4b5563;
+  color: var(--text-secondary);
   margin-top: 1.5rem;
   text-align: justify;
   padding-right: 20px;
 }
 .btn-start {
   margin-top: 2rem;
-  background-color: #EC744A;
+  background-color: var(--button-primary);
   color: white;
   /* default: tidak center di desktop */
 }
-.btn-start:hover { background-color: #ea580c; }
+.btn-start:hover { background-color: var(--button-hover); }
 
 .test-categories-row {
   display: none;

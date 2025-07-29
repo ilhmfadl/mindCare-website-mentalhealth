@@ -224,7 +224,7 @@ export default {
 .profile-bg {
   min-height: 100vh;
   width: 100vw;
-  background: #fcf8f3;
+  background: var(--bg-tertiary);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -235,18 +235,18 @@ export default {
   max-width: 1000px !important;
   width: 100%;
   margin: 100px auto 48px auto;
-  background: #fcf8f3;
+  background: var(--card-bg);
   border-radius: 22px;
   padding: 64px 80px 48px 80px !important;
-  box-shadow: 0 8px 32px rgba(106,76,155,0.10), 0 1.5px 6px rgba(0,0,0,0.06);
-  border: 1.5px solid #f3f0fa;
+  box-shadow: 0 8px 32px var(--shadow-heavy), 0 1.5px 6px var(--shadow-light);
+  border: 1.5px solid var(--border-color);
   display: flex;
   flex-direction: column;
   align-items: center;
   transition: box-shadow 0.2s;
 }
 .profile-container:hover {
-  box-shadow: 0 12px 40px rgba(106,76,155,0.16), 0 2px 8px rgba(0,0,0,0.09);
+  box-shadow: 0 12px 40px var(--shadow-heavy), 0 2px 8px var(--shadow-medium);
 }
 .profile-header {
   display: flex;
@@ -260,7 +260,7 @@ export default {
   font-size: 2.1rem;
   font-weight: 800;
   margin: 0;
-  color: #6A4C9B;
+  color: var(--text-primary);
   letter-spacing: 1px;
 }
 .profile-avatar {
@@ -268,10 +268,10 @@ export default {
   height: 110px;
   border-radius: 50%;
   object-fit: cover;
-  border: 4px solid #fff;
-  box-shadow: 0 2px 12px rgba(106,76,155,0.13);
+  border: 4px solid var(--card-bg);
+  box-shadow: 0 2px 12px var(--shadow-medium);
   margin-bottom: 2px;
-  background: #f3f0fa;
+  background: var(--bg-tertiary);
 }
 .profile-form {
   margin-top: 10px;
@@ -289,28 +289,28 @@ label {
   font-size: 1.04rem;
   font-weight: 600;
   margin-bottom: 2px;
-  color: #6A4C9B;
+  color: var(--text-primary);
 }
 input[type="text"],
 input[type="email"] {
   padding: 12px 14px;
-  border: 1.5px solid #d1c4e9;
+  border: 1.5px solid var(--border-color);
   border-radius: 8px;
   font-size: 1.04rem;
-  background: #faf8ff;
-  color: #222;
+  background: var(--input-bg);
+  color: var(--text-primary);
   outline: none;
   transition: border 0.2s, box-shadow 0.2s;
-  box-shadow: 0 1px 2px rgba(106,76,155,0.04);
+  box-shadow: 0 1px 2px var(--shadow-light);
 }
 input[type="text"]:focus,
 input[type="email"]:focus {
-  border-color: #6A4C9B;
-  box-shadow: 0 0 0 2px #e9e3f7;
+  border-color: var(--accent-purple);
+  box-shadow: 0 0 0 2px var(--bg-tertiary);
 }
 input[disabled] {
-  background: #f3f0fa;
-  color: #888;
+  background: var(--bg-tertiary);
+  color: var(--text-muted);
 }
 .with-icon .input-icon-wrapper {
   display: flex;
@@ -328,8 +328,8 @@ input[disabled] {
   justify-content: center;
 }
 .edit-btn, .save-btn, .cancel-btn, .logout-btn {
-  background: #e9e3f7;
-  color: #6A4C9B;
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
   font-weight: 700;
   font-size: 1rem;
   border: none;
@@ -337,38 +337,38 @@ input[disabled] {
   padding: 11px 30px;
   cursor: pointer;
   transition: background 0.2s, box-shadow 0.2s, color 0.2s;
-  box-shadow: 0 1px 4px rgba(106,76,155,0.06);
+  box-shadow: 0 1px 4px var(--shadow-light);
   letter-spacing: 0.5px;
 }
 .save-btn {
-  background: #d1c4e9;
-  color: #563d7c;
+  background: var(--accent-purple);
+  color: white;
 }
 .cancel-btn {
-  background: #f3f0fa;
-  color: #888;
+  background: var(--bg-tertiary);
+  color: var(--text-muted);
 }
 .logout-btn {
-  background: #f8bbd0;
-  color: #a31545;
+  background: var(--error-color);
+  color: white;
 }
 .edit-btn:hover {
-  background: #d1c4e9;
-  color: #563d7c;
-  box-shadow: 0 2px 8px rgba(106,76,155,0.10);
+  background: var(--accent-purple);
+  color: white;
+  box-shadow: 0 2px 8px var(--shadow-medium);
 }
 .save-btn:hover {
-  background: #b39ddb;
-  color: #4b2e83;
-  box-shadow: 0 2px 8px rgba(106,76,155,0.13);
+  background: var(--accent-purple);
+  color: white;
+  box-shadow: 0 2px 8px var(--shadow-medium);
 }
 .cancel-btn:hover {
-  background: #e9e3f7;
-  color: #6A4C9B;
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
 }
 .logout-btn:hover {
-  background: #f48fb1;
-  color: #fff;
+  background: var(--error-color);
+  color: white;
 }
 .password-section {
   margin-top: 32px;
@@ -379,8 +379,8 @@ input[disabled] {
   width: 100%;
 }
 .change-password-btn {
-  background: #b3e5fc;
-  color: #1565c0;
+  background: var(--accent-blue);
+  color: white;
   border: none;
   border-radius: 8px;
   padding: 10px 32px;
@@ -389,13 +389,13 @@ input[disabled] {
   cursor: pointer;
   margin-top: 4px;
   transition: background 0.2s, box-shadow 0.2s, color 0.2s;
-  box-shadow: 0 1px 4px rgba(106,76,155,0.10);
+  box-shadow: 0 1px 4px var(--shadow-light);
   letter-spacing: 0.5px;
 }
 .change-password-btn:hover {
-  background: #4fc3f7;
-  color: #fff;
-  box-shadow: 0 2px 8px rgba(106,76,155,0.13);
+  background: var(--accent-blue);
+  color: white;
+  box-shadow: 0 2px 8px var(--shadow-medium);
 }
 .avatar-wrapper {
   position: relative;

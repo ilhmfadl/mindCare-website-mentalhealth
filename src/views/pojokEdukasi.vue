@@ -314,88 +314,47 @@ html {
 }
 
 .edukasi-bg {
+  background-color: var(--bg-primary);
   min-height: 100vh;
-  background-color: #faf7f3;
-  padding: 0;
-  position: relative;
-  scroll-behavior: smooth;
-  /* Subtle pattern overlay */
-  background-image: url('data:image/svg+xml;utf8,<svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="40" height="40" fill="%23f7e3f7" fill-opacity="0.12"/><circle cx="20" cy="20" r="2" fill="%23e3f7f7" fill-opacity="0.18"/></svg>');
+  font-family: 'Inter', sans-serif;
 }
+
 .edukasi-container {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 40px 0 60px 0;
+  padding: 0 24px;
 }
-.edukasi-container.edukasi-title-container {
-  padding: 32px 0 80px 0;
-}
-.edukasi-title {
-  margin-top: 120px;
+
+.edukasi-title-container {
   text-align: center;
-  font-size: 2.2rem;
+  padding: 80px 0 40px 0;
+}
+
+.edukasi-title {
+  font-size: 3rem;
   font-weight: 800;
-  margin-bottom: 2px;
-  color: #4e4e4e;
-  letter-spacing: 1px;
-  background: none;
-  -webkit-background-clip: unset;
-  -webkit-text-fill-color: unset;
-  background-clip: unset;
+  color: var(--text-primary);
+  margin: 0;
+  letter-spacing: -1px;
 }
-.kategori-svg-top, .kategori-svg-bottom {
-  width: 100%;
-  position: absolute;
-  left: 0;
-  z-index: 1;
-  line-height: 0;
-}
-.kategori-svg-top {
-  top: 0;
-  transform: translateY(-100%);
-}
-.kategori-svg-bottom {
-  bottom: 0;
-  transform: translateY(100%);
-}
+
 .kategori-section {
-  position: relative;
-  min-height: 400px;
-  padding: 60px 0 56px 0;
+  width: 100%;
+  padding: 40px 0;
   display: flex;
-  flex-direction: column;
-  align-items: center;
   justify-content: center;
-  overflow: hidden;
-  width: 100vw;
-  left: 50%;
-  transform: translateX(-50%);
-  margin-bottom: 0;
+  align-items: center;
+  position: relative;
 }
-.kategori-section::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-  pointer-events: none;
-  background: linear-gradient(120deg, rgba(255,255,255,0.12) 0%, rgba(236,116,74,0.10) 100%);
-  opacity: 0.7;
-}
-.kategori-section--right {
-  transform: translateX(-50%);
-}
+
 .kategori-section--top {
-  transform: translateX(-50%);
-  clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+  padding-top: 60px;
 }
 
 .kategori-section--bottom {
-  transform: translateX(-50%) !important;
-  clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+  padding-bottom: 80px;
 }
-.kategori-section--bottom .kategori-content {
-  transform: none;
-}
+
 .kategori-content {
   position: relative;
   z-index: 2;
@@ -404,25 +363,25 @@ html {
   align-items: center;
   justify-content: flex-start;
   min-height: 260px;
-  background: rgba(255,255,255,0.85); /* default fallback */
+  background: var(--card-bg);
   border-radius: 32px;
-  box-shadow: 0 2px 16px 0 rgba(44,62,80,0.07);
+  box-shadow: 0 2px 16px 0 var(--shadow-light);
   padding: 32px 24px 24px 24px;
   transition: box-shadow 0.3s, transform 0.3s, background 0.3s;
   border: none;
 }
-/* Default hover effect untuk kategori yang tidak memiliki style khusus */
+
 .kategori-content:hover {
-  box-shadow: 0 8px 32px 0 rgba(44,62,80,0.18), 0 1.5px 8px 0 rgba(44,62,80,0.10);
+  box-shadow: 0 8px 32px 0 var(--shadow-medium), 0 1.5px 8px 0 var(--shadow-light);
   transform: scale(1.03);
-  background: rgba(255,255,255,0.95);
+  background: var(--card-bg);
 }
 
 .kategori-bg-title {
   position: static;
   font-size: 2rem;
   font-weight: 800;
-  color: #555;
+  color: var(--text-primary);
   opacity: 0.95;
   background: none;
   -webkit-background-clip: unset;
@@ -436,15 +395,7 @@ html {
   user-select: none;
   pointer-events: none;
 }
-.kategori-content {
-  position: relative;
-  z-index: 2;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: flex-start;
-  min-height: 260px;
-}
+
 .kategori-img-wrapper {
   width: 260px;
   height: 260px;
@@ -455,6 +406,7 @@ html {
   position: relative;
   z-index: 2;
 }
+
 .kategori-img-overlap {
   width: 100%;
   height: 100%;
@@ -464,22 +416,25 @@ html {
   margin-top: 0;
   transition: transform 0.3s cubic-bezier(.4,2,.6,1), box-shadow 0.3s cubic-bezier(.4,2,.6,1), border-radius 0.3s cubic-bezier(.4,2,.6,1), outline 0.3s cubic-bezier(.4,2,.6,1);
 }
+
 .kategori-content:hover .kategori-img-overlap {
   transform: scale(1.08) rotate(-2deg);
-  box-shadow: 0 8px 32px 0 rgba(44,62,80,0.18), 0 1.5px 8px 0 rgba(44,62,80,0.10);
+  box-shadow: 0 8px 32px 0 var(--shadow-medium), 0 1.5px 8px 0 var(--shadow-light);
   border-radius: 50%;
-  outline: 6px solid rgba(44,62,80,0.10);
+  outline: 6px solid var(--shadow-light);
 }
+
 .kategori-nama {
   font-size: 2rem;
   font-weight: 700;
   margin-bottom: 10px;
-  color: #222;
+  color: var(--text-primary);
   text-align: center;
 }
+
 .kategori-desc {
   font-size: 1.15rem;
-  color: #444;
+  color: var(--text-secondary);
   margin-top: 0;
   margin-bottom: 0;
   line-height: 1.7;
@@ -499,443 +454,300 @@ html {
 
 /* PTSD - Warna Orange-Kuning Pastel untuk Trauma */
 .bg-ptsd {
-  background: linear-gradient(135deg, #ffd4a3 0%, #ffe0b3 50%, #fff2d4 100%);
+  background: linear-gradient(135deg, #fff3e0 0%, #fff8e1 50%, #fffde7 100%);
 }
 
-
-.kategori-wave-top-sharp {
-  width: 100vw;
-  position: absolute;
-  top: 0;
-  left: 0;
-  z-index: 1;
-  line-height: 0;
-  pointer-events: none;
-}
-/* Background untuk kategori konten menyesuaikan dengan warna section yang pastel */
-.kategori-section.bg-depresi .kategori-content {
-  background: linear-gradient(135deg, rgba(212, 227, 255, 0.9) 0%, rgba(232, 212, 255, 0.9) 100%);
-  border: none;
-  box-shadow: 0 4px 20px rgba(212, 227, 255, 0.10);
+/* OCD - Warna Hijau-Biru Pastel untuk Obsesi/Kompulsi */
+.bg-ocd {
+  background: linear-gradient(135deg, #e8f5e8 0%, #f1f8e9 50%, #f9fbe7 100%);
 }
 
-.kategori-section.bg-anxiety .kategori-content {
-  background: linear-gradient(135deg, rgba(232, 212, 240, 0.9) 0%, rgba(240, 212, 255, 0.9) 100%);
-  border: none;
-  box-shadow: 0 4px 20px rgba(232, 212, 240, 0.10);
+/* Schizophrenia - Warna Merah-Pink Pastel untuk Gangguan Realita */
+.bg-schizophrenia {
+  background: linear-gradient(135deg, #fce4ec 0%, #f3e5f5 50%, #e8eaf6 100%);
 }
 
-.kategori-section.bg-ptsd .kategori-content {
-  background: linear-gradient(135deg, rgba(255, 212, 163, 0.9) 0%, rgba(255, 224, 179, 0.9) 50%, rgba(255, 242, 212, 0.9) 100%);
-  border: none;
-  box-shadow: 0 4px 20px rgba(255, 212, 163, 0.10);
+/* Anxiety - Warna Kuning-Orange Pastel untuk Kecemasan */
+.bg-anxiety-disorder {
+  background: linear-gradient(135deg, #fff8e1 0%, #fff3e0 50%, #fce4ec 100%);
 }
 
-/* Hover effects untuk setiap kategori yang pastel */
-.kategori-section.bg-depresi .kategori-content:hover {
-  background: linear-gradient(135deg, rgba(212, 227, 255, 0.95) 0%, rgba(232, 212, 255, 0.95) 100%);
-  border: none;
-  box-shadow: 0 8px 30px rgba(212, 227, 255, 0.15);
-  transform: scale(1.02);
+.ruang-artikel-title-container {
+  text-align: center;
+  padding: 60px 0 40px 0;
+  background-color: var(--bg-tertiary);
 }
 
-.kategori-section.bg-anxiety .kategori-content:hover {
-  background: linear-gradient(135deg, rgba(232, 212, 240, 0.95) 0%, rgba(240, 212, 255, 0.95) 100%);
-  border: none;
-  box-shadow: 0 8px 30px rgba(232, 212, 240, 0.15);
-  transform: scale(1.02);
+.ruang-artikel-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0;
 }
-
-.kategori-section.bg-ptsd .kategori-content:hover {
-  background: linear-gradient(135deg, rgba(255, 212, 163, 0.95) 0%, rgba(255, 224, 179, 0.95) 50%, rgba(255, 242, 212, 0.95) 100%);
-  border: none;
-  box-shadow: 0 8px 30px rgba(255, 212, 163, 0.15);
-  transform: scale(1.02);
-}
-
-/* Fallback untuk kategori lain */
-.kategori-section:nth-child(1) .kategori-content { border-color: #ec744a; }
-.kategori-section:nth-child(2) .kategori-content { border-color: #a78bfa; }
-.kategori-section:nth-child(3) .kategori-content { border-color: #4db6ac; }
-.kategori-section:nth-child(4) .kategori-content { border-color: #fbbf24; }
-.kategori-section:nth-child(5) .kategori-content { border-color: #ef4444; }
-.kategori-section:nth-child(6) .kategori-content { border-color: #8b5cf6; }
-.kategori-section:nth-child(7) .kategori-content { border-color: #f87171; }
-.kategori-section:nth-child(8) .kategori-content { border-color: #81c784; }
-@media (max-width: 900px) {
-  .edukasi-container {
-    padding: 16px 0 24px 0;
-    max-width: 100%;
-  }
-  .edukasi-title {
-    font-size: 1.3rem;
-    margin-top: 60px;
-    margin-bottom: 8px;
-  }
-  .kategori-section {
-    padding: 18px 0 12px 0;
-    min-height: 220px;
-  }
-  .kategori-content {
-    padding: 16px 8px 12px 8px;
-    border-radius: 16px;
-    min-height: 120px;
-    font-size: 0.95rem;
-  }
-  
-  /* Mempertahankan warna background di mobile yang pastel */
-  .kategori-section.bg-depresi .kategori-content {
-    background: linear-gradient(135deg, rgba(212, 227, 255, 0.9) 0%, rgba(232, 212, 255, 0.9) 100%);
-    border: none;
-    box-shadow: 0 2px 10px rgba(212, 227, 255, 0.10);
-  }
-  
-  .kategori-section.bg-anxiety .kategori-content {
-    background: linear-gradient(135deg, rgba(232, 212, 240, 0.9) 0%, rgba(240, 212, 255, 0.9) 100%);
-    border: none;
-    box-shadow: 0 2px 10px rgba(232, 212, 240, 0.10);
-  }
-  
-  .kategori-section.bg-ptsd .kategori-content {
-    background: linear-gradient(135deg, rgba(255, 212, 163, 0.9) 0%, rgba(255, 224, 179, 0.9) 50%, rgba(255, 242, 212, 0.9) 100%);
-    border: none;
-    box-shadow: 0 2px 10px rgba(255, 212, 163, 0.10);
-  }
-  .kategori-bg-title {
-    font-size: 1.1rem;
-    margin-top: 16px;
-    margin-bottom: 6px;
-  }
-  .kategori-img-wrapper {
-    width: 90px;
-    height: 90px;
-    margin: 10px auto 8px auto;
-  }
-  .kategori-desc {
-    font-size: 0.95rem;
-    max-width: 98vw;
-  }
-  .edukasi-map-section {
-    padding: 12px 4px 12px 4px;
-    border-radius: 12px;
-    margin: 24px 4px 0 4px;
-    max-width: 100vw;
-  }
-  .map-title {
-    font-size: 1.05rem;
-    margin-bottom: 10px;
-  }
-  .map-container {
-    border-radius: 8px;
-  }
-}
-
 
 .journal-page-layout {
   display: flex;
+  gap: 40px;
   max-width: 1200px;
   margin: 0 auto;
-  padding: 0 40px 40px 40px;
-  gap: 32px;
-  position: relative;
-  z-index: 2;
+  padding: 0 24px 80px 24px;
 }
-.ruang-artikel-title-container {
-  padding: 32px 0 80px 0;
-  text-align: center;
-  scroll-margin-top: 20px; /* Add scroll margin for better positioning */
-}
-.ruang-artikel-title {
-  margin-top: 120px;
-  text-align: center;
-  font-size: 2.2rem;
-  font-weight: 800;
-  margin-bottom: 2px;
-  color: #4e4e4e;
-  letter-spacing: 1px;
-  background: none;
-  -webkit-background-clip: unset;
-  -webkit-text-fill-color: unset;
-  background-clip: unset;
-}
+
 .forum-sidebar {
-  flex: 0 0 220px;
-  background: #f8f3fd;
-  border-radius: 18px;
-  padding: 32px 18px 24px 18px;
-  box-shadow: 0 2px 8px rgba(19, 18, 24, 0.178);
+  flex: 0 0 280px;
   display: flex;
   flex-direction: column;
   align-items: center;
   min-width: 180px;
-  margin-top: 40px;
+  margin-top: 80px;
   height: fit-content;
+  background-color: var(--card-bg);
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: 0 2px 12px var(--shadow-light);
 }
-.sidebar-profile {
-  margin-bottom: 18px;
-}
-.sidebar-avatar {
-  width: 60px;
-  height: 60px;
-  border-radius: 50%;
-  background: #e5e7eb;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 2px 8px rgba(160, 130, 255, 0.10);
-}
+
 .sidebar-categories h3 {
   font-size: 1.1rem;
   font-weight: 600;
   margin-bottom: 10px;
-  color: #6a4c9b;
+  color: var(--text-primary);
 }
+
 .sidebar-categories ul {
   list-style: none;
   padding: 0;
   margin: 0;
 }
+
 .sidebar-categories li {
   padding: 8px 14px;
   border-radius: 8px;
   margin-bottom: 6px;
   font-size: 1rem;
-  color: #6a4c9b;
+  color: var(--text-secondary);
   cursor: pointer;
   transition: background 0.2s, color 0.2s;
 }
+
 .sidebar-categories li.active, .sidebar-categories li:hover {
-  background: #e5e0f7;
-  color: #8b5cf6;
+  background: var(--bg-tertiary);
+  color: var(--accent-purple);
 }
+
 .forum-content {
   flex: 1 1 0%;
   min-width: 0;
-  margin-top: 40px;
+  margin-top: 80px;
 }
+
 .forum-search-row {
   display: flex;
-  align-items: relative;
+  align-items: center;
   gap: 10px;
   margin-bottom: 28px;
 }
+
 .forum-search-box {
   flex: 1;
   position: relative;
   padding-right: 70px;
 }
+
 .forum-search-box input {
   width: 100%;
-  padding: 18px 56px 18px 24px;
-  border-radius: 18px;
-  border: 2px solid #b6a7d6;
-  background: #fff;
-  font-size: 1.13rem;
-  color: #6a4c9b;
+  padding: 16px 48px 16px 20px;
+  border-radius: 14px;
+  border: none;
+  background: var(--input-bg);
+  font-size: 1.05rem;
+  color: var(--text-primary);
   outline: none;
-  box-shadow: 0 2px 8px rgba(160, 130, 255, 0.08);
-  font-weight: 500;
-  transition: border 0.2s, box-shadow 0.2s;
+  box-shadow: 0 1px 4px var(--shadow-light);
 }
-.forum-search-box input:focus {
-  border: 2px solid #8b5cf6;
-  box-shadow: 0 4px 16px rgba(160, 130, 255, 0.13);
-}
+
 .search-icon {
   position: absolute;
-  right: 22px;
+  right: 18px;
   top: 50%;
   transform: translateY(-50%);
   pointer-events: none;
-  font-size: 1.7rem;
-  color: #8b5cf6;
-  display: flex;
-  align-items: center;
 }
+
 .forum-questions-list {
   display: flex;
   flex-direction: column;
   gap: 26px;
 }
+
 .forum-question-card {
-  background: #fff;
+  background: var(--card-bg);
   border-radius: 16px;
-  box-shadow: 0 2px 12px rgba(160, 130, 255, 0.09);
+  box-shadow: 0 2px 12px var(--shadow-light);
   padding: 26px 28px 20px 28px;
   display: flex;
   flex-direction: column;
   gap: 10px;
   transition: box-shadow 0.2s, transform 0.2s;
-  border: 1px solid #f3f0f7;
+  border: 1px solid var(--border-color);
 }
+
 .forum-question-card:hover {
-  box-shadow: 0 8px 24px rgba(160, 130, 255, 0.16);
+  box-shadow: 0 8px 24px var(--shadow-medium);
   transform: translateY(-2px) scale(1.01);
 }
+
+.question-body {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
 .question-title {
   font-weight: 700;
-  font-size: 1.13rem;
-  margin-bottom: 2px;
-  color: #222;
+  font-size: 1.18rem;
+  margin-bottom: 8px;
+  color: var(--text-primary);
 }
+
 .question-desc {
-  font-size: 1rem;
-  color: #6b7280;
-  margin-bottom: 2px;
+  font-size: 1.01rem;
+  color: var(--text-secondary);
+  margin-bottom: 12px;
+  white-space: pre-line;
 }
+
+.baca-selengkapnya-btn {
+  color: var(--accent-blue);
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 0.95rem;
+  transition: color 0.2s;
+}
+
+.baca-selengkapnya-btn:hover {
+  color: var(--accent-blue);
+  text-decoration: underline;
+}
+
+.baca-selengkapnya-btn.disabled {
+  color: var(--text-muted);
+  cursor: not-allowed;
+}
+
 .question-footer {
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 12px;
   margin-top: 4px;
 }
+
 .question-tag {
-  background: #e5e0f7;
-  color: #8b5cf6;
-  font-size: 0.89rem;
+  background: var(--bg-tertiary);
+  color: var(--accent-purple);
+  font-size: 0.92rem;
   padding: 4px 14px;
   border-radius: 8px;
   font-weight: 600;
+  margin-bottom: 18px;
+  display: inline-block;
 }
-.journal-empty {
-  text-align: center;
-  color: #b0a9d6;
-  font-size: 1.01rem;
-  margin-top: 18px;
-}
+
 .forum-featured-links {
-  flex: 0 0 220px;
-  background: #f7f5f9;
-  border-radius: 18px;
-  padding: 28px 18px;
-  box-shadow: 0 2px 8px rgba(160, 130, 255, 0.07);
-  margin-top: 40px;
-  min-width: 180px;
+  flex: 0 0 200px;
+  background-color: var(--card-bg);
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: 0 2px 12px var(--shadow-light);
+  margin-top: 80px;
   height: fit-content;
-  align-self: flex-start;
 }
+
 .forum-featured-links h4 {
   font-size: 1.1rem;
   font-weight: 600;
-  color: #6a4c9b;
   margin-bottom: 10px;
+  color: var(--text-primary);
 }
+
 .forum-featured-links ul {
   list-style: none;
   padding: 0;
   margin: 0;
 }
+
 .forum-featured-links li {
   margin-bottom: 10px;
 }
+
 .forum-featured-links a {
-  color: #3b82f6;
+  color: var(--accent-blue);
   text-decoration: none;
-  font-size: 1.01rem;
-  transition: color 0.2s, transform 0.2s;
-  display: inline-block;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  transition: color 0.2s;
   cursor: pointer;
 }
 
 .forum-featured-links a:hover {
-  color: #1d4ed8;
-  transform: translateX(2px);
+  color: var(--accent-blue);
+  text-decoration: underline;
 }
 
-.forum-featured-links a:active {
-  transform: translateX(1px);
-}
-.baca-selengkapnya-btn {
-  background-color: #6A4C9B;
-  color: white;
-  border: none;
-  padding: 8px 16px;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 0.9rem;
-  text-decoration: none;
-  display: inline-block;
-  margin-top: 8px;
-  transition: background-color 0.3s;
+.journal-empty {
+  text-align: center;
+  padding: 40px;
+  color: var(--text-secondary);
+  font-size: 1.1rem;
 }
 
-.baca-selengkapnya-btn:hover {
-  background-color: #5a3c8b;
+.dropdown-categories {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  background: var(--input-bg);
+  color: var(--text-primary);
+  font-size: 0.95rem;
+  margin-bottom: 16px;
 }
 
-.baca-selengkapnya-btn.disabled {
-  background-color: #ccc;
-  cursor: not-allowed;
-  color: #666;
-}
-
-.baca-selengkapnya-btn.disabled:hover {
-  background-color: #ccc;
-}
-@media (max-width: 1100px) {
+@media (max-width: 900px) {
   .journal-page-layout {
     flex-direction: column;
-    padding: 0 16px 40px 16px;
-    gap: 0;
+    gap: 20px;
   }
+  
   .forum-sidebar, .forum-featured-links {
-    margin-bottom: 24px;
-    margin-top: 0;
-    flex: unset;
-    min-width: 0;
-    width: 100%;
-    align-self: unset;
+    order: 2;
+    margin-top: 20px;
   }
-  .forum-featured-links {
-    margin-top: 24px;
+  
+  .forum-content {
+    order: 1;
+    margin-top: 20px;
   }
-}
-@media (max-width: 700px) {
-  .journal-page-layout {
-    padding: 0 4px 24px 4px;
+  
+  .edukasi-title {
+    font-size: 2rem;
   }
-  .ruang-artikel-title {
-    font-size: 1.8rem;
-    margin-top: 80px;
-    padding: 0 16px;
+  
+  .kategori-content {
+    min-height: 200px;
+    padding: 20px 16px 16px 16px;
   }
-  .ruang-artikel-title-container {
-    padding: 24px 0 40px 0;
+  
+  .kategori-img-wrapper {
+    width: 200px;
+    height: 200px;
   }
-  .forum-sidebar, .forum-featured-links {
-    padding: 16px 8px;
+  
+  .kategori-bg-title {
+    font-size: 1.5rem;
   }
-  .forum-question-card {
-    padding: 14px 8px 12px 8px;
-  }
-  .forum-search-row {
-    flex-direction: column;
-    gap: 10px;
-  }
-  .forum-featured-links {
-    margin-top: 12px;
-  }
-  .sidebar-categories ul {
-    display: none !important;
-  }
-  .dropdown-categories {
-    display: block !important;
-    width: 100%;
-    padding: 7px 10px;
-    border-radius: 8px;
-    border: 1px solid #e5e7eb;
-    font-size: 0.95rem;
-    margin-bottom: 8px;
-    background: #faf7f3;
-    color: #6a4c9b;
-  }
-}
-@media (min-width: 701px) {
-  .dropdown-categories {
-    display: none !important;
-  }
-  .sidebar-categories ul {
-    display: block !important;
+  
+  .kategori-desc {
+    font-size: 1rem;
   }
 }
 </style>

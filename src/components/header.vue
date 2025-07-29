@@ -96,10 +96,10 @@ export default {
   left: 0;
   width: 100%;
   z-index: 1000;
-  background-color: #faf7f3;
+  background-color: var(--bg-tertiary);
   padding: 1rem 0;
-  color: #333;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  color: var(--text-primary);
+  box-shadow: 0 2px 8px var(--shadow-light);
   display: flex;
   justify-content: center;
 }
@@ -121,7 +121,7 @@ export default {
   gap: 2.5rem;
 }
 .main-nav a {
-  color: #555;
+  color: var(--text-secondary);
   text-decoration: none;
   font-weight: 500;
   padding-bottom: 5px;
@@ -129,12 +129,12 @@ export default {
   border-bottom: 2px solid transparent;
 }
 .main-nav a:hover {
-  color: #6A4C9B;
+  color: var(--accent-purple);
 }
 .main-nav a.router-link-exact-active {
-  color: #6A4C9B;
+  color: var(--accent-purple);
   font-weight: 600;
-  border-bottom-color: #6A4C9B;
+  border-bottom-color: var(--accent-purple);
 }
 @media (max-width: 900px) {
   .main-header {

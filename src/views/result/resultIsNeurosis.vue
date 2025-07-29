@@ -297,13 +297,13 @@ export default {
 
 <style scoped>
 .result-page {
-  background-color: #fdfcfa;
+  background-color: var(--bg-primary);
   font-family: 'Inter', sans-serif;
 }
 
 /* Hero Section */
 .result-hero {
-  background: linear-gradient(120deg, #a18cd1 0%, #fbc2eb 100%); /* Gradient purple to pink */
+  background: linear-gradient(120deg, #fbbf24 0%, #f97316 100%);
   color: white;
   padding: 80px 24px;
   position: relative;
@@ -381,7 +381,7 @@ export default {
   overflow: hidden;
 }
 .progress-bar {
-  background: #EF4444; /* Red color */
+  background: #f97316;
   height: 100%;
   border-radius: 50px;
   transition: width 0.8s ease-in-out;
@@ -400,7 +400,10 @@ export default {
 }
 
 /* Details Section */
-.details-section { padding: 80px 24px; }
+.details-section { 
+  padding: 80px 24px; 
+  background-color: var(--bg-primary);
+}
 .details-container {
   max-width: 1100px;
   margin: 0 auto;
@@ -416,17 +419,17 @@ export default {
 .details-illustration img { width: 100%; }
 .details-text h3 {
   font-size: 1.8rem;
-  color: #333;
+  color: var(--text-primary);
   margin-bottom: 8px;
 }
 .details-text h4 {
   font-size: 1.2rem;
-  color: #555;
+  color: var(--text-secondary);
   margin-bottom: 24px;
   font-weight: 500;
 }
 .details-text p {
-  color: #555;
+  color: var(--text-secondary);
   line-height: 1.8;
   white-space: pre-line; /* To render placeholder lines */
 }
@@ -438,7 +441,7 @@ export default {
 }
 
 .re-test-button {
-  background-color: #EC744A;
+  background-color: var(--button-primary);
   color: white;
   padding: 12px 32px;
   border-radius: 50px;
@@ -450,12 +453,12 @@ export default {
 }
 
 .re-test-button:hover {
-  background-color: #d9633a;
+  background-color: var(--button-hover);
 }
 
 /* Articles Section */
 .articles-section {
-  background-color: #faf7f3;
+  background-color: var(--bg-tertiary);
   padding: 80px 24px;
 }
 .articles-container {
@@ -465,10 +468,10 @@ export default {
 }
 .articles-container h3 {
   font-size: 1.8rem;
-  color: #333;
+  color: var(--text-primary);
 }
 .article-subtitle {
-  color: #777;
+  color: var(--text-muted);
   margin-bottom: 40px;
 }
 .article-cards {
@@ -482,12 +485,12 @@ export default {
   flex: 1;
   min-width: 280px;
   max-width: 320px;
-  background: white;
-  border: 1px solid #eee;
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
   border-radius: 12px;
   padding: 20px;
   text-align: left;
-  box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+  box-shadow: 0 4px 15px var(--shadow-light);
   transition: transform 0.3s, box-shadow 0.3s;
   display: flex;
   flex-direction: column;
@@ -496,15 +499,16 @@ export default {
 }
 .article-card:hover {
   transform: translateY(-5px);
-  box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+  box-shadow: 0 8px 25px var(--shadow-medium);
 }
 .article-card h4 {
   font-size: 1.1rem;
   margin: 0 0 8px 0;
+  color: var(--text-primary);
 }
 .article-card p {
   font-size: 0.9rem;
-  color: #666;
+  color: var(--text-light);
   margin-bottom: 20px;
   flex-grow: 1;
 }
@@ -514,14 +518,14 @@ export default {
   align-items: center;
   margin-top: auto;
   padding-top: 16px;
-  border-top: 1px solid #eee;
+  border-top: 1px solid var(--border-color);
 }
 .author {
   display: flex;
   align-items: center;
   gap: 8px;
   font-size: 0.8rem;
-  color: #888;
+  color: var(--text-muted);
 }
 .author img {
   width: 24px;
@@ -530,38 +534,34 @@ export default {
 }
 .read-more-link {
   font-size: 0.9rem;
-  color: #EC744A;
+  color: var(--accent-blue);
   text-decoration: none;
   font-weight: 600;
-  transition: color 0.3s ease;
 }
 .read-more-link:hover {
-  color: #d9633a;
+  text-decoration: underline;
 }
 
 .articles-loading, .articles-error, .articles-empty {
   padding: 20px;
-  background-color: #f0f0f0;
-  border-radius: 10px;
-  margin-bottom: 30px;
-}
-.articles-loading p, .articles-error p, .articles-empty p {
-  color: #555;
+  color: var(--text-secondary);
   font-size: 1rem;
+  text-align: center;
+  margin-bottom: 20px;
 }
 
 /* Tambahkan style agar info-block dan neurosis-info-container tampil menarik dan konsisten */
 .neurosis-info-container {
   margin-top: 32px;
-  background: #fff;
+  background: var(--card-bg);
   border-radius: 18px;
-  box-shadow: 0 4px 24px rgba(106,76,155,0.08);
+  box-shadow: 0 4px 24px var(--shadow-heavy);
   padding: 28px 24px;
 }
 .info-title {
   font-size: 2rem;
   font-weight: 700;
-  color: #a18cd1;
+  color: var(--accent-orange);
   margin-bottom: 24px;
   text-align: center;
 }
@@ -569,13 +569,13 @@ export default {
   margin-bottom: 24px;
 }
 .info-block h4 {
-  color: #6A4C9B;
+  color: var(--text-primary);
   font-size: 1.1rem;
   margin-bottom: 10px;
   font-weight: 700;
 }
 .info-block p, .info-block ul {
-  color: #333;
+  color: var(--text-secondary);
   font-size: 1.05rem;
   line-height: 1.7;
   margin-bottom: 8px;
@@ -586,7 +586,7 @@ export default {
 }
 .info-block li {
   margin-bottom: 4px;
-  color: #333;
+  color: var(--text-secondary);
   font-size: 1.05rem;
   line-height: 1.7;
 }

@@ -1,13 +1,175 @@
 /* Reset and base styles */
+:root {
+  /* Light mode variables (default) */
+  --bg-primary: #F9F9F9;
+  --bg-secondary: #ffffff;
+  --bg-tertiary: #faf7f3;
+  --text-primary: #333;
+  --text-secondary: #555;
+  --text-muted: #777;
+  --text-light: #666;
+  --border-color: #eee;
+  --shadow-light: rgba(0,0,0,0.05);
+  --shadow-medium: rgba(0,0,0,0.08);
+  --shadow-heavy: rgba(44,62,80,0.08);
+  --card-bg: #ffffff;
+  --input-bg: #ffffff;
+  --button-primary: #EC744A;
+  --button-hover: #d9633a;
+  --accent-blue: #3498db;
+  --accent-purple: #9b59b6;
+  --accent-orange: #e67e22;
+  --accent-red: #e74c3c;
+  --success-color: #27ae60;
+  --warning-color: #f39c12;
+  --error-color: #e74c3c;
+}
+
+/* Dark mode variables */
+[data-theme="dark"] {
+  --bg-primary: #1a1a1a;
+  --bg-secondary: #2d2d2d;
+  --bg-tertiary: #252525;
+  --text-primary: #ffffff;
+  --text-secondary: #e0e0e0;
+  --text-muted: #b0b0b0;
+  --text-light: #cccccc;
+  --border-color: #404040;
+  --shadow-light: rgba(0,0,0,0.3);
+  --shadow-medium: rgba(0,0,0,0.4);
+  --shadow-heavy: rgba(0,0,0,0.5);
+  --card-bg: #2d2d2d;
+  --input-bg: #404040;
+  --button-primary: #EC744A;
+  --button-hover: #d9633a;
+  --accent-blue: #3498db;
+  --accent-purple: #9b59b6;
+  --accent-orange: #e67e22;
+  --accent-red: #e74c3c;
+  --success-color: #27ae60;
+  --warning-color: #f39c12;
+  --error-color: #e74c3c;
+}
+
 body {
   margin: 0;
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-color: #F9F9F9;
-  color: #333;
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 #app {
   width: 100%;
 }
+
+/* Dark mode toggle button styles */
+.dark-mode-toggle {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 1000;
+  background: var(--card-bg);
+  border: 2px solid var(--border-color);
+  border-radius: 50px;
+  padding: 8px 12px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  color: var(--text-primary);
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 10px var(--shadow-light);
+}
+
+.dark-mode-toggle:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px var(--shadow-medium);
+}
+
+.dark-mode-toggle .icon {
+  width: 20px;
+  height: 20px;
+  transition: transform 0.3s ease;
+}
+
+.dark-mode-toggle:hover .icon {
+  transform: rotate(15deg);
+}
+
+/* Global dark mode styles for common elements */
+[data-theme="dark"] .home-page-container,
+[data-theme="dark"] .result-page,
+[data-theme="dark"] .login-page,
+[data-theme="dark"] .register-page,
+[data-theme="dark"] .profile-page,
+[data-theme="dark"] .forum-page,
+[data-theme="dark"] .tes-diri-page,
+[data-theme="dark"] .pojok-edukasi-page {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+}
+
+[data-theme="dark"] .card,
+[data-theme="dark"] .article-card,
+[data-theme="dark"] .diagnosis-card,
+[data-theme="dark"] .info-block,
+[data-theme="dark"] .ptsd-info-container {
+  background-color: var(--card-bg);
+  border-color: var(--border-color);
+  color: var(--text-primary);
+}
+
+[data-theme="dark"] h1,
+[data-theme="dark"] h2,
+[data-theme="dark"] h3,
+[data-theme="dark"] h4,
+[data-theme="dark"] h5,
+[data-theme="dark"] h6 {
+  color: var(--text-primary);
+}
+
+[data-theme="dark"] p {
+  color: var(--text-secondary);
+}
+
+[data-theme="dark"] .text-muted,
+[data-theme="dark"] .article-subtitle {
+  color: var(--text-muted);
+}
+
+[data-theme="dark"] input,
+[data-theme="dark"] textarea,
+[data-theme="dark"] select {
+  background-color: var(--input-bg);
+  color: var(--text-primary);
+  border-color: var(--border-color);
+}
+
+[data-theme="dark"] .btn,
+[data-theme="dark"] button {
+  background-color: var(--button-primary);
+  color: white;
+}
+
+[data-theme="dark"] .btn:hover,
+[data-theme="dark"] button:hover {
+  background-color: var(--button-hover);
+}
+
+[data-theme="dark"] .details-section {
+  background-color: var(--bg-primary);
+}
+
+[data-theme="dark"] .problems-section {
+  background-color: var(--bg-tertiary);
+}
+
+[data-theme="dark"] .test-yourself-section {
+  background-color: var(--bg-primary);
+}
+
+/* Responsive design */

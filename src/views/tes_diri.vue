@@ -333,6 +333,7 @@ export default {
 .tes-diri-container {
   font-family: 'Inter', Arial, sans-serif;
   min-height: 100vh;
+  background-color: var(--bg-primary);
 }
 .hero {
   background: linear-gradient(45deg, #725c96 30%, #c09df7 100%);
@@ -379,7 +380,7 @@ export default {
 
 
 .question-section, .results-section {
-  background: #faf7f3;
+  background: var(--bg-tertiary);
   margin-top: -32px;
   padding: 50px 0 60px 0;
   position: relative;
@@ -388,7 +389,7 @@ export default {
 .progress-indicator {
   font-size: 1rem;
   font-weight: 500;
-  color: #888;
+  color: var(--text-muted);
   text-align: center;
   margin-bottom: 24px;
 }
@@ -428,11 +429,11 @@ export default {
   position: fixed;
   top: 20px;
   right: 20px;
-  background: #4CAF50;
+  background: var(--success-color);
   color: white;
   padding: 16px 20px;
   border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  box-shadow: 0 4px 12px var(--shadow-medium);
   z-index: 1000;
   animation: slideInRight 0.3s ease-out;
 }
@@ -490,7 +491,7 @@ export default {
   font-size: 1.1rem;
   cursor: pointer;
   transition: background-color 0.3s, transform 0.2s;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  box-shadow: 0 4px 12px var(--shadow-medium);
 }
 
 .submit-button:hover {
@@ -498,10 +499,9 @@ export default {
   transform: translateY(-2px);
 }
 .submit-button:disabled {
-  background-color: #cccccc;
+  background-color: #ccc;
   cursor: not-allowed;
   transform: none;
-  box-shadow: none;
 }
 
 /* --- New Styles for Results --- */

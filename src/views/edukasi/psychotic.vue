@@ -75,204 +75,254 @@ export default {
 </script>
 
 <style scoped>
+/* Light mode styles */
 .edukasi-detail-bg {
-  background: #faf7f3;
+  background-color: #fdfcfa;
   min-height: 100vh;
+  font-family: 'Inter', sans-serif;
 }
+
 .edukasi-detail-header-bg-anxiety {
-  width: 100vw;
-  min-width: 100vw;
-  background: linear-gradient(135deg, #f7f3c7 0%, #f7cac9 100%);
-  margin-left: 50%;
-  transform: translateX(-50%);
-  box-sizing: border-box;
-  padding: 0;
-  min-height: 420px;
+  background: linear-gradient(135deg, #8b5cf6 0%, #a78bfa 100%);
+  padding: 80px 0;
+  color: white;
 }
+
 .edukasi-detail-header-center {
   max-width: 1200px;
-  margin: 96px auto 0 auto;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 64px 48px 64px 48px;
-  box-sizing: border-box;
-  min-height: 340px;
-  gap: 32px;
-  border-radius: 0;
-  background: transparent;
-}
-.edukasi-detail-header-content {
-  flex: 1 1 0;
-  max-width: 520px;
-  padding: 0;
-  z-index: 2;
-  text-align: left;
-}
-.edukasi-detail-header-content h1 {
-  font-size: 3rem;
-  color: #b96a6a;
-  margin-bottom: 16px;
-  font-weight: 800;
-  letter-spacing: 0.5px;
-}
-.edukasi-detail-header-content p {
-  font-size: 1.35rem;
-  color: #7a5a5a;
-  margin-bottom: 0;
-  line-height: 1.7;
-}
-.edukasi-detail-header-img {
-  flex: 0 0 220px;
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  height: 220px;
-  margin: 0;
-  z-index: 2;
-}
-.edukasi-detail-header-img img {
-  width: 340px;
-  height: 340px;
-  object-fit: contain;
-  position: static;
-}
-.edukasi-detail-content {
-  max-width: 1100px;
   margin: 0 auto;
-  background: none;
-  border-radius: 0;
-  box-shadow: none;
-  padding: 40px 32px 32px 32px;
-  position: relative;
-  z-index: 3;
+  padding: 0 24px;
+  display: flex;
+  align-items: center;
+  gap: 40px;
 }
-.edukasi-detail-content h2 {
-  color: #b96a6a;
-  font-size: 1.6rem;
-  margin-bottom: 8px;
+
+.edukasi-detail-header-content h1 {
+  font-size: 2.5rem;
   font-weight: 700;
+  margin-bottom: 16px;
+  color: white;
 }
-.edukasi-detail-content hr {
-  border: none;
-  border-top: 2px solid #e0e0e0;
+
+.edukasi-detail-header-content p {
+  font-size: 1.1rem;
+  line-height: 1.6;
+  opacity: 0.9;
+  color: white;
+}
+
+.edukasi-detail-header-img img {
+  max-width: 300px;
+  height: auto;
+}
+
+.edukasi-detail-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 80px 24px;
+  background-color: #fdfcfa;
+}
+
+.edukasi-detail-content h2 {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #333;
   margin-bottom: 24px;
 }
+
+.edukasi-detail-content h3 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #4B4B9F;
+  margin-bottom: 16px;
+}
+
+.edukasi-detail-desc {
+  color: #555;
+}
+
 .edukasi-detail-desc p {
-  font-size: 1.08rem;
+  font-size: 1.1rem;
+  line-height: 1.8;
+  color: #555;
+  margin-bottom: 16px;
+}
+
+.edukasi-detail-desc b {
   color: #333;
-  margin-bottom: 18px;
-  line-height: 1.7;
+  font-weight: 600;
 }
+
 .articles-section {
-  margin-top: 56px;
-  margin-bottom: 32px;
+  background-color: #faf7f3;
+  padding: 80px 24px;
 }
+
 .articles-container {
-  max-width: 1100px;
+  max-width: 1200px;
   margin: 0 auto;
-  padding: 0 16px;
 }
+
 .article-cards {
-  display: flex;
-  gap: 18px;
-  flex-wrap: wrap;
-  justify-content: center;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 24px;
 }
+
 .article-card {
-  background: #fff;
-  border-radius: 16px;
-  box-shadow: 0 4px 24px rgba(106,76,155,0.10), 0 1.5px 6px rgba(0,0,0,0.06);
-  padding: 18px 12px 14px 12px;
-  width: 30%;
-  min-width: 220px;
-  max-width: 320px;
-  min-height: 140px;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  margin-bottom: 12px;
-  transition: box-shadow 0.25s, transform 0.25s;
-  border: 1.5px solid #f3f0fa;
-  font-size: 0.97rem;
-}
-.article-card:hover {
-  box-shadow: 0 8px 32px rgba(106,76,155,0.18), 0 2px 8px rgba(0,0,0,0.10);
-  transform: translateY(-6px) scale(1.03);
-}
-.article-card h4 {
-  font-size: 1.05rem;
-  font-weight: 700;
-  margin-bottom: 8px;
-}
-.article-card p {
-  font-size: 0.97rem;
-  margin-bottom: 8px;
-}
-.article-card .author {
-  font-size: 0.98rem;
-  color: #b96a6a;
-  font-weight: 600;
-  margin-top: auto;
+  background: white;
+  border: 1px solid #eee;
+  border-radius: 12px;
+  padding: 20px;
   text-align: left;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+  transition: transform 0.3s, box-shadow 0.3s;
 }
-.baca-selengkapnya-btn {
-  background: none;
-  color: #b96a6a;
-  border: none;
+
+.article-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+}
+
+.article-card h4 {
+  font-size: 1.25rem;
   font-weight: 600;
-  font-size: 1.01rem;
+  color: #333;
+  margin-bottom: 12px;
+}
+
+.article-card p {
+  color: #555;
+  line-height: 1.6;
+  margin-bottom: 16px;
+}
+
+.baca-selengkapnya-btn {
+  background-color: #EC744A;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-size: 0.9rem;
   cursor: pointer;
-  padding: 0;
-  margin-bottom: 8px;
-  text-decoration: underline;
-  transition: color 0.2s;
+  transition: background-color 0.3s;
 }
+
 .baca-selengkapnya-btn:hover {
-  color: #222;
+  background-color: #d9633a;
 }
-@media (max-width: 900px) {
+
+.author {
+  margin-top: 12px;
+  font-size: 0.9rem;
+  color: #777;
+}
+
+/* Dark mode styles */
+[data-theme="dark"] .edukasi-detail-bg {
+  background-color: var(--bg-primary);
+}
+
+[data-theme="dark"] .edukasi-detail-header-bg-anxiety {
+  background: linear-gradient(135deg, #8b5cf6 0%, #a78bfa 100%);
+}
+
+[data-theme="dark"] .edukasi-detail-header-content h1 {
+  color: white;
+}
+
+[data-theme="dark"] .edukasi-detail-header-content p {
+  color: white;
+}
+
+[data-theme="dark"] .edukasi-detail-content {
+  background-color: var(--bg-primary);
+}
+
+[data-theme="dark"] .edukasi-detail-content h2 {
+  color: var(--text-primary);
+}
+
+[data-theme="dark"] .edukasi-detail-content h3 {
+  color: var(--accent-purple);
+}
+
+[data-theme="dark"] .edukasi-detail-desc {
+  color: var(--text-secondary);
+}
+
+[data-theme="dark"] .edukasi-detail-desc p {
+  color: var(--text-secondary);
+}
+
+[data-theme="dark"] .edukasi-detail-desc b {
+  color: var(--text-primary);
+}
+
+[data-theme="dark"] .articles-section {
+  background-color: var(--bg-tertiary);
+}
+
+[data-theme="dark"] .article-card {
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
+  box-shadow: 0 4px 15px var(--shadow-light);
+}
+
+[data-theme="dark"] .article-card h4 {
+  color: var(--text-primary);
+}
+
+[data-theme="dark"] .article-card p {
+  color: var(--text-secondary);
+}
+
+[data-theme="dark"] .baca-selengkapnya-btn {
+  background-color: var(--button-primary);
+  color: white;
+}
+
+[data-theme="dark"] .author {
+  color: var(--text-muted);
+}
+
+@media (max-width: 768px) {
   .edukasi-detail-header-center {
     flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    min-height: 220px;
-    height: auto;
-    padding: 36px 12px 24px 12px;
-    margin-top: 48px;
-    gap: 16px;
-    border-radius: 0;
-  }
-  .edukasi-detail-header-content {
-    padding: 0 8px 18px 8px;
-    max-width: 100%;
     text-align: center;
+    gap: 24px;
   }
-  .edukasi-detail-header-img {
-    margin: 0;
-    height: 200px;
-    justify-content: center;
+  
+  .edukasi-detail-header-content h1 {
+    font-size: 2rem;
   }
-  .edukasi-detail-header-img img {
-    width: 180px;
-    height: 180px;
+  
+  .edukasi-detail-header-content p {
+    font-size: 1rem;
   }
+  
   .edukasi-detail-content {
-    padding: 16px 6px 12px 6px;
-    max-width: 100%;
+    padding: 40px 16px;
   }
+  
+  .edukasi-detail-content h2 {
+    font-size: 1.5rem;
+  }
+  
+  .edukasi-detail-content h3 {
+    font-size: 1.25rem;
+  }
+  
+  .edukasi-detail-desc p {
+    font-size: 1rem;
+  }
+  
+  .articles-section {
+    padding: 40px 16px;
+  }
+  
   .article-cards {
-    flex-direction: column;
-    gap: 14px;
-    align-items: center;
-    justify-content: center;
-  }
-  .article-card {
-    width: 100%;
-    max-width: 340px;
-    min-width: 0;
-    min-height: 120px;
-    padding: 12px 8px 10px 8px;
+    grid-template-columns: 1fr;
   }
 }
 </style>

@@ -65,142 +65,157 @@ export default {
 </script>
 
 <style scoped>
+/* Light mode styles */
 .edukasi-detail-bg {
-  background: #faf7f3;
+  background-color: #fdfcfa;
   min-height: 100vh;
+  font-family: 'Inter', sans-serif;
 }
-/* HEADER FULL BLEED BACKGROUND */
+
 .edukasi-detail-header-bg {
-  width: 100vw;
-  min-width: 100vw;
-  background: linear-gradient(135deg, #cfd5f7 0%, #e0c3fc 100%);
-  margin-left: 50%;
-  transform: translateX(-50%);
-  box-sizing: border-box;
-  padding: 0;
-  min-height: 420px;
+  background: linear-gradient(135deg, #fbbf24 0%, #f97316 100%);
+  padding: 80px 0;
+  color: white;
 }
+
 .edukasi-detail-header-center {
   max-width: 1200px;
-  margin: 96px auto 0 auto;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 64px 48px 64px 48px;
-  box-sizing: border-box;
-  min-height: 340px;
-  gap: 32px;
-  border-radius: 0;
-  background: transparent;
-}
-.edukasi-detail-header-content {
-  flex: 1 1 0;
-  max-width: 520px;
-  padding: 0;
-  z-index: 2;
-  text-align: left;
-}
-.edukasi-detail-header-content h1 {
-  font-size: 3rem;
-  color: #4B4B9F;
-  margin-bottom: 16px;
-  font-weight: 800;
-  letter-spacing: 0.5px;
-}
-.edukasi-detail-header-content p {
-  font-size: 1.35rem;
-  color: #4a4a6a;
-  margin-bottom: 0;
-  line-height: 1.7;
-}
-.edukasi-detail-header-img {
-  flex: 0 0 220px;
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  height: 220px;
-  margin: 0;
-  z-index: 2;
-}
-.edukasi-detail-header-img img {
-  width: 340px;
-  height: 340px;
-  object-fit: contain;
-  position: static;
-}
-.edukasi-detail-content {
-  max-width: 1100px;
   margin: 0 auto;
-  background: none;
-  border-radius: 0;
-  box-shadow: none;
-  padding: 40px 32px 32px 32px;
-  position: relative;
-  z-index: 3;
+  padding: 0 24px;
+  display: flex;
+  align-items: center;
+  gap: 40px;
 }
-.edukasi-detail-content h2 {
-  color: #4B4B9F;
-  font-size: 1.6rem;
-  margin-bottom: 8px;
+
+.edukasi-detail-header-content h1 {
+  font-size: 2.5rem;
   font-weight: 700;
+  margin-bottom: 16px;
+  color: white;
 }
-.edukasi-detail-content hr {
-  border: none;
-  border-top: 2px solid #e0e0e0;
+
+.edukasi-detail-header-content p {
+  font-size: 1.1rem;
+  line-height: 1.6;
+  opacity: 0.9;
+  color: white;
+}
+
+.edukasi-detail-header-img img {
+  max-width: 300px;
+  height: auto;
+}
+
+.edukasi-detail-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 80px 24px;
+  background-color: #fdfcfa;
+}
+
+.edukasi-detail-content h2 {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #333;
   margin-bottom: 24px;
 }
-.edukasi-detail-desc p {
-  font-size: 1.08rem;
-  color: #333;
-  margin-bottom: 18px;
-  line-height: 1.7;
+
+.edukasi-detail-content h3 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #4B4B9F;
+  margin-bottom: 16px;
 }
 
+.edukasi-detail-desc {
+  color: #555;
+}
 
-@media (max-width: 900px) {
+.edukasi-detail-desc p {
+  font-size: 1.1rem;
+  line-height: 1.8;
+  color: #555;
+  margin-bottom: 16px;
+}
+
+.edukasi-detail-desc b {
+  color: #333;
+  font-weight: 600;
+}
+
+/* Dark mode styles */
+[data-theme="dark"] .edukasi-detail-bg {
+  background-color: var(--bg-primary);
+}
+
+[data-theme="dark"] .edukasi-detail-header-bg {
+  background: linear-gradient(135deg, #fbbf24 0%, #f97316 100%);
+}
+
+[data-theme="dark"] .edukasi-detail-header-content h1 {
+  color: white;
+}
+
+[data-theme="dark"] .edukasi-detail-header-content p {
+  color: white;
+}
+
+[data-theme="dark"] .edukasi-detail-content {
+  background-color: var(--bg-primary);
+}
+
+[data-theme="dark"] .edukasi-detail-content h2 {
+  color: var(--text-primary);
+}
+
+[data-theme="dark"] .edukasi-detail-content h3 {
+  color: var(--accent-purple);
+}
+
+[data-theme="dark"] .edukasi-detail-desc {
+  color: var(--text-secondary);
+}
+
+[data-theme="dark"] .edukasi-detail-desc p {
+  color: var(--text-secondary);
+}
+
+[data-theme="dark"] .edukasi-detail-desc b {
+  color: var(--text-primary);
+}
+
+@media (max-width: 768px) {
   .edukasi-detail-header-center {
     flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    min-height: 220px;
-    height: auto;
-    padding: 36px 12px 24px 12px;
-    margin-top: 48px;
-    gap: 16px;
-    border-radius: 0;
-  }
-  .edukasi-detail-header-content {
-    padding: 0 8px 18px 8px;
-    max-width: 100%;
     text-align: center;
+    gap: 24px;
   }
-  .edukasi-detail-header-img {
-    margin: 0;
-    height: 200px;
-    justify-content: center;
+  
+  .edukasi-detail-header-content h1 {
+    font-size: 2rem;
   }
-  .edukasi-detail-header-img img {
-    width: 180px;
-    height: 180px;
+  
+  .edukasi-detail-header-content p {
+    font-size: 1rem;
   }
+  
   .edukasi-detail-content {
-    padding: 16px 6px 12px 6px;
-    max-width: 100%;
+    padding: 40px 16px;
   }
-  .article-cards {
-    flex-direction: column;
-    gap: 14px;
-    align-items: center;
-    justify-content: center;
+  
+  .edukasi-detail-content h2 {
+    font-size: 1.5rem;
   }
-  .article-card {
-    width: 100%;
-    max-width: 340px;
-    min-width: 0;
-    min-height: 120px;
-    padding: 12px 8px 10px 8px;
+  
+  .edukasi-detail-content h3 {
+    font-size: 1.25rem;
+  }
+  
+  .edukasi-detail-desc p {
+    font-size: 1rem;
   }
 }
 </style>
 
+  
   

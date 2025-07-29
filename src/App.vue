@@ -2,6 +2,7 @@
 import Header from './components/header.vue';
 import Footer from './components/footer.vue';
 import ChatPopup from './components/ChatPopup.vue';
+import DarkModeToggle from './components/DarkModeToggle.vue';
 import { useRoute } from 'vue-router';
 import { computed, ref, onMounted } from 'vue';
 
@@ -36,6 +37,7 @@ onMounted(() => {
     </main>
     <Footer v-if="!isAdminRoute" />
     <ChatPopup v-if="showChat" ref="chatPopup" />
+    <DarkModeToggle />
   </div>
 </template>
 

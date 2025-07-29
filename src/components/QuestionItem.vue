@@ -78,6 +78,10 @@ export default {
   color: #333;
   font-weight: 500;
 }
+[data-theme="dark"] .question-text {
+  color: #fff;
+  text-shadow: 0 1px 8px rgba(255,255,255,0.12), 0 0px 2px rgba(255,255,255,0.10);
+}
 .answer-right {
   display: flex;
   gap: 80px;

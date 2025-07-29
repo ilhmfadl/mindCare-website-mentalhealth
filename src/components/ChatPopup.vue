@@ -751,4 +751,113 @@ export default {
     padding: 6px 8px;
   }
 }
+
+/* Dark mode styles for ChatPopup */
+[data-theme="dark"] .chat-popup {
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
+  box-shadow: 0 -4px 20px var(--shadow-medium);
+}
+
+[data-theme="dark"] .chat-header {
+  background: var(--card-bg);
+  border-bottom: 1px solid var(--border-color);
+  box-shadow: 0 1px 3px var(--shadow-light);
+}
+
+[data-theme="dark"] .user-name {
+  color: var(--text-primary);
+}
+
+[data-theme="dark"] .close-btn {
+  color: var(--text-muted);
+}
+
+[data-theme="dark"] .close-btn:hover {
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+}
+
+[data-theme="dark"] .chat-messages {
+  background: var(--bg-primary);
+}
+
+[data-theme="dark"] .agent-message .message-bubble {
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+}
+
+[data-theme="dark"] .user-message .message-bubble {
+  background: var(--accent-purple);
+  color: white;
+}
+
+[data-theme="dark"] .message-time {
+  color: var(--text-muted);
+}
+
+[data-theme="dark"] .chat-input-area {
+  background: var(--card-bg);
+  border-top: 1px solid var(--border-color);
+}
+
+[data-theme="dark"] .input-field {
+  background: var(--input-bg);
+  border: 1px solid var(--border-color);
+}
+
+[data-theme="dark"] .message-input {
+  color: var(--text-primary);
+}
+
+[data-theme="dark"] .message-input::placeholder {
+  color: var(--text-muted);
+}
+
+[data-theme="dark"] .file-message {
+  background: var(--bg-tertiary) !important;
+  border: 1px solid var(--border-color);
+}
+
+[data-theme="dark"] .file-message p {
+  color: var(--text-primary);
+}
+
+[data-theme="dark"] .upload-status.error {
+  background: #fee2e2;
+  color: #dc2626;
+  border: 1px solid #fecaca;
+}
+
+[data-theme="dark"] .upload-status.success {
+  background: #dcfce7;
+  color: #16a34a;
+  border: 1px solid #bbf7d0;
+}
+
+[data-theme="dark"] .upload-status.info {
+  background: #dbeafe;
+  color: #2563eb;
+  border: 1px solid #bfdbfe;
+}
+
+[data-theme="dark"] .icon-btn {
+  color: var(--text-muted);
+}
+
+[data-theme="dark"] .icon-btn:hover {
+  background: var(--bg-tertiary);
+}
+
+[data-theme="dark"] .chat-messages::-webkit-scrollbar-track {
+  background: var(--bg-tertiary);
+}
+
+[data-theme="dark"] .chat-messages::-webkit-scrollbar-thumb {
+  background: var(--border-color);
+}
+
+[data-theme="dark"] .chat-messages::-webkit-scrollbar-thumb:hover {
+  background: var(--text-muted);
+}
 </style> 
